@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "Headroom",
+    "slug": "headroom",
+    "version": "0.1.0",
+    "scheme": "headroom",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "android": {
+      "package": "uk.co.habylab.headroom",
+      "allowBackup": false,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/headroom-icon.png",
+        "backgroundColor": "#174E3B"
+      }
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-sqlite"
+    ],
+    "extra": {
+      "purpose": "Personal finance and house-move planning"
+    },
+    "icon": "./assets/headroom-icon.png"
+  }
+}

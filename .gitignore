@@ -1,0 +1,10 @@
+node_modules/
+.expo/
+dist/
+android/
+*.log
+.env*
+!.env.example
+private-data/
+*.pem
+*.key
