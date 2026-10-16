@@ -10,18 +10,24 @@
       "package": "uk.co.habylab.headroom",
       "allowBackup": false,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/headroom-icon.png",
+        "foregroundImage": "./assets/headroom-launcher.png",
         "backgroundColor": "#174E3B"
       }
     },
     "plugins": [
       "expo-secure-store",
       "expo-sqlite",
-      "expo-sharing"
+      "expo-sharing",
+      ["expo-splash-screen", {
+        "image": "./assets/headroom-splash.png",
+        "imageWidth": 128,
+        "resizeMode": "contain",
+        "backgroundColor": "#F8FAF5"
+      }]
     ],
     "extra": {
       "purpose": "Personal finance and house-move planning"
     },
-    "icon": "./assets/headroom-icon.png"
+    "icon": "./assets/headroom-launcher.png"
   }
 }
