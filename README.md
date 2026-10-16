@@ -64,6 +64,8 @@ Production signing and Play Console publication require your accounts and setup.
 
 ## Configure real bank access
 
+Accounts > Set up Enable Banking now walks through registration, private-server setup, phone pairing, bank consent and import. See the [guided setup checklist](docs/enable-banking-onboarding.md).
+
 The mobile app uses its own API server. It does not reuse ChatGPT website cookies
 or the website's encrypted credentials. Keep the website configuration intact.
 

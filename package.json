@@ -10,7 +10,14 @@
     "test": "vitest run",
     "server": "tsx server/index.ts",
     "pair-device": "tsx server/pair-device.ts",
-    "export:android": "expo export --platform android"
+    "export:android": "node node_modules/expo/bin/cli export --platform android",
+    "prepare:dependencies": "node scripts/prepare-dependencies.cjs",
+    "postinstall": "node scripts/prepare-dependencies.cjs",
+    "pretest": "node scripts/prepare-dependencies.cjs",
+    "prestart": "node scripts/prepare-dependencies.cjs",
+    "preexport:android": "node scripts/prepare-dependencies.cjs",
+    "security:check": "node scripts/prepare-dependencies.cjs --check",
+    "audit:verified": "node scripts/check-audit.cjs"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
