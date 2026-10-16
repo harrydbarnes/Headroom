@@ -2,6 +2,8 @@
 
 Prepared 15 October 2026. Planning baseline: Headroom source 0.2.3. This is a proposed delivery roadmap, not a claim that the features below exist. It preserves the existing Move, headroom, goals, debt and private/manual workflows.
 
+Implementation update, 16 October: priorities 0-1 now have source implementation. See [delivery evidence and remaining release gates](priority-0-1-delivery-2026-10-16.md). Native acceptance and dependency remediation remain open.
+
 ## Product outcome and scope
 
 Deliver a daily money-management app with category/payday budgeting, account balances, recurring bills, meaningful analysis and proactive reminders, plus an evidence-based workplace-pension optimiser. Include the wider Snoop/Emma ecosystem in the roadmap rather than silently dropping features that need commercial partners.

@@ -6,7 +6,7 @@ A separate personal finance app branched from Home Move Planner source commit
 `a0f672d44636ec86850c5db9f35cb42d978680ed` on 15 October 2026.
 The original hosted planner was read only and was not modified or deployed.
 
-Current source release: **0.2.1**. See [P1 before/after and remaining release checks](docs/p1-completion-2026-10-15.md).
+Current source baseline: **0.2.3**. The unreleased account/ledger work and open release checks are recorded in [priority 0-1 delivery evidence](docs/priority-0-1-delivery-2026-10-16.md). See [P1 before/after and remaining release checks](docs/p1-completion-2026-10-15.md).
 
 ## What is implemented
 

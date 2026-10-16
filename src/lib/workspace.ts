@@ -1,3 +1,4 @@
+import {validateLedger,type Ledger} from './ledger';
 import {assess, demoPlan, emptyPlan, type Plan, type Transaction, type Movement} from './finance';
 import {houseMove, type HouseMoveInput} from './calculators/houseMove';
 
@@ -7,7 +8,7 @@ export type Scenario=MoveState&{id:string;name:string};
 export type Rule={id:string;merchant:string;movement:Movement;category:string;direction?:'in'|'out'};
 export type Coverage={month:string;confirmedAt:string;accounts?:{name:string;status:'complete'|'noActivity'}[]};
 export type SyncReceipt={attemptedAt:string;finishedAt:string;status:'complete'|'partial'|'failed';added:number;updated:number;unchanged:number;warnings:string[];outcomes:{id:string;provider:string;status:'success'|'cached'|'partial'|'failed'|'expired';lastSync:string|null;count:number}[]};
-export type Workspace={exampleStep?:number;syncReceipt?:SyncReceipt;setupSkipped?:number[];plan:Plan;transactions:Transaction[];lastSync:string|null;planConfirmedAt:string|null;onboardingStep:number;coverage:Coverage[];rules:Rule[];move:MoveState;scenarios:Scenario[]};
+export type Workspace={ledger?:Ledger;exampleStep?:number;syncReceipt?:SyncReceipt;setupSkipped?:number[];plan:Plan;transactions:Transaction[];lastSync:string|null;planConfirmedAt:string|null;onboardingStep:number;coverage:Coverage[];rules:Rule[];move:MoveState;scenarios:Scenario[]};
 export type Preferences={theme:'system'|'light'|'dark';dynamicColor:boolean;reduceMotion:boolean;hideAmounts:boolean;moveEnabled:boolean;appLock:boolean;blockCapture:boolean};
 export type AppData={version:2;personal:Workspace;example:Workspace;demo:boolean;preferences:Preferences};
 export const clone=<T,>(v:T):T=>JSON.parse(JSON.stringify(v));
@@ -91,7 +92,7 @@ export function validateWorkspace(input:unknown,prior?:Workspace):Workspace{
  if(v.setupSkipped!==undefined){extra.setupSkipped=list(v.setupSkipped,3).map(amount);if(extra.setupSkipped.some(n=>n<0||n>2)||new Set(extra.setupSkipped).size!==extra.setupSkipped.length)throw Error('Invalid setup checklist.');}
  if(v.syncReceipt!==undefined){const r=object(v.syncReceipt);if(!['complete','partial','failed'].includes(r.status))throw Error('Invalid import receipt.');const outcomes=list(r.outcomes,100).map(o=>{if(!['success','cached','partial','failed','expired'].includes(o.status))throw Error('Invalid import outcome.');const count=amount(o.count);if(count<0)throw Error('Invalid import count.');return {id:text(o.id),provider:text(o.provider),status:o.status,lastSync:iso(o.lastSync),count};});
  const counts={added:amount(r.added),updated:amount(r.updated),unchanged:amount(r.unchanged)};if(Object.values(counts).some(n=>n<0)||!r.attemptedAt||!r.finishedAt)throw Error('Invalid import receipt.');extra.syncReceipt={...counts,attemptedAt:iso(r.attemptedAt)!,finishedAt:iso(r.finishedAt)!,status:r.status,warnings:list(r.warnings,200).map(x=>text(x,4000)),outcomes};}
- const checked={...result,...extra};assertBackupSize(checked);return checked;
+ const checked={...result,...extra,ledger:prior&&v.ledger===prior.ledger&&transactions===prior.transactions?prior.ledger:validateLedger(v.ledger,transactions)};assertBackupSize(checked);return checked;
 }
 function unique(rows:{id:string}[],label:string){if(rows.some(r=>!r.id.trim())||new Set(rows.map(r=>r.id)).size!==rows.length)throw Error('Duplicate or empty identities in '+label+'.');}
 export const BACKUP_LIMIT=20_000_000;
@@ -100,8 +101,8 @@ export function utf8Bytes(s:string){let bytes=0;for(let i=0;i<s.length;i++){cons
 const partSizes=new WeakMap<object,number>();
 function partBytes(value:unknown){if(value&&typeof value==='object'){const cached=partSizes.get(value);if(cached!==undefined)return cached;const size=utf8Bytes(JSON.stringify(value));partSizes.set(value,size);return size;}return utf8Bytes(JSON.stringify(value));}
 function assertBackupSize(w:Workspace){const entries=Object.entries(w);const bytes=2+Math.max(0,entries.length-1)+entries.reduce((n,[key,value])=>n+utf8Bytes(JSON.stringify(key))+1+partBytes(value),0);if(bytes+128>BACKUP_LIMIT)throw Error('This workspace exceeds the 20 MB backup limit. Export your existing data before adding more.');}
-export function exportBackup(w:Workspace){const checked=validateWorkspace(w);const raw=JSON.stringify({format:'headroom-backup',version:2,exportedAt:new Date().toISOString(),workspace:checked});if(utf8Bytes(raw)>BACKUP_LIMIT)throw Error('This workspace exceeds the 20 MB backup limit.');return raw;}
-export function parseBackup(raw:string):Workspace{if(utf8Bytes(raw)>BACKUP_LIMIT)throw Error('Backup exceeds 20 MB.');let parsed;try{parsed=JSON.parse(raw);}catch{throw Error('This file is not valid JSON. Choose an exported Headroom backup.');}const v=object(parsed);if(v.format!=='headroom-backup'||v.version!==2)throw Error('Choose a Headroom version 2 backup.');return validateWorkspace(v.workspace);}
+export function exportBackup(w:Workspace){const checked=validateWorkspace(w);const raw=JSON.stringify({format:'headroom-backup',version:3,exportedAt:new Date().toISOString(),workspace:checked});if(utf8Bytes(raw)>BACKUP_LIMIT)throw Error('This workspace exceeds the 20 MB backup limit.');return raw;}
+export function parseBackup(raw:string):Workspace{if(utf8Bytes(raw)>BACKUP_LIMIT)throw Error('Backup exceeds 20 MB.');let parsed;try{parsed=JSON.parse(raw);}catch{throw Error('This file is not valid JSON. Choose an exported Headroom backup.');}const v=object(parsed);if(v.format!=='headroom-backup'||![2,3].includes(v.version))throw Error('Choose a Headroom version 2 or 3 backup.');return validateWorkspace(v.workspace);}
 
 export function anchorGoalDates(w:Workspace){const anchor=monthKey(w.planConfirmedAt?new Date(w.planConfirmedAt):new Date());w.plan={...w.plan,goals:goalEntries(w.plan).map(g=>({...g,dueMonth:g.dueMonth??shiftMonth(anchor,g.months)}))};return w;}
 export function migrateLegacy(saved:any,oldHouse?:any):AppData{

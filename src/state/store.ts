@@ -8,13 +8,13 @@ let repository:FinanceRepository|undefined;
 let timer:ReturnType<typeof setTimeout>|undefined;
 let writing:Promise<unknown>=Promise.resolve();
 let queuedRevision=0;
-type Undo={demo:boolean;rows:{id:string;before:Transaction|null}[];rules:Workspace['rules'];coverage:Workspace['coverage'];revision:number;label:string};
+type Undo={ledger:Workspace['ledger'];demo:boolean;rows:{id:string;before:Transaction|null}[];rules:Workspace['rules'];coverage:Workspace['coverage'];revision:number;label:string};
 type State={exampleGeneration:number;data:AppData;ready:boolean;error:string|null;mutationError:string|null;saving:boolean;lastSaved:string|null;undo:Undo|null;storageBlocked:boolean;generation:number;revision:number;durableRevision:number;recoveryArchive:string|null;recoverablePersonal:Workspace|null;
  init:()=>Promise<void>;change:(f:(w:Workspace)=>Workspace)=>boolean;patch:(p:Partial<Plan>)=>boolean;setDemo:(v:boolean)=>void;preferences:(p:Partial<Preferences>)=>void;
  merge:(rows:Transaction[],success:boolean,receipt?:SyncReceipt)=>boolean;review:(ids:string[],movement:Movement,category:string,remember?:boolean)=>boolean;confirmTransfer:(ids:string[])=>boolean;undoReview:()=>void;editManual:(id:string,draft:ManualDraft)=>boolean;deleteManual:(id:string)=>boolean;applyActuals:(month:string,signature:string,excludeOther:boolean,excludeAnnual:boolean)=>boolean;
  resetExample:()=>boolean;clear:()=>void;restore:(w:Workspace)=>Promise<boolean>;retrySave:()=>void;flushSave:()=>Promise<boolean>;dismissMutationError:()=>void;};
 function schedule(){if(!repository)return;clearTimeout(timer);const state=useFinance.getState();useFinance.setState({revision:state.revision+1,saving:true,error:null});timer=setTimeout(()=>{void useFinance.getState().flushSave();},180);}
-function transactionChange(label:string,ids:string[],change:(w:Workspace)=>Workspace){const store=useFinance.getState(),data=store.data,w=active(data);const before=ids.map(id=>({id,before:w.transactions.find(t=>t.id===id)||null}));if(!store.change(change))return false;const next=useFinance.getState();useFinance.setState({undo:{demo:data.demo,rows:before,rules:w.rules,coverage:w.coverage,revision:next.revision,label}});return true;}
+function transactionChange(label:string,ids:string[],change:(w:Workspace)=>Workspace){const store=useFinance.getState(),data=store.data,w=active(data);const before=ids.map(id=>({id,before:w.transactions.find(t=>t.id===id)||null}));if(!store.change(change))return false;const next=useFinance.getState();useFinance.setState({undo:{ledger:w.ledger,demo:data.demo,rows:before,rules:w.rules,coverage:w.coverage,revision:next.revision,label}});return true;}
 export const useFinance=create<State>((set,get)=>({exampleGeneration:0,data:immutable(freshData()),ready:false,error:null,mutationError:null,saving:false,lastSaved:null,undo:null,storageBlocked:false,generation:0,revision:0,durableRevision:0,recoveryArchive:null,recoverablePersonal:null,
  async init(){
   if(repository&&get().ready&&!get().storageBlocked)return;
@@ -24,7 +24,7 @@ export const useFinance=create<State>((set,get)=>({exampleGeneration:0,data:immu
  },
  change(f){
   if(get().storageBlocked){set({mutationError:'Restore or reopen your saved data before editing.'});return false;}
-  try{const data=get().data,key=data.demo?'example':'personal',previous=active(data),candidate=f(previous),next=validateWorkspace(candidate,previous);const affectsUndo=next.transactions!==previous.transactions||next.rules!==previous.rules||next.coverage!==previous.coverage;
+  try{const data=get().data,key=data.demo?'example':'personal',previous=active(data),candidate=f(previous),next=validateWorkspace(candidate,previous);const affectsUndo=next.ledger!==previous.ledger||next.transactions!==previous.transactions||next.rules!==previous.rules||next.coverage!==previous.coverage;
    set({data:immutable({...data,[key]:next}),mutationError:null,...(affectsUndo?{undo:null}:{})});schedule();return true;
   }catch(e){set({mutationError:e instanceof Error?e.message:'The edit could not be validated. Your previous figures are unchanged.'});return false;}
  },
@@ -36,7 +36,7 @@ export const useFinance=create<State>((set,get)=>({exampleGeneration:0,data:immu
  confirmTransfer(ids){return transactionChange('Transfer review',ids,w=>{const selected=transferPair(w.transactions,ids);return {...w,transactions:reviewRows(w.transactions,ids,'transfer','Transfers'),coverage:w.coverage.filter(c=>!selected.some(t=>t.date.startsWith(c.month)))};});},
  editManual(id,draft){return transactionChange('Manual edit',[id],w=>editManual(w,id,draft));},
  deleteManual(id){return transactionChange('Deletion',[id],w=>deleteManual(w,id));},
- undoReview(){const undo=get().undo;if(!undo||undo.demo!==get().data.demo)return;get().change(w=>{const ids=new Set(undo.rows.map(t=>t.id));const restored=[...w.transactions.filter(t=>!ids.has(t.id)),...undo.rows.flatMap(t=>t.before?[t.before]:[])].sort((a,b)=>b.date.localeCompare(a.date));return {...w,transactions:restored,rules:undo.rules,coverage:undo.coverage};});set({undo:null});},
+ undoReview(){const undo=get().undo;if(!undo||undo.demo!==get().data.demo)return;get().change(w=>{const ids=new Set(undo.rows.map(t=>t.id));const restored=[...w.transactions.filter(t=>!ids.has(t.id)),...undo.rows.flatMap(t=>t.before?[t.before]:[])].sort((a,b)=>b.date.localeCompare(a.date));return {...w,transactions:restored,ledger:undo.ledger,rules:undo.rules,coverage:undo.coverage};});set({undo:null});},
  applyActuals(month,signature,excludeOther,excludeAnnual){return get().change(w=>applyActuals(w,month,signature,excludeOther,excludeAnnual));},
  resetExample(){if(get().storageBlocked)return false;try{const example=validateWorkspace(exampleWorkspace());set({data:immutable({...get().data,example}),exampleGeneration:get().exampleGeneration+1,mutationError:null,...(get().undo?.demo?{undo:null}:{})});schedule();return true;}catch(e){set({mutationError:e instanceof Error?e.message:'Examples could not be reset.'});return false;}},
  clear(){if(get().change(()=>freshWorkspace()))set({undo:null,generation:get().generation+1});},

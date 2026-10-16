@@ -39,7 +39,7 @@ export function editManual(w:Workspace,transactionId:string,draft:ManualDraft):W
 export function deleteManual(w:Workspace,transactionId:string):Workspace{
  const prior=w.transactions.find(t=>t.id===transactionId);
  if(!prior||!prior.id.startsWith('manual:'))throw Error('Only manual transactions can be deleted here. Disconnecting a bank does not delete its imported history.');
- return {...w,transactions:w.transactions.filter(t=>t.id!==transactionId),coverage:w.coverage.filter(c=>c.month!==prior.date.slice(0,7))};
+ return {...w,...(w.ledger?{ledger:{...w.ledger,annotations:w.ledger.annotations.filter(a=>a.transactionId!==transactionId)}}:{}),transactions:w.transactions.filter(t=>t.id!==transactionId),coverage:w.coverage.filter(c=>c.month!==prior.date.slice(0,7))};
 }
 export function duplicateManual(rows:Transaction[],draft:ManualDraft,exceptId?:string){const signed=draft.incoming?-draft.amount:draft.amount;return rows.some(t=>t.id!==exceptId&&t.merchant.trim().toLowerCase()===draft.merchant.trim().toLowerCase()&&t.account===draft.account&&t.date===draft.date&&t.amount===signed);}
 
