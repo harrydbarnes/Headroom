@@ -6,9 +6,18 @@ A separate personal finance app branched from Home Move Planner source commit
 `a0f672d44636ec86850c5db9f35cb42d978680ed` on 15 October 2026.
 The original hosted planner was read only and was not modified or deployed.
 
+Current source release: **0.2.1**. See [P1 before/after and remaining release checks](docs/p1-completion-2026-10-15.md).
+
 ## What is implemented
 
-- Native React Native / Expo Android interface with Today, Activity, Plan, Home and Accounts.
+- Native React Native / Expo Android interface with Today, Activity, Plan, optional Move, Accounts and dedicated Settings.
+- Resumable manual onboarding and isolated personal/example workspaces.
+- Searchable transaction review with categories, filters, bulk actions, merchant rules and undo.
+- Manual cash/unsupported-account entries and explicit past-month coverage attestations.
+- Multiple named debts/goals, reviewed actuals versus plan and user-approved baseline updates.
+- Editable move assumptions, saved scenarios and gated post-move budget comparisons.
+- Light/dark/system themes, optional Android 12+ wallpaper colours, labelled icon navigation, adaptive rail and reduced-motion-aware transitions.
+- Device authentication lock, hide-amount controls, screen protection and validated personal backup/restore.
 - Offline SQLite persistence for the budget, reviewed transactions and move scenario.
 - Device API token in Android SecureStore; no Enable Banking private key in the app.
 - Live supported-bank discovery, browser consent, transaction refresh and disconnection through a separate personal API service.
@@ -16,7 +25,7 @@ The original hosted planner was read only and was not modified or deployed.
 - Explicit purchase, income, refund, transfer, repayment and unreviewed classifications.
 - Transparent wellbeing score, comfort band and monthly debt/cash/goal/investment allocations.
 - Required mortgage, SDLT, sale proceeds, exchange timing, fees, LTV and rate stress tests using the existing pure TypeScript engines.
-- Example mode is explicitly labelled and cannot import real bank data.
+- Example mode is explicitly labelled, has fictional review transactions, cannot import real bank data and uses a separate persisted workspace that preserves personal figures.
 
 This is a runnable first implementation, not an already installed or published Android app.
 No bank credentials, live account balances or transaction history have been copied from the website.
@@ -72,10 +81,19 @@ or the website's encrypted credentials. Keep the website configuration intact.
    Subsequent starts reuse its encrypted stored configuration.
 5. Start with `npm run server`. Supply environment variables via your host's
    secret manager; the example file is not loaded automatically.
-6. In the Android Accounts screen, enter the HTTPS API origin and DEVICE_TOKEN.
-   Choose Check bank coverage, authorise an available bank in your browser,
-   return to the app, then Refresh transactions.
-7. Classify imports in Activity. Enter or update the monthly baseline in Plan.
+6. Run `npm run pair-device` in the server environment with PUBLIC_ORIGIN and
+   DEVICE_TOKEN set. It requests a two-minute, single-use pairing ticket from your
+   running HTTPS server. Keep the link private; paste it into Settings > Pair bank
+   access > One-use pairing link, then press Pair this device. Alternatively use
+   Advanced manual pairing in Settings for the HTTPS origin and device token.
+   The Enable Banking private key never belongs on the phone.
+7. In Accounts choose Find supported banks, search for your bank and authorise it
+   in the browser. The completion page distinguishes success from cancellation
+   and offers Return to Headroom. Check status after returning, then Refresh
+   transactions. Status refresh also runs on app resume.
+8. Review imports in Activity. Confirm each past month's coverage only after
+   checking full statements, cash and unsupported accounts. Enter and confirm
+   the future monthly baseline in Plan. Imports never silently replace it.
 
 Zopa, Starling, Lloyds credit card and Amex coverage is **not confirmed**. The live
 Enable Banking list, your application permissions and your exact account/card
@@ -93,14 +111,20 @@ No credentials are embedded in the APK or committed to source.
 
 The score is an app-defined planning heuristic, not a credit-bureau score,
 a lender decision, an audited financial assessment or an investment suitability test.
-It is withheld until all account coverage is confirmed by the user and at least
-three complete months have been reviewed. That confirmation is manual.
+It is withheld until the baseline and all-account coverage are confirmed and at
+least three completed past months have been explicitly confirmed in Activity with
+no unreviewed rows. Month completeness is a manual attestation, not an inference
+from transaction date ranges. Changed imports/reviews invalidate affected month
+confirmations; identical reimports retain them. Old typed month counts are not
+migrated as verified coverage.
 
 Score: emergency cash resilience 35 points, monthly surplus margin 35 points,
 non-mortgage debt 30 points (15 for debt below 8% APR, 0 at/above 8%).
 Comfort bands use surplus/income: negative = Over budget, under 10% = Tight,
 under 20% = Manageable, otherwise Comfortable.
 
+Named debts are assessed separately. Named goal monthly needs are combined into
+a funding pool that the user chooses how to divide.
 Positive monthly surplus is allocated in this order: extra repayment of debt at
 8% APR or above, emergency fund shortfall, timed savings goal, then an editable
 share of the remainder for possible investing. Investing is shown only if there
@@ -124,6 +148,19 @@ Guidance consulted 15 October 2026:
 
 ## Data, privacy and current limits
 
+Use Settings > Backup and restore to export personal financial data. On Android,
+choose a folder using the system picker; the app writes readable JSON there.
+Keep it private. Restore validates the file and asks before replacing your
+personal workspace. Backups exclude pairing and server credentials. They include
+the plan, transactions, rules, coverage and move scenarios. The format limit is
+20 MB and 100,000 transactions. Exported files remain until you delete them.
+
+Use Settings > Privacy for optional device authentication and screen-capture
+protection. Biometrics must be enrolled before enabling the lock; authentication
+can use device credential fallback. Summary hiding leaves editable fields visible.
+App lock does not additionally encrypt SQLite. Screen protection uses Android's
+secure-window flag and needs native device verification.
+
 The Android budget and transactions are stored in app-private SQLite, without
 additional database encryption in this version. Device security protects the
 app sandbox. Android cloud backup is disabled. The paired device token uses
@@ -136,15 +173,17 @@ not to log callback query strings, launch tickets, bodies or authorisation
 headers. Use HTTPS, access controls, patching and disk protections on that host.
 
 Disconnecting revokes that provider session and deletes its server cache.
-Deleting local data clears the device plan and transactions, but does not
-revoke provider consent. Forgetting the API token only unpairs this device.
+Deleting a workspace clears its plan, transactions, coverage, rules and move
+scenarios, but does not revoke provider consent. Personal and example deletion
+are separate. The old house key is removed after migrated state is saved. Forgetting the API token only unpairs this device.
 To remove all server records after disconnecting, stop the server and delete its
 private data directory, key file and managed secrets according to your backup policy.
 
 The native app has not been run in an emulator or on a physical phone here.
 Live bank authorisation has not been tested. No APK is included in this archive.
 No push notifications, background jobs, payments, investment execution,
-credit-bureau integration, CSV import UI or automated transfer matching yet.
+credit-bureau integration or CSV import UI. Transfer suggestions require human
+confirmation. A unique two-sided match can be explicitly confirmed with a preview and undo; ambiguous matches stay unresolved.
 The existing CSV/reconciliation calculator modules are retained for future work.
 The plan is not silently overwritten by provider imports: reviewed actuals
 and the manually confirmed future budget remain separate.
@@ -158,9 +197,19 @@ EXPO_OFFLINE=1 npx expo install --check
 EXPO_OFFLINE=1 npm run export:android
 ```
 
-Verified here: TypeScript check passed, 62 tests passed, Expo dependency versions
-matched the installed SDK, and the Android Hermes bundle exported successfully.
-The native SDK build, APK workflow and live-bank tests remain unverified.
+For the 0.2.3 P3 implementation: TypeScript and 143 tests passed. Shared motion,
+typography, adaptive summaries/dialogs and the full fictional walkthrough are implemented.
+See docs/p3-completion-2026-10-15.md for before/after and native acceptance checks.
+
+For the earlier 0.2.2 P2 implementation: TypeScript passed, 130 tests passed and the Android
+Hermes bundle exported. See docs/p2-completion-2026-10-15.md for before/after,
+migration behaviour and outstanding device/live-service acceptance checks.
+
+For the earlier 0.2.1 P1 implementation: TypeScript passed, 113 tests passed, Expo dependency
+versions matched the installed SDK and the final Android Hermes bundle exported.
+See docs/p1-completion-2026-10-15.md for the P1 map, before/after and native acceptance checks.
+The native SDK build, APK workflow, visual/device checks and live-bank tests remain
+separate verification requirements.
 
 Tests cover legacy financial calculation parity, SDLT bands, mortgage and budget
 calculations, allocation conservation, investment gating, duplicate imports,

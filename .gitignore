@@ -8,3 +8,6 @@ android/
 private-data/
 *.pem
 *.key
+
+# Local device-test evidence and temporary toolchain
+.qa/

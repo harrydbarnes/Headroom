@@ -2,10 +2,10 @@
   "expo": {
     "name": "Headroom",
     "slug": "headroom",
-    "version": "0.1.0",
+    "version": "0.2.3",
     "scheme": "headroom",
-    "orientation": "portrait",
-    "userInterfaceStyle": "light",
+    "orientation": "default",
+    "userInterfaceStyle": "automatic",
     "android": {
       "package": "uk.co.habylab.headroom",
       "allowBackup": false,
@@ -16,7 +16,8 @@
     },
     "plugins": [
       "expo-secure-store",
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-sharing"
     ],
     "extra": {
       "purpose": "Personal finance and house-move planning"

@@ -12,5 +12,10 @@ it('rejects anonymous and spoofed site-identity requests',async()=>{const r=awai
 it('accepts only the paired device token',async()=>{const r=await fetch(local+'/api/banking/status',{headers:{Authorization:'Bearer '+token}});expect(r.status).toBe(200);expect(await r.json()).toMatchObject({configured:false,connections:[]});});
 it('does not expose credential configuration to a mobile client',async()=>expect((await fetch(local+'/api/banking/configure',{method:'POST',headers:{Authorization:'Bearer '+token}})).status).toBe(404));
 it('rejects callbacks without browser session binding',async()=>expect((await fetch(local+'/api/banking/callback?state=anything')).status).toBe(401));
+it('requires existing server credentials to create a pairing ticket and exchanges it once',async()=>{
+ expect((await fetch(local+'/mobile/pairing-ticket',{method:'POST'})).status).toBe(401);
+ const issued=await fetch(local+'/mobile/pairing-ticket',{method:'POST',headers:{Authorization:'Bearer '+token}});expect(issued.status).toBe(200);const {ticket}=await issued.json();
+ const redeem=()=>fetch(local+'/mobile/pair',{method:'POST',body:JSON.stringify({ticket})});const result=await redeem();expect(result.status).toBe(200);expect((await result.json()).token).toBe(token);expect((await redeem()).status).toBe(401);
+});
 it('consumes a browser launch ticket exactly once',async()=>{const r=await fetch(local+'/mobile/launch',{method:'POST',headers:{Authorization:'Bearer '+token},body:JSON.stringify({bank:'Test Bank'})});expect(r.status).toBe(200);const data=await r.json();const path=new URL(data.url).pathname+new URL(data.url).search;expect((await fetch(local+path)).status).toBe(409);expect((await fetch(local+path)).status).toBe(401);});
 it('does atomic compare-and-swap for callback state consumption',async()=>{const b=new Bucket(dir+'/cas');await b.put('key','{"used":false}');const old=await b.get('key');const outcomes=await Promise.all([b.put('key','{"used":true}',{onlyIf:{etagMatches:old!.etag}}),b.put('key','{"used":true}',{onlyIf:{etagMatches:old!.etag}})]);expect(outcomes.filter(Boolean)).toHaveLength(1);});
