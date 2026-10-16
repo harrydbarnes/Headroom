@@ -1,3 +1,4 @@
+import {amountContent,amountDisplay} from '../src/lib/amountDisplay';
 import {createElement} from 'react';
 import {layoutChildren} from '../src/ui/layoutChildren';
 import {describe,it,expect} from 'vitest';
@@ -30,3 +31,7 @@ describe('fictional walkthrough data',()=>{
 it('ignores JSX-only whitespace between adaptive panels while retaining real content',()=>{const a=createElement('panel',{key:'a'}),b=createElement('panel',{key:'b'});expect(layoutChildren(['  ',a,'\n',b,false,null])).toEqual([expect.objectContaining({type:'panel'}),expect.objectContaining({type:'panel'})]);expect(layoutChildren(['Caption',0])).toEqual(['Caption',0]);});
 
  it('uses an explicit destination menu before scaled tabs overflow, including optional Move',()=>{expect(navigationNeedsMenu(411,1,5)).toBe(false);expect(navigationNeedsMenu(411,2,5)).toBe(true);expect(navigationNeedsMenu(411,2,4)).toBe(true);expect(navigationNeedsMenu(320,1,5)).toBe(true);expect(navigationNeedsMenu(768,2,5)).toBe(false);});
+
+it('never includes financial digits, a sign or magnitude in a hidden amount',()=>{for(const value of [0,1,-12345,999999999])for(const precise of [true,false])expect(amountDisplay(value,precise,true)).toBe('••••••');expect(amountDisplay(12345,true,false)).toBe('£123.45');});
+
+it('removes real amount text from every hidden animation layer, including rapid reversals',()=>{for(const hidden of [false,true,false,true,true,false,true]){const content=amountContent(987654321,true,hidden);if(hidden){expect(content.text).toBeNull();expect(content.label).toBe('Amount hidden');expect(content.mask).toBe('••••••');expect(JSON.stringify(content)).not.toMatch(/987|9,876|543/);}else expect(content.text).toBe('£9,876,543.21');}expect(motion.duration.privacy).toBe(200);});
