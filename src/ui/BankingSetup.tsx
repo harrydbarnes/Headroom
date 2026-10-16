@@ -12,7 +12,7 @@ export function BankingSetup({banking:b,demo,openSettings}:{banking:Banking;demo
  const link=async(url:string)=>{setError('');try{await Linking.openURL(url);}catch{setError('The browser could not open. Try again or use the address in the setup instructions.');}};
  const pairing=()=>{setOpen(false);openSettings();};
  return <><Button secondary title="Set up Enable Banking" onPress={()=>{setOrigin(b.origin);setStep(status.step);setError('');setOpen(true);}}/>
- <Sheet visible={open} onClose={()=>setOpen(false)} title="Connect your bank">
+ <Sheet key={step} visible={open} onClose={()=>setOpen(false)} title="Connect your bank">
  <Copy strong>Step {step+1} of 5 · {titles[step]}</Copy>
  <Copy small>Read-only bank imports use Enable Banking. Your bank handles sign-in and consent; Headroom never asks for your banking password.</Copy>
  {demo&&<Notice>This is the fictional workspace. You can read the guide here; return to personal figures before pairing or connecting a real bank.</Notice>}
