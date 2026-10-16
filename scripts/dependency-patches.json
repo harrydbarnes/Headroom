@@ -82,5 +82,19 @@
         1
       ]
     ]
+  },
+  {
+    "package": "@expo/metro-file-map",
+    "version": "57.0.4",
+    "file": "build/lib/RootPathUtils.js",
+    "before": "bc3a22513b1e0465c1cd8bb228c7ba881450c913d6ebc2b5a42d3df2c1fb3365",
+    "after": "4821c0d17df023d7f24f9a02030ec5c79a84caa0cdb527d53e0aeb30e00c9e72",
+    "replacements": [
+      [
+        "            (0, invariant_1.default)(collapsed != null, 'Failed to collapse');",
+        "            // Fall back to the existing Node path normalisation when ./ prevents\n            // the fast ancestor-collapse optimisation (e.g. clean Linux builds).\n            if (collapsed == null) {\n                return { collapsedSegments: 0, normalPath: this.relativeToNormal(rawPath) };\n            }",
+        1
+      ]
+    ]
   }
 ]
