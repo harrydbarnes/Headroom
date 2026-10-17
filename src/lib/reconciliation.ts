@@ -1,9 +1,10 @@
+import {categoryGroup,spendingParts} from './planning';
 import type {Transaction} from './finance';
 import {manualTransaction,monthKey,type Workspace} from './workspace';
 
 export function actualsPreview(w:Workspace,month:string){
  const all=w.transactions.filter(t=>t.date.startsWith(month));
- const spending=all.filter(t=>t.movement==='purchase'||t.movement==='refund');
+ const spending=spendingParts(all,w.ledger).map(t=>({...t,category:categoryGroup(w.planning?.categories??[],t.category)}));
  const included=spending.filter(t=>t.category==='Essentials'||t.category==='Flexible');
  const annual=spending.filter(t=>t.category==='Annual bills');
  const unresolved=spending.filter(t=>t.category==='Uncategorised'||!t.category.trim());
@@ -17,8 +18,8 @@ export function actualsPreview(w:Workspace,month:string){
  if(unresolved.length)reasons.push('Categorise the remaining uncategorised spending first.');
  if(!spending.length)reasons.push('This month has no reviewed spending to use.');
  if(essentials<0||flexible<0)reasons.push('Net refunds exceed spending in a baseline category. Choose another month or enter a manual baseline.');
- const signature=JSON.stringify([month,w.plan.essentials,w.plan.flexible,w.plan.annualReserve,w.coverage.filter(c=>c.month===month),all.map(t=>[t.id,t.amount,t.movement,t.category])]);
- return {month,essentials,flexible,included,annual,unresolved,other,reasons,signature,excludedCount:all.length-included.length};
+ const signature=JSON.stringify([month,w.plan.essentials,w.plan.flexible,w.plan.annualReserve,w.coverage.filter(c=>c.month===month),all.map(t=>[t.id,t.amount,t.movement,t.category]),w.ledger?.annotations,w.planning?.categories]);
+ return {month,essentials,flexible,included,annual,unresolved,other,reasons,signature,excludedCount:all.length-new Set(included.map(t=>t.parentId)).size};
 }
 export function applyActuals(w:Workspace,month:string,signature:string,excludeOther:boolean,excludeAnnual:boolean):Workspace{
  const preview=actualsPreview(w,month);
