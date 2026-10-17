@@ -24,7 +24,7 @@ export function cashEvents(w:Workspace,asOf:string,through:string){
   for(let n=first;;n++){
    if(++count>500)throw Error('Too many forecast occurrences.');const due=occurrence(c.rule,n);if(due>through||c.until&&due>c.until)break;
    const expected=amountOn(c,due)*(c.direction==='in'?-1:1),link=c.settlements.find(s=>s.due===due),linked=link?booked.find(t=>t.id===link.transactionId&&t.account===c.account&&Math.sign(t.amount)===Math.sign(expected)&&Math.abs(daysBetween(t.date,due))<=35):undefined;
-   const candidates=booked.filter(t=>!used.has(t.id)&&!explicit.has(t.id)&&t.account===c.account&&same(t.merchant,c.merchant)&&t.amount===expected&&Math.abs(daysBetween(t.date,due))<=3);
+   const candidates=booked.filter(t=>!used.has(t.id)&&!explicit.has(t.id)&&!c.ignoredMatches?.some(s=>s.due===due&&s.transactionId===t.id)&&t.account===c.account&&same(t.merchant,c.merchant)&&t.amount===expected&&Math.abs(daysBetween(t.date,due))<=3);
    const transaction=linked??(candidates.length===1?candidates[0]:undefined);if(transaction)used.add(transaction.id);
    events.push({id:c.id+':'+due,commitmentId:c.id,due,merchant:c.merchant,account:c.account,amount:expected,status:transaction?'settled':candidates.length>1?'ambiguous':due<asOf?'overdue':'expected',...(transaction?{transactionId:transaction.id}:{}),variable:c.variable,assumption:linked?'Explicitly linked booked entry':transaction?'Exact merchant, account, amount; within three days':link?'Linked entry missing or changed; review required':c.variable?'Variable amount uses your confirmed estimate':'Confirmed schedule'});
   }
