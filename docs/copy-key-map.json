@@ -1,0 +1,3205 @@
+{
+  "base": "e4ce04d",
+  "entries": [
+    {
+      "old": "src/strings/shell.ts:shellCopy.separator",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/shell.ts:shellCopy.deviceAuthenticationIsUnavailableCheckYourPhone",
+      "new": "src/strings/shell.ts:shellCopy.authenticationUnavailable",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/shell.ts:shellCopy.applyingScreenProtectionBeforeOpeningYourData",
+      "new": "src/strings/shell.ts:shellCopy.protectionPending",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/shell.ts:shellCopy.youReViewingExampleDataYourData",
+      "new": "src/strings/shell.ts:shellCopy.exampleModeNotice",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/shell.ts:shellCopy.navigate2",
+      "new": "src/strings/shell.ts:shellCopy.navigateTitle",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/shell.ts:shellCopy.tapBelowWhenYouAreReadyTo2",
+      "new": "src/strings/shell.ts:shellCopy.screenCoverDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/shell.ts:shellCopy.saving2",
+      "new": "src/strings/shell.ts:shellCopy.savingStatus",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/shell.ts:shellCopy.saved2",
+      "new": "src/strings/shell.ts:shellCopy.savedStatus",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/format.ts:counts.existingTransaction",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/recovery.ts:recoveryCopy.separator",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/recovery.ts:recoveryCopy.message3",
+      "new": "src/strings/recovery.ts:recoveryCopy.restoreConfirmBody",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/recovery.ts:recoveryCopy.editingIsPausedDefaultOrExampleValues",
+      "new": "src/strings/recovery.ts:recoveryCopy.editingPaused",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/recovery.ts:recoveryCopy.exportsContainPrivateFinancialInformation",
+      "new": "src/strings/recovery.ts:recoveryCopy.exportPrivacySummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/recovery.ts:recoveryCopy.exportsContainPrivateFinancialInformationSaveThem",
+      "new": "src/strings/recovery.ts:recoveryCopy.exportPrivacyDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/recovery.ts:recoveryCopy.shareSheetClosedConfirmTheDestinationSaved",
+      "new": "src/strings/recovery.ts:recoveryCopy.backupShareReceipt",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/recovery.ts:recoveryCopy.recoveryRecordsExportedKeepThemPrivate",
+      "new": "src/strings/recovery.ts:recoveryCopy.recoveryRecordsExportedText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/recovery.ts:recoveryCopy.shareSheetClosedConfirmTheDestinationSaved2",
+      "new": "src/strings/recovery.ts:recoveryCopy.archiveShareReceipt",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/recovery.ts:recoveryCopy.ifStorageItselfIsUnavailableRestoreWill",
+      "new": "src/strings/recovery.ts:recoveryCopy.restoreUnavailableHelp",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.useIncomeAfterTaxAndPayrollDeductions",
+      "new": "src/strings/today.ts:todayCopy.useIncomeAfterText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.essentialsIncludingMortgageRentAndDebtMinimums",
+      "new": "src/strings/today.ts:todayCopy.essentialsIncludingMortLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.annualBillsDividedBy12",
+      "new": "src/strings/today.ts:todayCopy.annualBillsDividedByLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.emergencyCashExcludingGoalSavings",
+      "new": "src/strings/today.ts:todayCopy.emergencyCashExcludingLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.thisUsesYourPlannedSpendingNotYour",
+      "new": "src/strings/today.ts:todayCopy.usesPlannedSpendingText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.message16",
+      "new": "src/strings/today.ts:todayCopy.setupChecklist",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.confirmActualValuesInPlanZeroIs",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.afterPlannedSpendingAndAnnualReserves",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.provisionalConfirmYourBaselineInPlan",
+      "new": "src/strings/today.ts:todayCopy.provisionalConfirmBaselText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.stillNeedYourReviewSkippedValuesRemain",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.limitsOverlapDoNotAddThemTogether",
+      "new": "src/strings/today.ts:todayCopy.limitsOverlapDoText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.yourConfirmedSchemeTermsShowAdditionalEmployer",
+      "new": "src/strings/today.ts:todayCopy.confirmedSchemeTermsDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.message49",
+      "new": "src/strings/today.ts:todayCopy.reviewBacklog",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.bankPermissionExpiredReconnectToRefreshTransactions",
+      "new": "src/strings/today.ts:todayCopy.bankPermissionExpiredText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.completeAndConfirmYourSavedBaseline",
+      "new": "src/strings/today.ts:todayCopy.completeConfirmSavedText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.yourPlanSpendsMoreThanYourIncome",
+      "new": "src/strings/today.ts:todayCopy.planSpendsMoreText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.reviewYourDebtBalancesAndCostsBefore",
+      "new": "src/strings/today.ts:todayCopy.reviewDebtBalancesText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.giveYourRemainingMoneyAPurposeIn",
+      "new": "src/strings/today.ts:todayCopy.giveRemainingMoneyText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.separator",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.seeAccountsForEachBankSDownload",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.youConfirmEachMonthIsCompleteHeadroom",
+      "new": "src/strings/today.ts:todayCopy.confirmEachMonthDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.message75",
+      "new": "src/strings/today.ts:todayCopy.scoreValue",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.message77",
+      "new": "src/strings/today.ts:todayCopy.scoreBreakdown",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.confirmABaselineAllAccountCoverageAnd",
+      "new": "src/strings/today.ts:todayCopy.confirmABaselineAllText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.confirmed2",
+      "new": "src/strings/today.ts:todayCopy.confirmedDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.threeCashReflectsEmergencySavingsHeadroomReflects",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.reviewedEssentialsFlexibleThisMonth",
+      "new": "src/strings/today.ts:todayCopy.reviewedEssentialsFlexiLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.outsideTheseCategoriesIncludingAnnualBillsTotal",
+      "new": "src/strings/today.ts:todayCopy.outsideTheseCategoriesSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.outsideTheseCategoriesIncludingAnnualBillsTotal2",
+      "new": "src/strings/today.ts:todayCopy.outsideTheseCategoriesDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.theyAreExcludedFromThisComparisonThis",
+      "new": "src/strings/today.ts:todayCopy.theyExcludedComparisonDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.thisReplacesOnlyExampleDataClassificationsCoverage",
+      "new": "src/strings/today.ts:todayCopy.replacesExampleDataDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.yourSavedExampleDataAreFromAn2",
+      "new": "src/strings/today.ts:todayCopy.oldExampleHelp",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.resetExampleData2",
+      "new": "src/strings/today.ts:todayCopy.resetExampleDataTitle",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.message102",
+      "new": "src/strings/today.ts:todayCopy.guideProgress",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.allAmountsStatementsAndConfirmationsShownHere",
+      "new": "src/strings/today.ts:todayCopy.allAmountsStatementsText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.separator2",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.continueExploringReplayTheGuideWithYour",
+      "new": "src/strings/today.ts:todayCopy.continueExploringReplayDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.yourMonthlyBaselineIsYourConfirmedMonthly",
+      "new": "src/strings/plan.ts:planCopy.baselineDefinition",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.separator",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.changesNeedConfirmationReviewThemBelow",
+      "new": "src/strings/plan.ts:planCopy.baselineUnconfirmed",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.incomeSpendingAndAnnualReserves",
+      "new": "src/strings/plan.ts:planCopy.incomeSpendingAnnualSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.essentialsIncludingHousingAndDebtMinimums",
+      "new": "src/strings/plan.ts:planCopy.essentialsLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.yearlyBillsConvertedToMonthlyReserve",
+      "new": "src/strings/plan.ts:planCopy.yearlyBillsConvertedLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.closingWithoutApplyingDiscardsThisSectionDraft",
+      "new": "src/strings/plan.ts:planCopy.discardDraftHelp",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.emergencyCashExcludingGoalSavings",
+      "new": "src/strings/plan.ts:planCopy.emergencyCashExcludingLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.balancesInterestRateAPRAndPayments",
+      "new": "src/strings/plan.ts:planCopy.balancesInterestRateSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.recordEachNonMortgageDebtSeparatelyInclude",
+      "new": "src/strings/plan.ts:planCopy.debtListHelp",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.savedSeparatelyFromEmergencyCash",
+      "new": "src/strings/plan.ts:planCopy.savedSeparatelyEmergencLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.remainingPastOrCurrentDeadlinesUseOne",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.removeGoal2",
+      "new": "src/strings/plan.ts:planCopy.removeGoalConfirm",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.itsMonthlyFundingNeedWillLeaveYour",
+      "new": "src/strings/plan.ts:planCopy.monthlyFundingNeedText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.separator2",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.perMonthChooseWhichDeadlinesOrAmounts",
+      "new": "src/strings/plan.ts:planCopy.perMonthChooseText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.debtAt8APROrHigherComes2",
+      "new": "src/strings/plan.ts:planCopy.allocationDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.shareOfEligibleRemainingSurplus",
+      "new": "src/strings/plan.ts:planCopy.shareEligibleRemainingLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.wereSkippedDuringSetupReviewTheirSections",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.whichExceedsEssentialsIncludeThesePaymentsIn",
+      "new": "src/strings/plan.ts:planCopy.whichExceedsEssentialsDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.baselineConfirmed2",
+      "new": "src/strings/plan.ts:planCopy.baselineConfirmedTitle",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.confirmIncomeEssentialsIncludingDebtMinimumsFlexible",
+      "new": "src/strings/plan.ts:planCopy.baselineConfirmHelp",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.youConfirmEachMonthIsCompleteHeadroom",
+      "new": "src/strings/plan.ts:planCopy.confirmEachMonthDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.separator3",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.nothingChangesUntilYouReviewTheComparison",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.reviewBaselineChange",
+      "new": "src/strings/plan.ts:planCopy.reviewProposedBaselineChange",
+      "reason": "duplicate"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.separator4",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.inEssentialsAndFlexibleAreIncluded",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.areExcluded",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.aCategoryInActivityBeforeYouCan",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.message102",
+      "new": "src/strings/plan.ts:planCopy.excludedAccountLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.recategoriseTheseInActivityIfTheyBelong",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.iHaveCheckedThisOtherSpendingAnd",
+      "new": "src/strings/plan.ts:planCopy.iHaveCheckedLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.message106",
+      "new": "src/strings/plan.ts:planCopy.excludedAccountLabel",
+      "reason": "duplicate"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.excludeTheseAnnualBillsAndRetainMy",
+      "new": "src/strings/plan.ts:planCopy.excludeTheseAnnualLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.incomeTransfersAndDebtRepaymentsAreNot",
+      "new": "src/strings/plan.ts:planCopy.incomeTransfersDebtDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.thisLeavesTheBaselineUnconfirmedReviewThe",
+      "new": "src/strings/plan.ts:planCopy.leavesBaselineUnconfirmText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.noNonMortgageDebtsRecordedAddEach",
+      "new": "src/strings/plan.ts:planCopy.emptyDebts",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.minimumPaymentAlreadyIncludedInEssentialsOptional",
+      "new": "src/strings/plan.ts:planCopy.minimumPaymentAlreadyLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.referenceOnlyThisIsNotDeductedAgain",
+      "new": "src/strings/plan.ts:planCopy.debtMinimumHelp",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.remove2",
+      "new": "src/strings/plan.ts:planCopy.removeTitle",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.monthPreviouslyConfirmedReviewThisChecklistTo",
+      "new": "src/strings/plan.ts:planCopy.monthReconfirmHelp",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.checkTheFullMonthAgainstEveryStatement",
+      "new": "src/strings/plan.ts:planCopy.coverageSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.checkTheFullMonthAgainstEveryStatement2",
+      "new": "src/strings/plan.ts:planCopy.coverageDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.addAnAccountWithoutImportedActivity",
+      "new": "src/strings/plan.ts:planCopy.addAccountWithoutLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.thisChecklistIncludesAllMyAccountsCash",
+      "new": "src/strings/plan.ts:planCopy.checklistIncludesAllLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.reviewEveryTransactionBeforeConfirming",
+      "new": "src/strings/plan.ts:planCopy.reviewEveryTransactionText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.separator",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.aTransactionWithThisMerchantAccountDate",
+      "new": "src/strings/activity.ts:activityCopy.duplicateConfirmBody",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.resultsIncludeAllDatesTheSummaryUses",
+      "new": "src/strings/activity.ts:activityCopy.allDatesSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.separator2",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.of",
+      "new": null,
+      "reason": "fragment"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.message20",
+      "new": "src/strings/activity.ts:activityCopy.transactionDetailsLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.needsReview2",
+      "new": "src/strings/activity.ts:activityCopy.reviewStatus",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.message24",
+      "new": "src/strings/activity.ts:activityCopy.transactionCaption",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.changeTheFiltersToSeeOtherTransactions",
+      "new": "src/strings/activity.ts:activityCopy.emptyFilterHint",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.message27",
+      "new": "src/strings/activity.ts:activityCopy.emptyMonth",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.transfersAndCardRepaymentsAreExcludedRefunds",
+      "new": "src/strings/activity.ts:activityCopy.totalsExclusionsHelp",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.message36",
+      "new": "src/strings/activity.ts:activityCopy.selectTransactionLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.selectCheckboxesToReviewSeveralTransactionsOr",
+      "new": "src/strings/activity.ts:activityCopy.selectionHelp",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.onlyShowTransactionsNeedingReview",
+      "new": "src/strings/activity.ts:activityCopy.reviewFilterLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.transactionDatesAloneCannotEstablishStatementCompleteness",
+      "new": "src/strings/activity.ts:activityCopy.completenessHelp",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.message58",
+      "new": "src/strings/activity.ts:activityCopy.reviewSelectionTitle",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.message59",
+      "new": "src/strings/activity.ts:activityCopy.transactionCaption",
+      "reason": "duplicate"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.thisAppliesOneTypeAndCategoryTo",
+      "new": "src/strings/activity.ts:activityCopy.appliesOneTypeText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.separator3",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.thisSelectionIncludesMoneyInAndMoney",
+      "new": "src/strings/activity.ts:activityCopy.selectionIncludesMoneyDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.checkTheTypeAndCategoryAgreeType",
+      "new": "src/strings/activity.ts:activityCopy.checkTypeCategoryDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.rulesApplyToNewTransactionsNeedingReview",
+      "new": "src/strings/activity.ts:activityCopy.rulesApplyNewDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.severalPossibleCounterpartsMatchThisAmountAnd",
+      "new": "src/strings/activity.ts:activityCopy.severalPossibleCounterpDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.separator4",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.checkBothSidesYourselfThisIsOnly",
+      "new": "src/strings/activity.ts:activityCopy.checkBothSidesText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.message74",
+      "new": "src/strings/activity.ts:activityCopy.transferConfirmBody",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.itsMonthWillNeedReconfirmationYouCan",
+      "new": "src/strings/activity.ts:activityCopy.monthWillNeedText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.downloadedAmountsDatesAndAccountDetailsCan",
+      "new": "src/strings/activity.ts:activityCopy.downloadedAmountsDatesDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.changesStartInReviewEditingADate",
+      "new": "src/strings/activity.ts:activityCopy.changesStartReviewDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.monthsWithTransactionsPlusTheCurrentMonth",
+      "new": "src/strings/activity.ts:activityCopy.monthsTransactionsPlusText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.message95",
+      "new": "src/strings/activity.ts:activityCopy.reviewMerchantCaption",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.rulesAffectFutureUnreviewedImports",
+      "new": "src/strings/activity.ts:activityCopy.rulesAffectFutureSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.rulesAffectFutureUnreviewedImportsMoneyIn",
+      "new": "src/strings/activity.ts:activityCopy.rulesAffectFutureDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.separator5",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.noRememberedMerchantsYetAddOneDuring",
+      "new": "src/strings/activity.ts:activityCopy.noRememberedMerchantsText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.matchThisMerchantDirectionAndCompatibleType",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.stillNeedReviewPreviewOnlyThisEdit",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.splitAmountsMustAddUpExactlyTo2",
+      "new": "src/strings/activity.ts:activityCopy.splitAmountsMustAddUpExDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.detailsUpdatedCheckTheSaveStatusBefore",
+      "new": "src/strings/activity.ts:activityCopy.detailsUpdatedCheckText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/glossary.ts:glossary.personal",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/glossary.ts:glossary.example",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/glossary.ts:glossary.moneyIn",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/glossary.ts:glossary.moneyOut",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/glossary.ts:glossary.type",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/glossary.ts:glossary.linkPhone",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/glossary.ts:glossary.connectBank",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/glossary.ts:glossary.refresh",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/glossary.ts:glossary.completeMonth",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/glossary.ts:glossary.headroom",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/glossary.ts:glossary.baseline",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.separator",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.recurringPaymentsRefundsAndDatedForecasts",
+      "new": "src/strings/tools.ts:toolsCopy.recurringPaymentsRefundSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.confirmedSchedulesForTheNext60Days",
+      "new": "src/strings/tools.ts:toolsCopy.billsWindowSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.confirmedSchedulesForTheNext60Days2",
+      "new": "src/strings/tools.ts:toolsCopy.billsWindowDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.noConfirmedBillsOrRefundsAddSchedules",
+      "new": "src/strings/tools.ts:toolsCopy.noConfirmedBillsText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.separator2",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.separator3",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.recordingInstructionsDoesNotCancelAPayment",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.suggestionsUseAtLeastThreeReviewedSource",
+      "new": "src/strings/tools.ts:toolsCopy.suggestionsUseAtDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.noRepeatedPatternFoundInReviewedTransactions",
+      "new": "src/strings/tools.ts:toolsCopy.noRepeatedPatternText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.expectedRefundsStaySeparateFromIncomeAnd",
+      "new": "src/strings/tools.ts:toolsCopy.expectedRefundsStayDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.chooseSpendableAccountBalancesOnRecordedDates",
+      "new": "src/strings/tools.ts:toolsCopy.forecastBalanceSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.chooseSpendableAccountBalancesOnRecordedDates2",
+      "new": "src/strings/tools.ts:toolsCopy.forecastBalanceDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.additionalPensionTakeHomeCostToReserve",
+      "new": "src/strings/tools.ts:toolsCopy.additionalPensionTakeLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.reservesAreAOneTimeHoldFor2",
+      "new": "src/strings/tools.ts:toolsCopy.forecastReserveDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.separator4",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.reservedCashIncludingOverduePayments",
+      "new": "src/strings/tools.ts:toolsCopy.reservedCashIncludingLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.overduePaymentHoldWithinReserves",
+      "new": "src/strings/tools.ts:toolsCopy.overduePaymentHoldLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.lowestModelledBalanceAfterReserves",
+      "new": "src/strings/tools.ts:toolsCopy.lowestModelledBalanceLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.variableAmountForecastUsesEstimate",
+      "new": "src/strings/tools.ts:toolsCopy.variableAmountForecastLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.cancellationInstructionsNothingIsCancelledAutomatically",
+      "new": "src/strings/tools.ts:toolsCopy.cancellationInstructionLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.iConfirmThisScheduleAndNextPayment",
+      "new": "src/strings/tools.ts:toolsCopy.iConfirmScheduleLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.changingTheFirstDateChangesFutureRecurrence",
+      "new": "src/strings/tools.ts:toolsCopy.changingFirstDateSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.changingTheFirstDateChangesFutureRecurrence2",
+      "new": "src/strings/tools.ts:toolsCopy.changingFirstDateDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.chooseTheOriginalReviewedPurchase",
+      "new": "src/strings/tools.ts:toolsCopy.chooseOriginalReviewedText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.searchPurchasesByMerchantOrDate",
+      "new": "src/strings/tools.ts:toolsCopy.searchPurchasesMerchantLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.chooseOneReviewedBookedEntryToSettle",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.due2",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.confirmTheAccountDirectionAndDateAgainst",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.searchBookedEntriesByMerchantOrDate",
+      "new": "src/strings/tools.ts:toolsCopy.searchBookedEntriesLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.showingUpTo100MatchesWithin35",
+      "new": "src/strings/tools.ts:toolsCopy.showingUpTo100MatchesWiDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.categoriesPaydayPeriodsDailyAllowanceAndRollover",
+      "new": "src/strings/tools.ts:toolsCopy.categoriesPaydayPeriodsSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.actualSpendingUsesIncludedAccountsReviewedPurchases",
+      "new": "src/strings/tools.ts:toolsCopy.budgetSpendingSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.actualSpendingUsesIncludedAccountsReviewedPurchases2",
+      "new": "src/strings/tools.ts:toolsCopy.budgetSpendingDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.changingThisAffectsNewBudgetsExistingBudgets",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.noBudgetsYetSetYourPaydayCalendar",
+      "new": "src/strings/tools.ts:toolsCopy.noBudgetsYetText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.to",
+      "new": null,
+      "reason": "fragment"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.of",
+      "new": null,
+      "reason": "fragment"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.sameElapsedDaysOfPreviousPeriod",
+      "new": "src/strings/tools.ts:toolsCopy.sameElapsedDaysLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.allowanceDividesPositiveRemainingBudgetByDays",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.remaining2",
+      "new": "src/strings/tools.ts:toolsCopy.remainingText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.closedPeriodBalancesOnRecordedDatesRemain",
+      "new": "src/strings/tools.ts:toolsCopy.closedPeriodBalancesDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.monthlyDatesClampToTheLastDay2",
+      "new": "src/strings/tools.ts:toolsCopy.monthlyDatesClampToTheLDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.namesRemainStableToPreserveHistoricalTransactions",
+      "new": "src/strings/tools.ts:toolsCopy.namesRemainStableDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.aMidPeriodStartReceivesAFull2",
+      "new": "src/strings/tools.ts:toolsCopy.aMidPeriodStartReceivesDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.confirmedSchemeTermsEmployerMatchingAndScenarios",
+      "new": "src/strings/tools.ts:toolsCopy.confirmedSchemeTermsSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.recordEachEmploymentAndSchemeVersionSeparately",
+      "new": "src/strings/tools.ts:toolsCopy.schemeEvidenceSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.recordEachEmploymentAndSchemeVersionSeparately2",
+      "new": "src/strings/tools.ts:toolsCopy.schemeEvidenceDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.addConfirmedSchemeTermsToCompareYour",
+      "new": "src/strings/tools.ts:toolsCopy.addConfirmedSchemeDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.of2",
+      "new": null,
+      "reason": "fragment"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.genuineEmployerFundingPerPeriod",
+      "new": "src/strings/tools.ts:toolsCopy.genuineEmployerFundingLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.salaryGivenUpThroughSacrificeRemainsEmployee",
+      "new": "src/strings/tools.ts:toolsCopy.salaryGivenUpText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.employeeFundedMonthlyEquivalent",
+      "new": "src/strings/tools.ts:toolsCopy.employeeFundedMonthlyLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.employerFundedMonthlyEquivalent",
+      "new": "src/strings/tools.ts:toolsCopy.employerFundedMonthlyLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.unknown2",
+      "new": "src/strings/tools.ts:toolsCopy.unknownText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.separator5",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.annualRunRatePlusRecordedOneOff",
+      "new": "src/strings/tools.ts:toolsCopy.annualRunRateLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.annualRunRateAssumesUnchangedPayTerms",
+      "new": "src/strings/tools.ts:toolsCopy.annualRunRateText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.reliefAtSourceElectionsAreGrossIncluding",
+      "new": "src/strings/tools.ts:toolsCopy.reliefAtSourceSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.reliefAtSourceElectionsAreGrossIncluding2",
+      "new": "src/strings/tools.ts:toolsCopy.reliefAtSourceDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.extraEmployerFundingPerPayPeriod",
+      "new": "src/strings/tools.ts:toolsCopy.extraEmployerFundingLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.estimatedMonthlyTakeHomeCostChange",
+      "new": "src/strings/tools.ts:toolsCopy.estimatedMonthlyTakeLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.at",
+      "new": null,
+      "reason": "fragment"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.aHighestModelledRateNeedsAConfirmed",
+      "new": "src/strings/tools.ts:toolsCopy.highestModelledRateDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.confirmedPensionablePayPerPayPeriod",
+      "new": "src/strings/tools.ts:toolsCopy.confirmedPensionablePayLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.forQualifyingEarningsEnterTheConfirmedBanded",
+      "new": "src/strings/tools.ts:toolsCopy.qualifyingEarningsEnterDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.text12Monthly13FourWeekly26Fortnightly",
+      "new": "src/strings/tools.ts:toolsCopy.text12Monthly13FourWeekText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.schemeEvidenceAndConfirmationNotes",
+      "new": "src/strings/tools.ts:toolsCopy.schemeEvidenceConfirmatLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.schemeTermsVerifiedAgainstEvidence",
+      "new": "src/strings/tools.ts:toolsCopy.schemeTermsVerifiedLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.eligibleForTheRecordedEmployerMatching",
+      "new": "src/strings/tools.ts:toolsCopy.eligibleRecordedEmployeLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.employerBaseOfTheSamePensionablePay",
+      "new": "src/strings/tools.ts:toolsCopy.employerBaseSameLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.fixedEmployerPaymentPerPayPeriod",
+      "new": "src/strings/tools.ts:toolsCopy.fixedEmployerPaymentLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.additionalEmployerBenefitPerPayPeriod",
+      "new": "src/strings/tools.ts:toolsCopy.additionalEmployerBenefLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.matchingTiersUpperEmployeeMatch",
+      "new": "src/strings/tools.ts:toolsCopy.matchingTiersUpperLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.forOneForOneMatchingUpTo2",
+      "new": "src/strings/tools.ts:toolsCopy.matchingTiersDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.observedPayPeriodGrossFundingKnown",
+      "new": "src/strings/tools.ts:toolsCopy.observedPayPeriodLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.observedEmployeeFundedGrossThisPayPeriod",
+      "new": "src/strings/tools.ts:toolsCopy.observedEmployeeFundedLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.observedGenuineEmployerFundingThisPayPeriod",
+      "new": "src/strings/tools.ts:toolsCopy.observedGenuineEmployerLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.recordedGenuineEmployerFundedYTD",
+      "new": "src/strings/tools.ts:toolsCopy.recordedGenuineEmployerLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.recordedGrossOneOffFundingThisTax",
+      "new": "src/strings/tools.ts:toolsCopy.recordedGrossOneLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.keepPayrollSacrificeSeparateFromGenuineEmployer",
+      "new": "src/strings/tools.ts:toolsCopy.keepPayrollSacrificeSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.keepPayrollSacrificeSeparateFromGenuineEmployer2",
+      "new": "src/strings/tools.ts:toolsCopy.keepPayrollSacrificeDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.incrementalTakeHomeCostConfirmedByPayroll",
+      "new": "src/strings/tools.ts:toolsCopy.incrementalTakeHomeLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.takeHomeCostPer100GrossContribution",
+      "new": "src/strings/tools.ts:toolsCopy.takeHomeCostLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.useAPayrollConfirmedIncrementalFactorFor",
+      "new": "src/strings/tools.ts:toolsCopy.useAPayrollConfirmedSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.useAPayrollConfirmedIncrementalFactorFor2",
+      "new": "src/strings/tools.ts:toolsCopy.useAPayrollConfirmedDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.maximumRateIndependentlyVerified",
+      "new": "src/strings/tools.ts:toolsCopy.maximumRateIndependentlLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.verifiedContributionRateCeiling",
+      "new": "src/strings/tools.ts:toolsCopy.verifiedContributionRatLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.allPensionsAllowancesAndEarningsLimitsChecked",
+      "new": "src/strings/tools.ts:toolsCopy.allPensionsAllowancesLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.salarySacrificeEligibilityAndMinimumPayChecked",
+      "new": "src/strings/tools.ts:toolsCopy.salarySacrificeEligibilLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.minimumMonthlyHouseholdHeadroom",
+      "new": "src/strings/tools.ts:toolsCopy.minimumMonthlyHouseholdLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.noMaximumIsInferredFromAnIncomplete",
+      "new": "src/strings/tools.ts:toolsCopy.pensionCeilingSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.noMaximumIsInferredFromAnIncomplete2",
+      "new": "src/strings/tools.ts:toolsCopy.pensionCeilingDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.jSONBackupRemainsTheFullRecoveryFormat",
+      "new": "src/strings/tools.ts:toolsCopy.csvRecoveryHelp",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.balancesShowMoneyOnRecordedDatesSeparate",
+      "new": "src/strings/tools.ts:toolsCopy.balancesShowMoneyDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.selectAnAccountAboveToRecordIts",
+      "new": "src/strings/tools.ts:toolsCopy.selectAccountAboveDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.balanceRecordedPlanningCashHasNotBeen",
+      "new": "src/strings/tools.ts:toolsCopy.balanceRecordedPlanningText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.mapExactColumnHeadingsAmountsUsePounds",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.singleAmountColumnUsesNegativeDebits",
+      "new": "src/strings/tools.ts:toolsCopy.singleAmountColumnLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.exportCategoryOptionalExactName",
+      "new": "src/strings/tools.ts:toolsCopy.exportCategoryOptionalLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.rollBackImport2",
+      "new": "src/strings/tools.ts:toolsCopy.rollbackConfirmTitle",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.thisRemovesTheImportSTransactionsAnd",
+      "new": "src/strings/tools.ts:toolsCopy.rollbackConfirmBody",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.importedRowsAndTheirAnnotationsRemoved",
+      "new": "src/strings/tools.ts:toolsCopy.rollbackReceipt",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.bookedGBPTransactionsOnlyPendingItemsAutomatic",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.englandNorthernIrelandResidentialPlanningOnlyConfirm",
+      "new": "src/strings/move.ts:moveCopy.englandNorthernIrelandDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.newPlansStartWithZeroPropertyAnd",
+      "new": "src/strings/move.ts:moveCopy.newPlanSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.newPlansStartWithZeroPropertyAnd2",
+      "new": "src/strings/move.ts:moveCopy.newPlanDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.thisReplacesYourMoveAssumptionsWithExample",
+      "new": "src/strings/move.ts:moveCopy.replacesMoveAssumptionsText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.reviewAndConfirmTheMoveAssumptions",
+      "new": "src/strings/move.ts:moveCopy.reviewConfirmMoveText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.exampleTemplateReplaceExampleValues",
+      "new": "src/strings/move.ts:moveCopy.exampleTemplateReplaceText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.previouslySavedInputsCheckTheirSource",
+      "new": "src/strings/move.ts:moveCopy.previouslySavedInputsText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.separator",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.mortgageRedemptionExcludingSeparateExitCharge",
+      "new": "src/strings/move.ts:moveCopy.mortgageRedemptionExcluLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.validEditsSaveAutomaticallyAndRequireMove",
+      "new": "src/strings/move.ts:moveCopy.autosaveHelp",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.firstTimeBuyerEligibilityAndAdditionalProperty",
+      "new": "src/strings/move.ts:moveCopy.buyerEligibilityHelp",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.nonResidentSDLTSurchargeApplies",
+      "new": "src/strings/move.ts:moveCopy.nonResidentSDLTSurchargLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.provisionalConfirmTheAssumptions",
+      "new": "src/strings/move.ts:moveCopy.provisionalConfirmAssumText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.ifRatesRiseBy2",
+      "new": "src/strings/move.ts:moveCopy.rateStressLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.exchangeDeposit2",
+      "new": "src/strings/move.ts:moveCopy.exchangeDepositLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.exchangeCashGapBeforeChainDeposit",
+      "new": "src/strings/move.ts:moveCopy.exchangeCashGapLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.saleEquityMayArriveTooLateTo2",
+      "new": "src/strings/move.ts:moveCopy.exchangeTimingDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.currentHousingAlreadyIncludedInEssentials",
+      "new": "src/strings/move.ts:moveCopy.currentHousingAlreadyText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.monthsOfOverlappingOldAndNewPayments",
+      "new": "src/strings/move.ts:moveCopy.monthsOverlappingOldLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.myCurrentHousingAmountIsIncludedIn",
+      "new": "src/strings/move.ts:moveCopy.myCurrentHousingLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.confirmTheMonthlyBaselineMoveAssumptionsAnd",
+      "new": "src/strings/move.ts:moveCopy.confirmMonthlyBaselineDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.monthlyHeadroomAfterOverlapEnds",
+      "new": "src/strings/move.ts:moveCopy.monthlyHeadroomAfterLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.message84",
+      "new": "src/strings/move.ts:moveCopy.scenarioHeadroomLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.totalOldHousingPaymentsDuringOverlap",
+      "new": "src/strings/move.ts:moveCopy.totalOldHousingLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.mortgageRedemptionIsTheLoanBalancePaid",
+      "new": "src/strings/move.ts:moveCopy.redemptionSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.mortgageRedemptionIsTheLoanBalancePaid2",
+      "new": "src/strings/move.ts:moveCopy.redemptionDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.separator2",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.replaceItsSavedAssumptionsWithTheCurrent",
+      "new": "src/strings/move.ts:moveCopy.scenarioUpdateBody",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.update2",
+      "new": "src/strings/move.ts:moveCopy.updateText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.load2",
+      "new": "src/strings/move.ts:moveCopy.loadText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.thisReplacesCurrentMoveInputsSaveThem",
+      "new": "src/strings/move.ts:moveCopy.scenarioLoadBody",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.undoIsAvailableUntilTheScenarioList",
+      "new": "src/strings/move.ts:moveCopy.undoAvailableUntilText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.separator3",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.secondSelectedMinusFirstSelected",
+      "new": "src/strings/move.ts:moveCopy.secondSelectedMinusText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.negativePaymentGapDifferencesMeanLowerCosts",
+      "new": "src/strings/move.ts:moveCopy.negativePaymentGapDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.couldnTCheckYourConnectionDetailsBelow",
+      "new": "src/strings/accounts.ts:accountsCopy.couldnTCheckConnectionText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.message6",
+      "new": "src/strings/accounts.ts:accountsCopy.connectionError",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.resultsCoverOnlyTheBanksRefreshedThis",
+      "new": "src/strings/accounts.ts:accountsCopy.resultsCoverBanksText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.separator",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.unchangedEachBankShowsWhenItsData",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.permissionExpiredReconnectThisBank",
+      "new": "src/strings/accounts.ts:accountsCopy.permissionExpiredReconnText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.someDataMayBeUnsupportedOrMissing",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.connectAgainAndCheckTheNewConnection",
+      "new": "src/strings/accounts.ts:accountsCopy.connectAgainCheckText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.separator2",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.thisRemovesBankPermissionAndDeletesDownloaded",
+      "new": "src/strings/accounts.ts:accountsCopy.disconnectConfirmBody",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.disconnect2",
+      "new": "src/strings/accounts.ts:accountsCopy.disconnectAction",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.someTransactionsMayBeMissingSeeWarnings",
+      "new": "src/strings/accounts.ts:accountsCopy.someTransactionsMayText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.refreshFailedYourEarlierDataIsUnchanged",
+      "new": "src/strings/accounts.ts:accountsCopy.refreshFailedEarlierText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.supportDependsOnYourExactAccountOr",
+      "new": "src/strings/accounts.ts:accountsCopy.supportDependsExactText",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.separator3",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.of5",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.enableBankingGivesHeadroomPermissionToRead",
+      "new": "src/strings/accounts.ts:accountsCopy.enableBankingGivesDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.createAnEnableBankingAccountThenRegister",
+      "new": "src/strings/accounts.ts:accountsCopy.createEnableBankingDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.forRealAccountsActivateProductionAccessAnd",
+      "new": "src/strings/accounts.ts:accountsCopy.realAccountsActivateSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.forRealAccountsActivateProductionAccessAnd2",
+      "new": "src/strings/accounts.ts:accountsCopy.realAccountsActivateDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.headroomCurrentlyNeedsAnOwnerManagedHTTPS",
+      "new": "src/strings/accounts.ts:accountsCopy.serverOwnerSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.headroomCurrentlyNeedsAnOwnerManagedHTTPS2",
+      "new": "src/strings/accounts.ts:accountsCopy.serverOwnerDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.ifYouOwnTheServerFollowThe2",
+      "new": "src/strings/accounts.ts:accountsCopy.serverSetupDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.serverHTTPSAddressCallbackPreviewOnly",
+      "new": "src/strings/accounts.ts:accountsCopy.serverHTTPSAddressCallbLabel",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.registerThisExactAllowedRedirectURLIn",
+      "new": "src/strings/accounts.ts:accountsCopy.registerExactAllowedDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.theServerMustVerifyTheApplicationIs",
+      "new": "src/strings/accounts.ts:accountsCopy.applicationCheckSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.theServerMustVerifyTheApplicationIs2",
+      "new": "src/strings/accounts.ts:accountsCopy.applicationCheckDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.onTheServerItsOwnerRunsThe2",
+      "new": "src/strings/accounts.ts:accountsCopy.pairingLinkDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.findYourExactBankAndAccountProduct",
+      "new": "src/strings/accounts.ts:accountsCopy.findExactBankSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.findYourExactBankAndAccountProduct2",
+      "new": "src/strings/accounts.ts:accountsCopy.findExactBankDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.bankPermissionHasExpiredConnectTheBank",
+      "new": "src/strings/accounts.ts:accountsCopy.bankPermissionHasDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.bankCreditCardAndHistoryCoverageDepends",
+      "new": "src/strings/accounts.ts:accountsCopy.bankCreditCardSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.bankCreditCardAndHistoryCoverageDepends2",
+      "new": "src/strings/accounts.ts:accountsCopy.bankCreditCardDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.afterBankPermissionIsCheckedRefreshTransactions",
+      "new": "src/strings/accounts.ts:accountsCopy.afterBankPermissionDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.refreshNeedsAReachableConfiguredServerAnd",
+      "new": "src/strings/accounts.ts:accountsCopy.refreshNeedsAReachableDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.theCurrentConnectionImportsBookedGBPTransactions",
+      "new": "src/strings/accounts.ts:accountsCopy.bankImportSummary",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.theCurrentConnectionImportsBookedGBPTransactions2",
+      "new": "src/strings/accounts.ts:accountsCopy.bankImportDetail",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.separator4",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.separator",
+      "new": null,
+      "reason": "punctuation"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.appearance",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.coloursAndNavigation",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.useAndroidWallpaperColours",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.wallpaperColoursAreAvailableOnAndroid12",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.reduceMotion",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.theSystemReducedMotionSettingIsAlways",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.showMoveInNavigation",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.privacy",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.controlWhoSeesYourData",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.hideSummaryAmounts",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.amountsRemainVisibleInEditableFormFields",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.unlockWithYourPhone",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.hideScreenshotsAndRecentApps",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.screenProtection",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.tryProtectionAgain",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.appLockControlsAccessThroughHeadroomData",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.linkThisPhone",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.connectToYourHeadroomServer",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.thisPhoneIsLinkedTo",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.linkThisPhoneToYourHeadroomServer",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.oneUseLinkingCode",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.askTheServerOwnerForALinking",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.phoneLinkedOpenAccountsToConnectA",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.advancedOwnerSetup",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.serverAddressHTTPS",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.serverAccessCode",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.saveConnection",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.theServerAccessCodeLinksThisPhone",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.unlinkThisPhone",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.unlinkThisPhone2",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.thisRemovesThePhoneSAccessCode",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.cancel",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.unlinkPhone",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.phoneUnlinkedBankPermissionIsUnchanged",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.yourData",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.manageDataAndExamples",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.showYourData",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.tryExampleData",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.resetExampleData",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.resetExampleData2",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.thisReplacesExampleDataYourExampleEdits",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.resetExamples",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.exampleDataReset",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.restartSetupGuide",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.restartingTheGuideKeepsYourDataExample",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.deleteExampleData",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.deleteYourData",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.deleteThisData",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.message50",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.deleteData",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.merchantRules",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.manageTransactionRules",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.backupAndRestore",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.saveOrRestoreYourData",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.backupsContainYourFinancialDataInA",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.exportYourBackup",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.personalBackupWrittenToYourChosenFolder",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.exportCancelledNoBackupWasWritten",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.backupShareSheetClosedConfirmYourChosen",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.restoreABackup",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.replaceYourData",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.message63",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.replaceYourData2",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.yourDataIsRestoredAndSavedOn",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.aboutHeadroom",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.aboutTheApp",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.privatePlanningClearerDecisions",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.version",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.gBPOneOwnerPerServer",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.monthlyHeadroomIsABudgetEstimate",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.monthlyHeadroomIsABudgetEstimateYour",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.serverAccessCodesUseSecureStore",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.serverAccessCodesUseSecureStoreAndroidBackup",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.protection",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.enableAppLock",
+      "new": "src/strings/settingsRework.ts:settingsUI.enableAppLock",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.disableAppLock",
+      "new": "src/strings/settingsRework.ts:settingsUI.disableAppLock",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.unlockSubtitle",
+      "new": "src/strings/settingsRework.ts:settingsUI.unlockSubtitle",
+      "reason": "rename"
+    },
+    {
+      "old": "src/strings/settings.ts:settingsCopy.themeLabels",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.step",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.of4ProgressSavesOnThisDevice",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.thisIsNotALiveAccountBalance",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.endExcluded",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.left",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.toReview",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.lastCompleteBankRefresh",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.lastAttempt",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.confirmed",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.toReviewThisMonth",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.baseline",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.allAccountsIncluded",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/today.ts:todayCopy.pastMonths",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.openASectionToDraftChangesThen",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.whyZero",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.noMoneyIsMoved",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.confirmedInActivity",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.sourceMonth",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/plan.ts:planCopy.categories",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.unreviewed",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.matchingTransactions",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/activity.ts:activityCopy.needingReview",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.renewal",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.firstDue",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.cancellationInstructions",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.proposedNextDate",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.evidence",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.ending",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.due",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.excludedAccounts",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.lastCompleteImport",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.defaultCalendar",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.anchored",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.weekends",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.starts",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.endExcluded",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.left",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.elapsed",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.ofAvailableBudgetUsed",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.stillNeedReview",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.payPeriodsYear",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.observedGrossEmployeeRate",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.observedGenuineEmployerRate",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.bothUseTheConfirmedDenominator",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.toAdd",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.accountType",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.ownership",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/tools.ts:toolsCopy.csvDates",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.inputOrigin",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.taxBasis",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.rate",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/move.ts:moveCopy.yearsOverlap",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.lastVerified",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.finished",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.new",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.updated",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.lastDownloaded",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.returnedLastRetrieval",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.step",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/accounts.ts:accountsCopy.connection",
+      "new": null,
+      "reason": "unused"
+    },
+    {
+      "old": "src/strings/settingsRework.ts:settingsUI.on",
+      "new": null,
+      "reason": "fragment"
+    }
+  ],
+  "merges": [
+    {
+      "new": "src/strings/today.ts:todayCopy.setupProgress",
+      "parts": [
+        {
+          "literal": "Step "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "literal": " of 4 · progress saves on this device"
+        }
+      ]
+    },
+    {
+      "new": "src/strings/today.ts:todayCopy.setupConfirmHelp",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": " Confirm actual values in Plan; zero is not proof that a section is complete."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/today.ts:todayCopy.headroomContext",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": " · after planned spending and annual reserves"
+        }
+      ]
+    },
+    {
+      "new": "src/strings/today.ts:todayCopy.cashBalanceLimit",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": ". This is not a live account balance."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/today.ts:todayCopy.setupSkippedHelp",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": " still need your review. Skipped values remain provisional."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/today.ts:todayCopy.budgetPeriodStatus",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": " (end excluded) · "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": " left · "
+        },
+        {
+          "argument": 2
+        },
+        {
+          "literal": " to review"
+        }
+      ]
+    },
+    {
+      "new": "src/strings/today.ts:todayCopy.lastRefreshStatus",
+      "parts": [
+        {
+          "literal": "Last complete bank refresh: "
+        },
+        {
+          "argument": 0
+        }
+      ]
+    },
+    {
+      "new": "src/strings/today.ts:todayCopy.lastRefreshAttempt",
+      "parts": [
+        {
+          "literal": "Last attempt: "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "literal": ". See Accounts for each bank’s download time and warnings."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/today.ts:todayCopy.monthReviewStatus",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": " confirmed · "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": " to review this month"
+        }
+      ]
+    },
+    {
+      "new": "src/strings/today.ts:todayCopy.scoreEvidenceHelp",
+      "parts": [
+        {
+          "literal": "Baseline: "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "literal": " · all accounts included: "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": " · past months: "
+        },
+        {
+          "argument": 2
+        },
+        {
+          "literal": "/3. Cash reflects emergency savings, headroom reflects income left, and debt reflects lower-cost or cleared balances."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.renewalStatus",
+      "parts": [
+        {
+          "literal": "Renewal: "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "literal": " · "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "argument": 2
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.scheduleStatus",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": " · "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": " · first due "
+        },
+        {
+          "argument": 2
+        },
+        {
+          "argument": 3
+        },
+        {
+          "literal": " · "
+        },
+        {
+          "argument": 4
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.cancellationHelp",
+      "parts": [
+        {
+          "literal": "Cancellation instructions: "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "literal": ". Recording instructions does not cancel a payment."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.suggestionSchedule",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": " · "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": " · proposed next date "
+        },
+        {
+          "argument": 2
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.suggestionEvidence",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": " · evidence: "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": " ending "
+        },
+        {
+          "argument": 2
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.refundStatus",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": " · due "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "argument": 2
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.forecastExclusions",
+      "parts": [
+        {
+          "literal": "Excluded accounts: "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "literal": ". Last complete import: "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": "."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.settlementHelp",
+      "parts": [
+        {
+          "literal": "Choose one reviewed booked entry to settle "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "literal": " due "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": ". Confirm the account, direction and date against your statement. One entry cannot settle multiple events."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/activity.ts:activityCopy.reviewCounts",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": " · "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": " unreviewed"
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.budgetCalendarHelp",
+      "parts": [
+        {
+          "literal": "Default calendar: "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "literal": ", first date "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": "; weekends "
+        },
+        {
+          "argument": 2
+        },
+        {
+          "literal": ". Changing this affects new budgets. Existing budgets keep their calendar."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.budgetScopeStatus",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": " · "
+        },
+        {
+          "argument": 2
+        },
+        {
+          "literal": " · starts "
+        },
+        {
+          "argument": 3
+        },
+        {
+          "argument": 4
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.budgetPeriodStatus",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": " to "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": " (end excluded) · "
+        },
+        {
+          "argument": 2
+        },
+        {
+          "literal": " left"
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.budgetUsageStatus",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": " of "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": " elapsed; "
+        },
+        {
+          "argument": 2
+        },
+        {
+          "literal": "% of available budget used."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.dailyAllowanceHelp",
+      "parts": [
+        {
+          "literal": "Allowance divides positive remaining budget by days left including today. It is not a balance or safe-to-spend forecast. "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "literal": " to review."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.schemePeriodStatus",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": " · "
+        },
+        {
+          "argument": 2
+        },
+        {
+          "literal": " · "
+        },
+        {
+          "argument": 3
+        },
+        {
+          "literal": " · "
+        },
+        {
+          "argument": 4
+        },
+        {
+          "literal": " pay periods/year"
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.observedFundingHelp",
+      "parts": [
+        {
+          "literal": "Observed gross employee rate: "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "literal": "; observed genuine employer rate: "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": ". Both use the confirmed denominator."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/plan.ts:planCopy.actualsPreviewHelp",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": " · "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": ". Nothing changes until you review the comparison."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/plan.ts:planCopy.actualsSourceMonth",
+      "parts": [
+        {
+          "literal": "Source month: "
+        },
+        {
+          "argument": 0
+        }
+      ]
+    },
+    {
+      "new": "src/strings/plan.ts:planCopy.categoryActionHelp",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": " a category in Activity before you can apply this."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/plan.ts:planCopy.categoryReviewHelp",
+      "parts": [
+        {
+          "literal": "Categories: "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "literal": ". Recategorise these in Activity if they belong in your baseline."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/plan.ts:planCopy.baselineDraftHelp",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": ". Open a section to draft changes, then apply them. Closing leaves your saved data unchanged. Applied financial changes need baseline confirmation. Debt minimums belong in essentials."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/plan.ts:planCopy.goalDeadlineHelp",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": " remaining; past or current deadlines use one month. Pausing funding keeps the goal and saved amount."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/plan.ts:planCopy.allocationEmptyHelp",
+      "parts": [
+        {
+          "literal": "Why zero: "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "literal": ". No money is moved."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/plan.ts:planCopy.setupSkippedHelp",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": " were skipped during setup. Review their sections above, then acknowledge them here."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/plan.ts:planCopy.monthCoverageStatus",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": " confirmed in Activity"
+        }
+      ]
+    },
+    {
+      "new": "src/strings/move.ts:moveCopy.scenarioRateStatus",
+      "parts": [
+        {
+          "literal": "Rate "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "literal": "% · "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": " · overlap "
+        },
+        {
+          "argument": 2
+        }
+      ]
+    },
+    {
+      "new": "src/strings/move.ts:moveCopy.inputSourceStatus",
+      "parts": [
+        {
+          "literal": "Input origin: "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "literal": "."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/move.ts:moveCopy.taxBasisStatus",
+      "parts": [
+        {
+          "literal": "Tax basis: "
+        },
+        {
+          "argument": 0
+        }
+      ]
+    },
+    {
+      "new": "src/strings/accounts.ts:accountsCopy.setupProgress",
+      "parts": [
+        {
+          "literal": "Step "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "literal": " of 5 · "
+        },
+        {
+          "argument": 1
+        }
+      ]
+    },
+    {
+      "new": "src/strings/accounts.ts:accountsCopy.connectionStatus",
+      "parts": [
+        {
+          "literal": "Connection: "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": " · "
+        },
+        {
+          "argument": 2
+        },
+        {
+          "literal": "."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.csvMappingHelp",
+      "parts": [
+        {
+          "literal": "Map exact column headings. Amounts use pounds and a decimal point. For separate debit/credit columns, enter the debit heading as Amount and the credit heading below. Matching existing rows are skipped; check overlap with bank imports before confirming."
+        },
+        {
+          "literal": " "
+        },
+        {
+          "literal": "Use dates like 18/10/2026. Standard year-first bank export dates are also accepted."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.csvPreviewCounts",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": " · "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": " · "
+        },
+        {
+          "argument": 2
+        },
+        {
+          "literal": " to add"
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.bankImportLimits",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": " Booked GBP transactions only; pending items, automatic balance retrieval and scheduled refresh are not supported by this connection path."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.accountTypeStatus",
+      "parts": [
+        {
+          "literal": "Account type: "
+        },
+        {
+          "argument": 0
+        }
+      ]
+    },
+    {
+      "new": "src/strings/tools.ts:toolsCopy.accountOwnershipStatus",
+      "parts": [
+        {
+          "literal": "Ownership: "
+        },
+        {
+          "argument": 0
+        }
+      ]
+    },
+    {
+      "new": "src/strings/accounts.ts:accountsCopy.verificationStatus",
+      "parts": [
+        {
+          "literal": "Last verified: "
+        },
+        {
+          "argument": 0
+        }
+      ]
+    },
+    {
+      "new": "src/strings/accounts.ts:accountsCopy.refreshReceipt",
+      "parts": [
+        {
+          "literal": "Finished: "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "literal": " · "
+        },
+        {
+          "argument": 1
+        },
+        {
+          "literal": " new / "
+        },
+        {
+          "argument": 2
+        },
+        {
+          "literal": " updated / "
+        },
+        {
+          "argument": 3
+        },
+        {
+          "literal": " unchanged. Each bank shows when its data was downloaded."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/accounts.ts:accountsCopy.downloadStatus",
+      "parts": [
+        {
+          "literal": "Last downloaded: "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "literal": ". Some data may be unsupported or missing; check the refresh result."
+        }
+      ]
+    },
+    {
+      "new": "src/strings/accounts.ts:accountsCopy.retrievalStatus",
+      "parts": [
+        {
+          "argument": 0
+        },
+        {
+          "literal": " returned · last retrieval "
+        },
+        {
+          "argument": 1
+        }
+      ]
+    },
+    {
+      "new": "src/strings/activity.ts:activityCopy.filterCounts",
+      "parts": [
+        {
+          "literal": "Matching transactions: "
+        },
+        {
+          "argument": 0
+        },
+        {
+          "literal": ". Needing review: "
+        },
+        {
+          "argument": 1
+        }
+      ]
+    }
+  ]
+}

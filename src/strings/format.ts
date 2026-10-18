@@ -27,6 +27,6 @@ export const counts={
  otherSpendingTransaction:(n:number)=>counted(n,"other spending transaction","other spending transactions"),
  annualBillTransaction:(n:number)=>counted(n,"annual-bill transaction","annual-bill transactions"),
  recordedBankConnection:(n:number)=>counted(n,"recorded bank connection","recorded bank connections"),
- existingTransaction:(n:number)=>counted(n,"existing transaction","existing transactions"),
+ 
  month:(n:number)=>counted(n,"month","months"),
 } as const;

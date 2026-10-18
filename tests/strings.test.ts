@@ -8,6 +8,17 @@ it('maps known errors and uses an honest fallback for unknown failures',()=>{exp
 
 import {counts} from '../src/strings/format';
 import {displayMessage,displayBankMessage} from '../src/strings/messages';
+import {stringStructure,dynamicStringKeys} from './string-structure';
+it('keeps exported copy keys short, meaningful, referenced and free of fragments',()=>{
+ const failures:string[]=[];const seen=new Set<string>();
+ for(const entry of stringStructure()){
+  const key=entry.key.split('.').at(-1)!,id=entry.root+'.'+entry.key;
+  if(/separator\d*$|\d$/.test(key)||key.length>30)failures.push(id+': invalid key');
+  if(entry.value!==null&&entry.value.length<=2)failures.push(id+': short fragment');
+  if(!entry.references){if(dynamicStringKeys[id])seen.add(id);else failures.push(id+': unused');}
+ }
+ expect(failures).toEqual([]);expect([...seen].sort()).toEqual(Object.keys(dynamicStringKeys).sort());
+});
 it('formats named counts without exposing a wrong singular',()=>{expect(counts.transaction(1)).toBe('1 transaction');expect(counts.transaction(1234)).toBe('1,234 transactions');expect(counts.existingMatch(1)).toBe('1 existing match');});
 it('preserves the specific save failure when it crosses the UI twice',()=>{const text=toUserMessage('Changes are in memory but could not be saved. Retry before closing the app.');expect(text).toContain('haven’t been saved');expect(toUserMessage(text)).toBe(text);expect(toUserMessage('unexpected error')).not.toContain('unchanged');});
 it('translates bank-prefixed warnings without dropping unrelated financial caveats',()=>{

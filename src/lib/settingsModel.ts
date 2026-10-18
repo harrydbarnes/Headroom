@@ -9,7 +9,7 @@ const sections:Record<string,SettingsTarget>={
 };
 export function settingsTarget(section?:string):SettingsTarget{return section&&Object.prototype.hasOwnProperty.call(sections,section)?sections[section]:{route:'home'};}
 export const ruleSummary=(n:number)=>n===0?copy.noRules:copy.ruleCount(n);
-export const exampleSummary=(on:boolean)=>on?copy.on:copy.off;
+export const exampleSummary=(on:boolean)=>on?"On":copy.off;
 export const linkSummary=(linked:boolean)=>linked?copy.linked:copy.notLinked;
 export const appLockSummary=(on:boolean,unavailable=false)=>unavailable?copy.lockUnavailable:on?copy.lockOn:copy.lockOff;
 export const protectionSummary=(status:'pending'|'active'|'inactive'|'failed')=>status==='pending'?copy.protectionPending:status==='failed'?copy.protectionFailed:copy.protectionHint;
