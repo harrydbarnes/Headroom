@@ -1,6 +1,6 @@
 # Enable Banking setup in Headroom
 
-Open Accounts → Set up Enable Banking. The five-step guide explains API setup, your private server, pairing, bank consent, then import/review. It opens at the next useful step based on verified connection status. Example mode permits reading the guide but disables real-bank actions.
+Open Accounts → Set up banking. The five-step guide explains API setup, your private server, pairing, bank consent, then import/review. It opens at the next useful step based on verified connection status. Example mode permits reading the guide but disables real-bank actions.
 
 ## 1. Register an API application
 
@@ -18,14 +18,14 @@ There is currently no deployed server or configured Enable Banking application i
 
 ## 3. Pair the phone
 
-With the server running and its environment loaded, its owner runs `npm run pair-device`. Paste the resulting one-use link into Settings → Pair bank access → One-use pairing link and choose Pair this device within two minutes. This pairs the phone with the server; it does not authorise any bank. Keep the link private and request another if it expires. The device token is stored in Android SecureStore. Pairing failure must not be presented as bank refusal.
+With the server running and its environment loaded, its owner runs `npm run pair-device`. Paste the resulting one-use link into Settings → Link this phone → One-use linking code and choose Link this phone within two minutes. This pairs the phone with the server; it does not authorise any bank. Keep the link private and request another if it expires. The device token is stored in Android SecureStore. Pairing failure must not be presented as bank refusal.
 
 ## 4. Authorise the bank
 
-In the guide's Authorise your bank step choose Find supported banks. Search the live bank list for your exact institution/product, choose Connect, and complete the bank/provider browser consent flow. Bank credentials go to the bank, not Headroom. Returning to the app triggers a status check; incomplete or cancelled consent must not be shown as success. Expired consent requires a fresh authorisation. Verify the new connection before removing the old one.
+In the guide's Connect a bank step choose Find supported banks. Search the live bank list for your exact institution/product, choose Connect, and complete the bank/provider browser consent flow. Bank credentials go to the bank, not Headroom. Returning to the app triggers a status check; incomplete or cancelled consent must not be shown as success. Expired consent requires a fresh authorisation. Verify the new connection before removing the old one.
 
 ## 5. Import and review
 
-Choose Refresh bank transactions, then review the imported rows in Activity. Check the import receipt for partial/failed banks and confirm coverage against statements. The current implementation requests up to 180 days and imports booked GBP transactions with stable references. It excludes unsupported currencies and pending items, does not fetch live balances, does not schedule refreshes, and does not replace the confirmed Plan. Manual account balances and CSV fallback remain available.
+Choose Refresh transactions, then review the imported rows in Activity. Check the import receipt for partial/failed banks and confirm coverage against statements. The current implementation requests up to 180 days and imports booked GBP transactions with stable references. It excludes unsupported currencies and pending items, does not fetch live balances, does not schedule refreshes, and does not replace the confirmed Plan. Manual account balances and CSV fallback remain available.
 
 Live acceptance requires a real configured application/server and the account holder's consent. Verify supported-bank discovery, exact product coverage, cancellation, callback return, refresh, duplicate protection, partial/failure receipts, consent expiry and disconnection. Unit tests or a sandbox fixture alone do not establish live-provider parity.

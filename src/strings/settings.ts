@@ -75,4 +75,6 @@ export const settingsCopy = {
  serverAccessCodesUseSecureStore: "This phone stores your data privately.",
  serverAccessCodesUseSecureStoreAndroidBackup: "This phone stores your data privately, without extra database encryption; automatic Android backup is off. Phone access codes use protected storage. Bank sign-in details and downloaded transactions are encrypted on your server. Deleting data here doesn’t remove bank permission.",
  protection: {pending:"Applying your change",active:"Applied",inactive:"Off",failed:"Couldn’t apply the change. Check the switch above and try again."},
+ enableAppLock:'Enable app lock',disableAppLock:'Disable app lock',unlockSubtitle:'Use your phone’s unlock method',
+themeLabels:{system:'System',light:'Light',dark:'Dark'},
 } as const;

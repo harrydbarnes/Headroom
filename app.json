@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "Headroom",
+    "description": "Plan your spending, review transactions and explore a house move.",
     "slug": "headroom",
     "version": "0.2.3",
     "scheme": "headroom",

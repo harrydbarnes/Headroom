@@ -34,4 +34,7 @@ export const shellCopy = {
  undo: "Undo",
  saving2: "Saving…",
  saved2: "Saved",
+ unlockPrompt:'Unlock Headroom',unlockSubtitle:'Use your phone’s unlock method',
 } as const;
+
+export const destinations=[['Today','view-dashboard-outline'],['Activity','format-list-bulleted'],['Plan','chart-donut'],['Move','home-outline'],['Accounts','bank-outline']] as const;

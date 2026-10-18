@@ -58,7 +58,7 @@ export const accountsCopy = {
  of5: " of 5 · ",
  enableBankingGivesHeadroomPermissionToRead: "Enable Banking gives Headroom permission to read your transactions. Sign in through your bank; Headroom never asks for your banking password.",
  youReViewingExampleDataReadThe: "You’re viewing example data. Read the guide here, then show your data before linking this phone or connecting a real bank.",
- createAnEnableBankingAccountThenRegister: "Create an Enable Banking account, then register an API application in its Control Panel. Keep the application ID and downloaded private key somewhere private.",
+ createAnEnableBankingAccountThenRegister: "Create an Enable Banking account, then register an API application in its Control Panel. Keep the application ID and private signing key somewhere private; the key proves your server’s identity.",
  forRealAccountsActivateProductionAccessAnd: "For real accounts, activate Production access and follow the Control Panel’s account-linking or approval steps.",
  forRealAccountsActivateProductionAccessAnd2: "For real accounts, activate Production access and follow the Control Panel’s account-linking or approval steps. Sandbox is for testing; Headroom does not import sandbox transactions into your your data.",
  openAccountSignIn: "Open account sign-in",
@@ -69,12 +69,12 @@ export const accountsCopy = {
  ifYouOwnTheServerFollowThe: "If you own the server, follow the repository’s bank-access setup.",
  ifYouOwnTheServerFollowThe2: "If you own the server, follow the repository’s bank-access setup. Configure the application ID, private-key file and encrypted storage, then start the service. If someone manages it for you, ask them for a one-use Headroom linking code.",
  readServerInstructions: "Read server instructions",
- serverHTTPSAddressCallbackPreviewOnly: "Server HTTPS address (callback preview only)",
+ serverHTTPSAddressCallbackPreviewOnly: "Server address (preview only)",
  httpsYourServerExample: "https://your-server.example",
  registerThisExactAllowedRedirectURLIn: "Register this exact allowed redirect URL in the Enable Banking application. Previewing it does not deploy or configure a server.",
- allowedRedirectURL: "Allowed redirect URL",
+ allowedRedirectURL: "Bank return address",
  theServerMustVerifyTheApplicationIs: "The server must verify the application is active, uses the selected environment and allows its exact callback URL.",
- theServerMustVerifyTheApplicationIs2: "The server must verify the application is active, uses the selected environment and allows its exact callback URL. Keep the private key and server device token out of chats and source control.",
+ theServerMustVerifyTheApplicationIs2: "The server must verify the application is active, uses the selected environment and allows its exact callback URL. Keep the signing key and phone access code out of chats and code repositories.",
  onTheServerItsOwnerRunsThe: "On the server, its owner runs the pairing helper to issue a single-use link valid for two minutes.",
  onTheServerItsOwnerRunsThe2: "On the server, its owner runs the pairing helper to issue a single-use link valid for two minutes. In Settings → Link this phone, paste that link and choose Link this phone.",
  linkingThisPhoneDoesnTGiveBank: "Linking this phone doesn’t give bank permission. Your Headroom server must be set up and reachable before you can find banks.",
@@ -95,4 +95,8 @@ export const accountsCopy = {
  separator4: ".",
  previousSetupStep: "Previous setup step",
  nextSetupStep: "Next setup step",
+ownerSetup:"For the server owner",
+ownerAccountSummary:"The server owner needs an Enable Banking account and application.",
 } as const;
+
+export const bankingSetupTitles=['Enable Banking account','Server owner setup','Link this phone','Connect a bank','Refresh and review'];

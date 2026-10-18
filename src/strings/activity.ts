@@ -118,4 +118,6 @@ export const activityCopy = {
  splitAmountsMustAddUpExactlyTo2: "Split amounts must add up exactly to the source transaction. Splits add detail; the original transaction is counted once in totals. Receipt references do not copy or back up the receipt file.",
  saveTransactionDetails: "Save transaction details",
  detailsUpdatedCheckTheSaveStatusBefore: "Details updated. Check the save status before closing.",
+amountLabel:(hidden:boolean,amount:number)=>hidden?'amount hidden':`${amount<0?'money in':'money out'} ${new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(Math.abs(amount)/100)}`,
+matchingTransactions:'Matching transactions: ',needingReview:'. Needing review: ',ruleMatchDetails:'Matches use this merchant, money flow and compatible type. Previewing or saving a rule doesn’t reclassify existing transactions.',
 } as const;

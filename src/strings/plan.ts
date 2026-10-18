@@ -1,3 +1,4 @@
+import {counts} from './format';
 // Presentation copy only. Stored values and contracts remain in the domain modules.
 export const planCopy = {
  yourMonthlyPlan: "Your monthly plan",
@@ -89,7 +90,7 @@ export const planCopy = {
  categorisedFlexible: "Categorised flexible",
  separator3: " · ",
  nothingChangesUntilYouReviewTheComparison: ". Nothing changes until you review the comparison.",
- reviewProposedBaselineChange: "Review proposed baseline change",
+ reviewProposedBaselineChange: "Review baseline change",
  reviewBaselineChange: "Review baseline change",
  sourceMonth: "Source month: ",
  essentialsNowAndProposed: "Essentials: now and proposed",
@@ -133,4 +134,14 @@ export const planCopy = {
  reviewEveryTransactionBeforeConfirming: "Review every transaction before confirming.",
  waitUntilTheMonthEndsThenCheck: "Wait until the month ends, then check it is complete.",
  confirmMonthComplete: "Confirm month complete",
+ baselineChangesSummary:"Check the saved monthly baseline before confirming it.",
+
+debtRemains:'non-mortgage debt remains',
+cashBelowTarget:'emergency cash is below target',
+goalsUnderfunded:'active goals are underfunded',
+horizonBelowFiveYears:'the horizon is below five years',
+investmentShareZero:'the selected investment share is zero',
+noSurplus:'no surplus remains after higher priorities',
+roundsBelowPenny:'the selected share rounds to less than one penny',
+includedSummary:(included:number,excluded:number)=>`Included in Essentials and Flexible: ${counts.purchaseOrRefund(included)}. Excluded: ${counts.otherTransaction(excluded)}.`,
 } as const;
