@@ -4,6 +4,8 @@ import {styles as s,useTheme} from './theme';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {layoutPolicy,motion,TransitionSlot} from '../lib/presentation';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import {common} from '../strings/common';
+import {dateInput,monthInput,formatTaxYear,parseUkDate,parseUkMonth,parseTaxYear} from '../lib/dates';
 import {amountContent} from '../lib/amountDisplay';
 import {CoverWorkspace,useInterfaceVisible} from './privacy';
 const AmountTextContext=createContext<StyleProp<TextStyle>|null>(null);
@@ -65,3 +67,24 @@ export function Sheet({visible,onClose,title,children,returnFocus}:{visible:bool
  return <FormScope><Modal visible={shown} onShow={()=>focusNative(heading.current)} transparent animationType="none" onRequestClose={onClose}><KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':undefined} style={{flex:1,justifyContent:layout.centerSheet?'center':'flex-end',alignItems:'center',backgroundColor:'#00000088',paddingTop:insets.top+16,paddingHorizontal:layout.centerSheet?24:0,paddingBottom:layout.centerSheet?insets.bottom+16:0}}><Pressable accessibilityRole="button" accessibilityLabel="Close details" onPress={onClose} style={{position:'absolute',top:0,left:0,right:0,bottom:0}}/><Animated.View accessibilityViewIsModal style={{width:'100%',maxWidth:layout.centerSheet?720:undefined,maxHeight:Math.max(120,height-insets.top-insets.bottom-32),backgroundColor:c.surface,borderTopLeftRadius:24,borderTopRightRadius:24,borderBottomLeftRadius:layout.centerSheet?24:0,borderBottomRightRadius:layout.centerSheet?24:0,padding:layout.sheetPadding,paddingBottom:layout.centerSheet?24:Math.max(24,insets.bottom+16),transform:[{translateY:offset}]}}>{!layout.centerSheet&&<View {...drag.panHandlers} onStartShouldSetResponder={()=>true} accessible accessibilityRole="button" accessibilityLabel={'Dismiss '+title} accessibilityHint="Swipe down to close this section." accessibilityActions={[{name:'activate',label:'Dismiss section'}]} onAccessibilityAction={event=>{if(event.nativeEvent.actionName==='activate')onClose();}} onAccessibilityTap={onClose} style={{alignItems:'center',justifyContent:'center',minHeight:44,padding:10}}><View style={{height:4,width:36,borderRadius:2,backgroundColor:c.outline}}/></View>}<View {...(!layout.centerSheet?drag.panHandlers:{})} style={[s.row,{paddingBottom:16}]}><View style={{flex:1,minWidth:0}}><Heading focusRef={heading}>{title}</Heading></View>{cover&&<Pressable accessibilityRole="button" accessibilityLabel="Cover workspace and this editor temporarily" onPress={cover} style={{minWidth:48,minHeight:48,justifyContent:'center',alignItems:'center'}}><MaterialCommunityIcons name="eye-off-outline" size={24} color={c.text}/></Pressable>}<Pressable accessibilityRole="button" accessibilityLabel={'Close '+title} onPress={onClose} style={{minHeight:48,minWidth:48,justifyContent:'center',alignItems:'center',borderRadius:24,backgroundColor:c.container}}><Copy strong>×</Copy></Pressable></View><ScrollView keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={{gap:20}}>{children}<Button secondary title="Close" onPress={onClose}/></ScrollView></Animated.View></KeyboardAvoidingView></Modal></FormScope>;
 }
 export function focusNative(target:any){const tag=findNodeHandle(target);if(tag)AccessibilityInfo.setAccessibilityFocus(tag);}
+
+/** A short visible summary keeps the full caveats available on demand. */
+export function HelpNote({summary,children}:{summary:string;children:React.ReactNode}){
+ const [expanded,setExpanded]=useState(false),{colors:c}=useTheme();
+ return <View style={{gap:8}}><Copy small>{summary}</Copy><Pressable accessibilityRole="button" accessibilityState={{expanded}} accessibilityHint={expanded?common.hidesDetail:common.showsDetail} onPress={()=>setExpanded(v=>!v)} style={{minHeight:44,justifyContent:'center'}}><Text style={{color:c.primary}}>{expanded?common.lessDetail:common.moreDetail}</Text></Pressable>{expanded&&<View style={{gap:8}}>{typeof children==='string'?<Copy small>{children}</Copy>:children}</View>}</View>;
+}
+/** Wrap Input rather than numeric Field: dates must retain the exact typed text.
+ * FormScope blocks primary saves while a draft is invalid. Stored values stay ISO.
+ */
+export function DateField({label,value,onChange,kind='date',optional=false}:{label:string;value:string;onChange:(value:string)=>void;kind?:'date'|'month'|'taxYear';optional?:boolean}){
+ const display=(value:string)=>kind==='date'?dateInput(value):kind==='month'?monthInput(value):value?formatTaxYear(value):'';
+ const parse=kind==='date'?parseUkDate:kind==='month'?parseUkMonth:parseTaxYear;
+ const [raw,setRaw]=useState(()=>display(value)),[error,setError]=useState(''),editing=useRef(false),id=useId(),validation=useContext(Validation),update=useRef(validation.update);update.current=validation.update;
+ const message=kind==='date'?common.dateError:kind==='month'?common.monthError:common.taxYearError;
+ const valid=(text:string)=>optional&&!text.trim()?'':parse(text);
+ useEffect(()=>{if(!editing.current){setRaw(display(value));setError('');update.current(id,valid(display(value))===null);}},[value,kind,optional]);
+ useEffect(()=>()=>update.current(id,false),[]);
+ const change=(text:string)=>{setRaw(text);const next=valid(text);update.current(id,next===null);if(next!==null){onChange(next);setError('');}};
+ const finish=()=>{editing.current=false;const next=valid(raw);setError(next===null?message:'');update.current(id,next===null);if(next!==null){onChange(next);setRaw(display(next));}};
+ return <Input label={label} value={raw} onChangeText={change} onFocus={()=>editing.current=true} onBlur={finish} onSubmitEditing={finish} error={error} placeholder={kind==='date'?common.datePlaceholder:kind==='month'?common.monthPlaceholder:common.taxYearPlaceholder} autoCorrect={false} autoCapitalize="none" keyboardType={kind==='taxYear'?'default':'numbers-and-punctuation'}/>;
+}
