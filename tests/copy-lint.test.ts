@@ -3,7 +3,9 @@ import {readFileSync,readdirSync} from 'node:fs';
 import ts from 'typescript';
 const parse=(file:string)=>ts.createSourceFile(file,readFileSync(file,'utf8'),ts.ScriptTarget.Latest,true,file.endsWith('.tsx')?ts.ScriptKind.TSX:ts.ScriptKind.TS);
 const copyFiles=readdirSync('src/strings').filter(f=>f.endsWith('.ts')).map(f=>'src/strings/'+f);
-const uiFiles=['App.tsx',...['src/screens','src/ui'].flatMap(dir=>readdirSync(dir).filter(f=>f.endsWith('.tsx')).map(f=>dir+'/'+f))];
+const walk=(dir:string):string[]=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(dir+'/'+e.name):/\.tsx?$/.test(e.name)?[dir+'/'+e.name]:[]);
+const uiFiles=['App.tsx',...walk('src/screens'),...walk('src/ui')];
+const serviceFiles=walk('src/services');
 const forbidden=/[\u2013\u2014]| -- |\b(?:SQLite|SecureStore|heuristic|attestation|workspace|figures|authorize|organize|categorize|enroll|canceled|please|linking code|access code|finance server|finance API|pairing ticket|HTTPS origin)\b/i;
 const objects=new Map<string,Map<string,ts.Expression>>();
 for(const file of copyFiles){const source=parse(file);function collect(node:ts.Node){if(ts.isVariableDeclaration(node)&&ts.isIdentifier(node.name)){let value=node.initializer;if(value&&ts.isAsExpression(value))value=value.expression;if(value&&ts.isObjectLiteralExpression(value)){const entries=new Map<string,ts.Expression>();for(const p of value.properties)if(ts.isPropertyAssignment(p))entries.set(ts.isIdentifier(p.name)?p.name.text:ts.isStringLiteral(p.name)?p.name.text:'',p.initializer);objects.set(node.name.text,entries);}}ts.forEachChild(node,collect);}collect(source);}
@@ -16,15 +18,35 @@ function choices(node:ts.Expression):string[]{
  return ['value'];
 }
 const words=(value:string)=>value.trim().split(/\s+/).filter(Boolean).length;
+function internalKey(node:ts.Node,source:ts.SourceFile){
+ if(ts.isPropertyAssignment(node.parent)&&node.parent.name===node)return true;
+ // Exact thrown messages are internal contracts checked by error-coverage.test.
+ // They must retain their values even when presentation terminology changes.
+ let parent:ts.Node|undefined=node.parent;while(parent){if((ts.isCallExpression(parent)||ts.isNewExpression(parent))&&/^(?:Error|RangeError|TypeError|SyntaxError)$/.test(parent.expression.getText(source)))return true;if(ts.isThrowStatement(parent))return true;parent=parent.parent;}return false;
+}
 it('keeps presentation strings free of jargon, long dashes and ISO display dates',()=>{
- for(const file of copyFiles){if(/\/(dates|format)\.ts$/.test(file))continue;const source=parse(file);
+ for(const file of [...copyFiles,...uiFiles,...serviceFiles]){if(/src\/strings\/(dates|format)\.ts$/.test(file))continue;const source=parse(file);
  function visit(node:ts.Node){if(ts.isStringLiteral(node)||ts.isNoSubstitutionTemplateLiteral(node)||ts.isTemplateHead(node)||ts.isTemplateMiddle(node)||ts.isTemplateTail(node)){
-  if(ts.isPropertyAssignment(node.parent)&&node.parent.name===node)return; // Internal exception keys are immutable contracts.
+  if(internalKey(node,source))return;
   if(ts.isImportDeclaration(node.parent)||ts.isExportDeclaration(node.parent))return;
   const value=node.text;expect(value,`${file}: ${value}`).not.toMatch(forbidden);
   // Explicit date-field placeholders are required by the brief, not display examples.
-  if(!['DD/MM/YYYY','MM/YYYY'].includes(value)){expect(value,file).not.toMatch(/\bYYYY|\b\d{4}-\d{2}(?:-\d{2})?\b/);}
+  if(copyFiles.includes(file)&&!['DD/MM/YYYY','MM/YYYY'].includes(value)){expect(value,file).not.toMatch(/\bYYYY|\b\d{4}-\d{2}(?:-\d{2})?\b/);}
  }ts.forEachChild(node,visit);}visit(source);}
+});
+it('rejects inline prose in screen and UI JSX, alerts and notice setters',()=>{
+ const failures:string[]=[];
+ // There are no prose exceptions. Empty values, punctuation and short style or
+ // test-id tokens do not constitute prose and need no per-string exemption.
+ for(const file of uiFiles){const source=parse(file);function visit(node:ts.Node){
+  if(ts.isJsxText(node)&&words(node.text)>=3)failures.push(file+': '+node.text.trim());
+  if((ts.isStringLiteralLike(node)||ts.isTemplateExpression(node))&&!internalKey(node,source)){
+   const text=ts.isTemplateExpression(node)?node.head.text+node.templateSpans.map(s=>s.literal.text).join(' '):node.text;
+   if(words(text)>=3){let parent:ts.Node|undefined=node.parent,visible=false;while(parent){if(ts.isJsxAttribute(parent)&&/^(?:title|label|placeholder|accessibilityLabel|accessibilityHint)$/.test(parent.name.getText(source)))visible=true;if(ts.isJsxExpression(parent))visible=true;if(ts.isCallExpression(parent)&&/^(?:Alert\.alert|show|setError)$/.test(parent.expression.getText(source)))visible=true;parent=parent.parent;}if(visible)failures.push(file+': '+text);}
+   if(ts.isTemplateExpression(node))return;
+  }ts.forEachChild(node,visit);
+ }visit(source);}
+ expect(failures).toEqual([]);
 });
 it('keeps visible helper summaries at 25 words or fewer',()=>{
  for(const file of uiFiles){const source=parse(file);function visit(node:ts.Node){

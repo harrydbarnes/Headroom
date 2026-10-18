@@ -11,8 +11,8 @@
   },
   {
     "raw": "Transaction history exceeded the import limit. No partial import was saved.",
-    "error": "This history is too large to add; no partial refresh was saved. Ask the server owner to check the history request.",
-    "display": "This history is too large to add; no partial refresh was saved. Ask the server owner to check the history request."
+    "error": "This history is too large to add. No partial refresh was saved. Ask the server owner to check the history request.",
+    "display": "This history is too large to add. No partial refresh was saved. Ask the server owner to check the history request."
   },
   {
     "raw": "PUBLIC_ORIGIN must be a bare HTTPS origin.",
@@ -376,8 +376,8 @@
   },
   {
     "raw": "Only manual transactions can be deleted here. Disconnecting a bank does not delete its imported history.",
-    "error": "Only transactions you entered manually can be deleted here. Disconnecting a bank keeps its downloaded history; check the transaction source.",
-    "display": "Only transactions you entered manually can be deleted here. Disconnecting a bank keeps its downloaded history; check the transaction source."
+    "error": "Only transactions you entered manually can be deleted here. Disconnecting a bank keeps its downloaded history. Check the transaction source.",
+    "display": "Only transactions you entered manually can be deleted here. Disconnecting a bank keeps its downloaded history. Check the transaction source."
   },
   {
     "raw": "Select two existing transfer entries.",
@@ -716,8 +716,8 @@
   },
   {
     "raw": "Saved data could not be opened. Your existing records have not been replaced.",
-    "error": "Your saved data couldn’t be opened; the original records are still there. Try opening again or restore a backup.",
-    "display": "Your saved data couldn’t be opened; the original records are still there. Try opening again or restore a backup."
+    "error": "Your saved data couldn’t be opened. The original records are still there. Try opening again or restore a backup.",
+    "display": "Your saved data couldn’t be opened. The original records are still there. Try opening again or restore a backup."
   },
   {
     "raw": "Changes are in memory but could not be saved. Retry before closing the app.",
@@ -726,8 +726,8 @@
   },
   {
     "raw": "The edit could not be validated. Your previous figures are unchanged.",
-    "error": "This edit couldn’t be checked; your earlier data is unchanged. Check the details and try again.",
-    "display": "This edit couldn’t be checked; your earlier data is unchanged. Check the details and try again."
+    "error": "This edit couldn’t be checked. Your earlier data is unchanged. Check the details and try again.",
+    "display": "This edit couldn’t be checked. Your earlier data is unchanged. Check the details and try again."
   },
   {
     "raw": "Restore or reopen your saved data before editing.",
@@ -756,8 +756,8 @@
   },
   {
     "raw": "Screenshot protection could not be applied. Your financial screens remain hidden until you retry or explicitly turn this request off.",
-    "error": "Screen protection couldn’t be applied; your financial screens remain hidden. Try again or turn protection off.",
-    "display": "Screen protection couldn’t be applied; your financial screens remain hidden. Try again or turn protection off."
+    "error": "Screen protection couldn’t be applied. Your financial screens remain hidden. Try again or turn protection off.",
+    "display": "Screen protection couldn’t be applied. Your financial screens remain hidden. Try again or turn protection off."
   },
   {
     "raw": "Screen protection could not be disabled. Its last confirmed state is shown.",

@@ -1,7 +1,7 @@
 // Presentation copy only. Stored values and contracts remain in the domain modules.
 export const shellCopy = {
  openingYourData: "Opening your data",
- 
+
  unlockWasnTCompletedTryAgainTo: "Unlock wasn’t completed. Try again to open your data.",
  authenticationUnavailable: "Device authentication is unavailable. Check your phone’s unlock settings, then try again.",
  headroom: "Headroom",
@@ -24,7 +24,7 @@ export const shellCopy = {
  navigateTitle: "Navigate",
  screenHidden: "Screen hidden",
  tapBelowWhenYouAreReadyTo: "Tap below when you are ready to return.",
- screenCoverDetail: "Tap below when you are ready to return. Your place and unsaved drafts are preserved. This is a temporary screen cover; device authentication remains controlled by app lock.",
+ screenCoverDetail: "Tap below when you are ready to return. Your place and unsaved drafts are preserved. This is a temporary screen cover. Device authentication remains controlled by app lock.",
  showScreen: "Show screen",
  dismissEditMessage: "Dismiss edit message",
  trySavingAgain: "Try saving again",

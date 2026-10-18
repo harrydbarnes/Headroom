@@ -1,10 +1,11 @@
 // Presentation copy only. Stored values and contracts remain in the domain modules.
 export const accountsCopy = {
+ browserUnsupported:"No supported way to connect in the browser",
  setupProgress:(part0:string|number,part1:string|number)=>`Step ${part0} of 5 · ${part1}`,
  connectionStatus:(part0:string|number,part1:string|number,part2:string|number)=>`Connection: ${part0}${part1} · ${part2}.`,
  verificationStatus:(part0:string|number)=>`Last verified: ${part0}`,
  refreshReceipt:(part0:string|number,part1:string|number,part2:string|number,part3:string|number)=>`Finished: ${part0} · ${part1} new / ${part2} updated / ${part3} unchanged. Each bank shows when its data was downloaded.`,
- downloadStatus:(part0:string|number)=>`Last downloaded: ${part0}. Some data may be unsupported or missing; check the refresh result.`,
+ downloadStatus:(part0:string|number)=>`Last downloaded: ${part0}. Some data may be unsupported or missing. Check the refresh result.`,
  retrievalStatus:(part0:string|number,part1:string|number)=>`${part0} returned · last retrieval ${part1}`,
  connectABank: "Connect a bank",
  bankConnections: "Bank connections",
@@ -21,8 +22,8 @@ export const accountsCopy = {
  resultsCoverBanksText: "Results cover only the banks refreshed this time. Refreshing one bank doesn’t update the others.",
  refreshComplete: "Refresh complete",
  someTransactionsMayBeMissing: "Some transactions may be missing",
- 
- 
+
+
  refreshTransactions: "Refresh transactions",
  permissionExpiredReconnText: "Permission expired. Reconnect this bank.",
  permissionEnds: "Permission ends ",
@@ -31,7 +32,7 @@ export const accountsCopy = {
  connectAgainCheckText: "Connect again and check the new connection first. Then disconnect the old expired connection below.",
  disconnectThisBank: "Disconnect this bank",
  disconnect: "Disconnect ",
- disconnectConfirmBody: "This removes bank permission and deletes downloaded data for this connection from the server. Transactions already on this phone remain; reconnect to restore access.",
+ disconnectConfirmBody: "This removes bank permission and deletes downloaded data for this connection from the server. Transactions already on this phone remain. Reconnect to restore access.",
  cancel: "Cancel",
  disconnectAction: "Disconnect",
  working: "Working…",
@@ -51,10 +52,10 @@ export const accountsCopy = {
  theBrowserCouldNotOpenTryAgain: "The browser could not open. Try again or use the address in the setup instructions.",
  setUpBanking: "Set up banking",
  connectYourBank: "Connect your bank",
- 
+
  enableBankingGivesDetail: "Enable Banking gives Headroom permission to read your transactions. Sign in through your bank; Headroom never asks for your banking password.",
  youReViewingExampleDataReadThe: "You’re viewing example data. Read the guide here, then show your data before linking this phone or connecting a real bank.",
- createEnableBankingDetail: "Create an Enable Banking account, then register an API application in its Control Panel. Keep the application ID and private signing key somewhere private; the key proves your server’s identity.",
+ createEnableBankingDetail: "Create an Enable Banking account, then register an API application in its Control Panel. Keep the application ID and private signing key somewhere private. The key proves your server’s identity.",
  realAccountsActivateSummary: "For real accounts, activate Production access and follow the Control Panel’s account-linking or approval steps.",
  realAccountsActivateDetail: "For real accounts, activate Production access and follow the Control Panel’s account-linking or approval steps. Sandbox is for testing; Headroom does not import sandbox transactions into your your data.",
  openAccountSignIn: "Open account sign-in",
@@ -69,8 +70,8 @@ export const accountsCopy = {
  httpsYourServerExample: "https://your-server.example",
  registerExactAllowedDetail: "Register this exact allowed redirect URL in the Enable Banking application. Previewing it does not deploy or configure a server.",
  allowedRedirectURL: "Bank return address",
- applicationCheckSummary: "The server must verify the application is active, uses the selected environment and allows its exact callback URL.",
- applicationCheckDetail: "The server must verify the application is active, uses the selected environment and allows its exact callback URL. Keep the signing key and device token out of chats and code repositories.",
+ applicationCheckSummary: "Your server checks your Enable Banking application is active, uses your chosen environment and allows this exact redirect address.",
+ applicationCheckDetail: "Your server checks that your Enable Banking application is active, uses the environment you chose and allows this exact redirect address. Keep the signing key and device token out of chats and code repositories.",
  onTheServerItsOwnerRunsThe: "On the server, its owner runs the pairing helper to issue a single-use link valid for two minutes.",
  pairingLinkDetail: "On the server, its owner runs the pairing helper to issue a single-use link valid for two minutes. In Settings → Link this phone, paste that link and choose Link this phone.",
  linkingThisPhoneDoesnTGiveBank: "Linking this phone doesn’t give bank permission. Your Headroom server must be set up and reachable before you can find banks.",
@@ -81,10 +82,10 @@ export const accountsCopy = {
  firstShowYourDataLinkThisPhone: "First show your data, link this phone and check the server owner has finished Enable Banking setup.",
  bankCreditCardSummary: "Bank, credit-card and history coverage depends on the provider and your permissions.",
  bankCreditCardDetail: "Bank, credit-card and history coverage depends on the provider and your permissions. A listed bank does not guarantee support for every product. No bank connection is added until permission is checked.",
- afterBankPermissionDetail: "After bank permission is checked, refresh transactions and review their type in Activity. Check each month is complete; transaction dates alone can’t prove this.",
+ afterBankPermissionDetail: "After bank permission is checked, refresh transactions and review their type in Activity. Check each month is complete. Transaction dates alone can’t prove this.",
  refreshNeedsAReachableDetail: "Refresh needs a reachable, configured server and at least one current bank permission. Return to Connect a bank if permission is missing or expired.",
  bankImportSummary: "The current connection imports booked GBP transactions and requests up to 180 days of history.",
- bankImportDetail: "The current connection imports booked GBP transactions and requests up to 180 days of history. Refresh is manual. Automatic balances and pending payments are not supported; record balances manually in Accounts. Imports do not replace your confirmed monthly plan.",
+ bankImportDetail: "The current connection imports booked GBP transactions and requests up to 180 days of history. Refresh is manual. Automatic balances and pending payments are not supported. Record balances manually in Accounts. Imports do not replace your confirmed monthly plan.",
  serverConfigured: " · server configured",
  serverNeedsEnableBankingSetup: " · server needs Enable Banking setup",
  previousSetupStep: "Previous setup step",

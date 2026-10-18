@@ -29,6 +29,8 @@ Copy lint scans the migrated string modules and UI call sites. It checks jargon,
 
 Name keys by their role, such as `activity.emptyMonth`, `plan.goalTargetMonthLabel` and `settings.unlinkConfirm`. Keep keys within 30 characters. Do not add numbered duplicates, punctuation keys or sentence fragments. Keep complete sentences in one entry or function. Local punctuation joiners and empty logic values remain literals. Indexed theme and CSV mapping labels are the documented dynamic-reference exceptions in `tests/string-structure.ts`.
 
+Copy lint recursively scans screens, UI components, services and strings. New prose in JSX, alerts or notice setters must live in the strings modules. There are zero prose allowlist entries. Existing stored labels and compatibility route requests live separately in `lib/presentationKeys.ts`; their exact values must not be edited as copy. Exact thrown-error keys remain exempt from terminology lint and are enforced by the error coverage test.
+
 Financial stress labels use “2 percentage points” to avoid confusing an absolute rate increase with a relative 2% change. Technical pension-limit wording stays intact inside Advanced pension limits details. Unknown errors must not promise that an asynchronous write left data unchanged.
 
 Describe Headroom's own database encryption separately from Android storage encryption and screen lock. Explain that linked bank data is also cached on the owner's server. Describe encrypted server connection credentials, not stored bank passwords. Backup exclusion describes what the application adds; free-text notes are included. See the claims audit in `copy-fixups-2026-10-18.md`.

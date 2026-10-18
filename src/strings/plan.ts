@@ -6,7 +6,7 @@ export const planCopy = {
  categoryActionHelp:(part0:string|number,part1:string|number)=>`${part0}${part1} a category in Activity before you can apply this.`,
  categoryReviewHelp:(part0:string|number)=>`Categories: ${part0}. Recategorise these in Activity if they belong in your baseline.`,
  baselineDraftHelp:(part0:string|number)=>`${part0}. Open a section to draft changes, then apply them. Closing leaves your saved data unchanged. Applied financial changes need baseline confirmation. Debt minimums belong in essentials.`,
- goalDeadlineHelp:(part0:string|number,part1:string|number)=>`${part0}${part1} remaining; past or current deadlines use one month. Pausing funding keeps the goal and saved amount.`,
+ goalDeadlineHelp:(part0:string|number,part1:string|number)=>`${part0}${part1} remaining. Past or current deadlines use one month. Pausing funding keeps the goal and saved amount.`,
  allocationEmptyHelp:(part0:string|number)=>`Why zero: ${part0}. No money is moved.`,
  setupSkippedHelp:(part0:string|number)=>`${part0} were skipped during setup. Review their sections above, then acknowledge them here.`,
  monthCoverageStatus:(part0:string|number)=>`${part0} confirmed in Activity`,
@@ -57,7 +57,7 @@ export const planCopy = {
  extraHighCostDebtRepayment: "Extra high-cost debt repayment",
  goalFundingPool: "Goal funding pool",
  possibleLongTermInvesting: "Possible long-term investing",
- 
+
  unallocated: "Unallocated",
  extraRepayment: " extra repayment",
  funding: " funding",
@@ -67,14 +67,14 @@ export const planCopy = {
  yourGoalsNeedAnother: "Your goals need another ",
  perMonthChooseText: " per month. Choose which deadlines or amounts to adjust.",
  debtAt8APROrHigherComes: "Debt at 8% APR or higher comes first, then emergency cash and combined goal funding.",
- allocationDetail: "Debt at 8% APR or higher comes first, then emergency cash and combined goal funding. Goals follow your priority order; ties keep a consistent order using saved references. Investing appears only with no debt, the cash target funded, goals on track and a horizon of at least five years. No money is moved; value can fall.",
+ allocationDetail: "Debt at 8% APR or higher comes first, then emergency cash and combined goal funding. Goals follow your priority order. Ties keep a consistent order using saved references. Investing appears only with no debt, the cash target funded, goals on track and a horizon of at least five years. No money is moved. Value can fall.",
  showInvestmentAssumptions: "Show investment assumptions",
  investmentHorizonYears: "Investment horizon (years)",
  shareEligibleRemainingLabel: "Share of eligible remaining surplus (%)",
  remainingSetupChecks: "Remaining setup checks",
  confirmSetupChecks: "Confirm setup checks",
  recordedDebtMinimumsTotal: "Recorded debt minimums total ",
- whichExceedsEssentialsDetail: ", which exceeds essentials. Include these payments in the baseline before confirming; they are not deducted a second time.",
+ whichExceedsEssentialsDetail: ", which exceeds essentials. Include these payments in the baseline before confirming. They are not deducted a second time.",
  baselineConfirmedTitle: "Baseline confirmed",
  confirmMonthlyBaseline: "Confirm monthly baseline",
  confirmSavedBaseline: "Confirm saved baseline?",
@@ -90,17 +90,17 @@ export const planCopy = {
  nextMonth: "Next month",
  categorisedEssentials: "Categorised essentials",
  categorisedFlexible: "Categorised flexible",
- 
+
  reviewProposedBaselineChange: "Review baseline change",
- 
+
  essentialsNowAndProposed: "Essentials: now and proposed",
  flexibleNowAndProposed: "Flexible: now and proposed",
  annualReserveStays: "Annual reserve stays",
- 
+
  needs: "needs",
  need: "need",
  excludedAccountLabel: (value0:unknown)=>`${value0} excluded`,
- 
+
  iHaveCheckedLabel: "I have checked this Other spending and want to exclude it",
  excludeTheseAnnualLabel: "Exclude these annual bills and retain my existing monthly annual reserve",
  incomeTransfersDebtDetail: "Income, transfers and debt repayments are not used to replace these spending categories. Check that debt minimums and housing are correctly categorised.",
@@ -119,7 +119,7 @@ export const planCopy = {
  monthReconfirmHelp: "Month previously confirmed. Review this checklist to reconfirm.",
  monthNotConfirmed: "Month not confirmed.",
  coverageSummary: "Check the full month against every statement.",
- coverageDetail: "Check the full month against every statement. Missing data is the default; no activity is an explicit statement check. Add accounts that have no imported transactions.",
+ coverageDetail: "Check the full month against every statement. Missing data is the default. No activity is an explicit statement check. Add accounts that have no imported transactions.",
  missingData: "Missing data",
  completeStatement: "Complete statement",
  noActivity: "No activity",

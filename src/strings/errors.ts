@@ -11,8 +11,8 @@ const exact:Record<string,{message:string;display?:string;passthrough?:boolean}>
     "display": "The bank returned an unexpected web address. Close the browser and try connecting from Headroom again."
   },
   "Transaction history exceeded the import limit. No partial import was saved.": {
-    "message": "This history is too large to add; no partial refresh was saved. Ask the server owner to check the history request.",
-    "display": "This history is too large to add; no partial refresh was saved. Ask the server owner to check the history request."
+    "message": "This history is too large to add. No partial refresh was saved. Ask the server owner to check the history request.",
+    "display": "This history is too large to add. No partial refresh was saved. Ask the server owner to check the history request."
   },
   "PUBLIC_ORIGIN must be a bare HTTPS origin.": {
     "message": "The server’s public address isn’t set correctly. Ask its owner to check the HTTPS address, then try again.",
@@ -303,8 +303,8 @@ const exact:Record<string,{message:string;display?:string;passthrough?:boolean}>
     "display": "Downloaded amounts, dates and accounts can’t be edited here. Change the transaction’s type or category instead."
   },
   "Only manual transactions can be deleted here. Disconnecting a bank does not delete its imported history.": {
-    "message": "Only transactions you entered manually can be deleted here. Disconnecting a bank keeps its downloaded history; check the transaction source.",
-    "display": "Only transactions you entered manually can be deleted here. Disconnecting a bank keeps its downloaded history; check the transaction source."
+    "message": "Only transactions you entered manually can be deleted here. Disconnecting a bank keeps its downloaded history. Check the transaction source.",
+    "display": "Only transactions you entered manually can be deleted here. Disconnecting a bank keeps its downloaded history. Check the transaction source."
   },
   "Select two existing transfer entries.": {
     "message": "Select two existing transfer entries.",
@@ -575,16 +575,16 @@ const exact:Record<string,{message:string;display?:string;passthrough?:boolean}>
     "display": "Restored data hasn’t been saved. Try saving again before closing Headroom."
   },
   "Saved data could not be opened. Your existing records have not been replaced.": {
-    "message": "Your saved data couldn’t be opened; the original records are still there. Try opening again or restore a backup.",
-    "display": "Your saved data couldn’t be opened; the original records are still there. Try opening again or restore a backup."
+    "message": "Your saved data couldn’t be opened. The original records are still there. Try opening again or restore a backup.",
+    "display": "Your saved data couldn’t be opened. The original records are still there. Try opening again or restore a backup."
   },
   "Changes are in memory but could not be saved. Retry before closing the app.": {
     "message": "Your changes haven’t been saved to this phone. Try saving again before closing Headroom.",
     "display": "Your changes haven’t been saved to this phone. Try saving again before closing Headroom."
   },
   "The edit could not be validated. Your previous figures are unchanged.": {
-    "message": "This edit couldn’t be checked; your earlier data is unchanged. Check the details and try again.",
-    "display": "This edit couldn’t be checked; your earlier data is unchanged. Check the details and try again."
+    "message": "This edit couldn’t be checked. Your earlier data is unchanged. Check the details and try again.",
+    "display": "This edit couldn’t be checked. Your earlier data is unchanged. Check the details and try again."
   },
   "Restore or reopen your saved data before editing.": {
     "message": "Your saved data needs recovery. Try opening it again or restore a backup before editing.",
@@ -607,8 +607,8 @@ const exact:Record<string,{message:string;display?:string;passthrough?:boolean}>
     "display": "The backup couldn’t be restored. Choose a supported Headroom backup and try again."
   },
   "Screenshot protection could not be applied. Your financial screens remain hidden until you retry or explicitly turn this request off.": {
-    "message": "Screen protection couldn’t be applied; your financial screens remain hidden. Try again or turn protection off.",
-    "display": "Screen protection couldn’t be applied; your financial screens remain hidden. Try again or turn protection off."
+    "message": "Screen protection couldn’t be applied. Your financial screens remain hidden. Try again or turn protection off.",
+    "display": "Screen protection couldn’t be applied. Your financial screens remain hidden. Try again or turn protection off."
   },
   "Screen protection could not be disabled. Its last confirmed state is shown.": {
     "message": "Screen protection couldn’t be turned off. Check the switch for its last confirmed setting and try again.",
@@ -753,7 +753,7 @@ const patterns:Pattern[]=[
  {match:/^Enter a (?:date|month|tax year) like /,message:m=>m.input},
  {match:/^Enable Banking request failed \(\d+\)\.$/,display:true,message:()=> 'The bank request failed. Try again later or ask the server owner to check the connection.'},
  {match:/^(\d+) transactions still need review\.$/,display:true,message:m=>{const n=Number(m[1]);return n?`${counted(n,'transaction')} ${n===1?'needs':'need'} review.`:'No transactions need review.';}},
- {match:/^Based on (.+)\. Coverage is your attestation\. Review before accepting\.$/,display:true,message:m=>`Based on ${m[1].split(', ').map(formatMonth).join(', ')}. You confirm these months are complete; check suggestions before accepting.`},
+ {match:/^Based on (.+)\. Coverage is your attestation\. Review before accepting\.$/,display:true,message:m=>`Based on ${m[1].split(', ').map(formatMonth).join(', ')}. You confirm these months are complete. Check suggestions before accepting.`},
  {match:/^The latest bank import was (partial|failed); some booked activity may be missing\.$/,display:true,message:()=> 'The latest refresh was incomplete. Some completed transactions may be missing.'},
 ];
 function pattern(raw:string,displayOnly=false){for(const entry of patterns){if(displayOnly&&!entry.display)continue;const match=entry.match.exec(raw);if(match)return entry.message(match);}}
