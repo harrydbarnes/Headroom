@@ -1,0 +1,862 @@
+[
+  {
+    "raw": "Banking storage is not configured.",
+    "error": "The server can’t store bank data yet. Ask its owner to finish setup, then try again.",
+    "display": "The server can’t store bank data yet. Ask its owner to finish setup, then try again."
+  },
+  {
+    "raw": "Unexpected provider redirect.",
+    "error": "The bank returned an unexpected web address. Close the browser and try connecting from Headroom again.",
+    "display": "The bank returned an unexpected web address. Close the browser and try connecting from Headroom again."
+  },
+  {
+    "raw": "Transaction history exceeded the import limit. No partial import was saved.",
+    "error": "This history is too large to add; no partial refresh was saved. Ask the server owner to check the history request.",
+    "display": "This history is too large to add; no partial refresh was saved. Ask the server owner to check the history request."
+  },
+  {
+    "raw": "PUBLIC_ORIGIN must be a bare HTTPS origin.",
+    "error": "The server’s public address isn’t set correctly. Ask its owner to check the HTTPS address, then try again.",
+    "display": "The server’s public address isn’t set correctly. Ask its owner to check the HTTPS address, then try again."
+  },
+  {
+    "raw": "Set a random DEVICE_TOKEN (32+ random bytes) and 32-byte base64url BANKING_ENCRYPTION_KEY.",
+    "error": "The server’s security setup is incomplete. Ask its owner to check the access code and encryption key, then try again.",
+    "display": "The server’s security setup is incomplete. Ask its owner to check the access code and encryption key, then try again."
+  },
+  {
+    "raw": "Invalid URL",
+    "error": "This server address can’t be used. Enter its HTTPS address and try again.",
+    "display": "This server address can’t be used. Enter its HTTPS address and try again."
+  },
+  {
+    "raw": "Invalid bank",
+    "error": "This bank can’t be used. Choose a supported bank and try again.",
+    "display": "This bank can’t be used. Choose a supported bank and try again."
+  },
+  {
+    "raw": "Set PUBLIC_ORIGIN and DEVICE_TOKEN in your server environment.",
+    "error": "The server’s address or access code is missing. Ask its owner to finish setup and try again.",
+    "display": "The server’s address or access code is missing. Ask its owner to finish setup and try again."
+  },
+  {
+    "raw": "Could not issue a pairing ticket. Check the server and device token.",
+    "error": "The server couldn’t create a linking code. Ask its owner to check the server and access code, then try again.",
+    "display": "The server couldn’t create a linking code. Ask its owner to check the server and access code, then try again."
+  },
+  {
+    "raw": "Too many outstanding pairing tickets.",
+    "error": "Too many linking codes are still active. Wait two minutes, then ask the server owner for a new code.",
+    "display": "Too many linking codes are still active. Wait two minutes, then ask the server owner for a new code."
+  },
+  {
+    "raw": "Enter the HTTPS server address without a path, login details, query or fragment.",
+    "error": "Enter the server’s HTTPS address, with nothing after the host name.",
+    "display": "Enter the server’s HTTPS address, with nothing after the host name."
+  },
+  {
+    "raw": "A quoted CSV field is unfinished.",
+    "error": "A quoted value in this statement file is unfinished. Check its quotation marks and try again.",
+    "display": "A quoted value in this statement file is unfinished. Check its quotation marks and try again."
+  },
+  {
+    "raw": "Use dates in YYYY-MM-DD or DD/MM/YYYY format.",
+    "error": "Enter a date like 18/10/2026.",
+    "display": "Enter a date like 18/10/2026."
+  },
+  {
+    "raw": "The CSV contains an invalid date.",
+    "error": "This statement file has a date that can’t be read. Check its dates and try again.",
+    "display": "This statement file has a date that can’t be read. Check its dates and try again."
+  },
+  {
+    "raw": "The CSV needs headers and transaction rows.",
+    "error": "This statement file is missing column headings or transactions. Choose a complete statement file and try again.",
+    "display": "This statement file is missing column headings or transactions. Choose a complete statement file and try again."
+  },
+  {
+    "raw": "CSV headers must include Date, Description (or Merchant), and Amount.",
+    "error": "This statement file needs Date, Description or Merchant, and Amount columns. Check the column headings and try again.",
+    "display": "This statement file needs Date, Description or Merchant, and Amount columns. Check the column headings and try again."
+  },
+  {
+    "raw": "Too many forecast occurrences.",
+    "error": "There are too many scheduled payments to forecast. Shorten the forecast period and try again.",
+    "display": "There are too many scheduled payments to forecast. Shorten the forecast period and try again."
+  },
+  {
+    "raw": "Your server returned an invalid connection status.",
+    "error": "The server’s connection details couldn’t be read. Check the connection again or ask the server owner for help.",
+    "display": "The server’s connection details couldn’t be read. Check the connection again or ask the server owner for help."
+  },
+  {
+    "raw": "Use a valid goal target month.",
+    "error": "The goal’s target month can’t be read. Enter a month like 06/2027.",
+    "display": "The goal’s target month can’t be read. Enter a month like 06/2027."
+  },
+  {
+    "raw": "Invalid planning assumptions",
+    "error": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid debt APR",
+    "error": "This debt’s interest rate can’t be read. Check the rate and try again.",
+    "display": "This debt’s interest rate can’t be read. Check the rate and try again."
+  },
+  {
+    "raw": "Invalid goal deadline",
+    "error": "The goal deadline can’t be read. Enter a month like 06/2027.",
+    "display": "The goal deadline can’t be read. Enter a month like 06/2027."
+  },
+  {
+    "raw": "Use an integer amount in pence.",
+    "error": "This amount can’t be read. Check the amount and try again.",
+    "display": "This amount can’t be read. Check the amount and try again."
+  },
+  {
+    "raw": "Invalid ledger text.",
+    "error": "These account details can’t be read. Check the source file and try again.",
+    "display": "These account details can’t be read. Check the source file and try again."
+  },
+  {
+    "raw": "Invalid ledger list.",
+    "error": "These account details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These account details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Missing ledger identity.",
+    "error": "An account or transaction reference is missing. Check the source file and try again.",
+    "display": "An account or transaction reference is missing. Check the source file and try again."
+  },
+  {
+    "raw": "Duplicate ledger identity.",
+    "error": "These account details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These account details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid balance date.",
+    "error": "These account details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These account details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Unsupported ledger version.",
+    "error": "This data is from a version Headroom can’t read. Update the app and try again.",
+    "display": "This data is from a version Headroom can’t read. Update the app and try again."
+  },
+  {
+    "raw": "Invalid account.",
+    "error": "These account details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These account details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Account names must be unique.",
+    "error": "You already have an account with that name. Choose another name.",
+    "display": "You already have an account with that name. Choose another name."
+  },
+  {
+    "raw": "Invalid balance account or source.",
+    "error": "These account details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These account details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Annotation has no transaction.",
+    "error": "The transaction for these details is missing. Refresh your list and try again.",
+    "display": "The transaction for these details is missing. Refresh your list and try again."
+  },
+  {
+    "raw": "Splits must have the parent direction and sum to its amount.",
+    "error": "The split amounts don’t match the transaction. Use money in or money out consistently and make them add up to the original amount.",
+    "display": "The split amounts don’t match the transaction. Use money in or money out consistently and make them add up to the original amount."
+  },
+  {
+    "raw": "Duplicate transaction annotation.",
+    "error": "These transaction details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These transaction details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Import account missing.",
+    "error": "The account for this statement file is missing. Select an account and try again.",
+    "display": "The account for this statement file is missing. Select an account and try again."
+  },
+  {
+    "raw": "Duplicate import transaction.",
+    "error": "These transaction details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These transaction details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid saved CSV mapping.",
+    "error": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Use pounds with at most two decimal places (no thousands separators).",
+    "error": "Enter amounts like 1234.56, with no commas.",
+    "display": "Enter amounts like 1234.56, with no commas."
+  },
+  {
+    "raw": "CSV exceeds 20 MB.",
+    "error": "This statement file is over 20 MB. Choose a smaller statement file and try again.",
+    "display": "This statement file is over 20 MB. Choose a smaller statement file and try again."
+  },
+  {
+    "raw": "Choose an active account.",
+    "error": "This account is archived. Reopen it or choose an active account.",
+    "display": "This account is archived. Reopen it or choose an active account."
+  },
+  {
+    "raw": "Use a debit or credit on each row.",
+    "error": "A row can contain money in or money out, not both. Check those columns and try again.",
+    "display": "A row can contain money in or money out, not both. Check those columns and try again."
+  },
+  {
+    "raw": "Use a valid non-negative rate.",
+    "error": "This rate can’t be used. Enter zero or more, within the limit shown.",
+    "display": "This rate can’t be used. Enter zero or more, within the limit shown."
+  },
+  {
+    "raw": "Invalid pension scheme.",
+    "error": "These pension details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These pension details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Scheme end precedes its effective date.",
+    "error": "The pension scheme ends before it starts. Check both dates and try again.",
+    "display": "The pension scheme ends before it starts. Check both dates and try again."
+  },
+  {
+    "raw": "Choose monthly, four-weekly, fortnightly or weekly pay.",
+    "error": "Choose monthly, four-weekly, fortnightly or weekly pay.",
+    "display": "Choose monthly, four-weekly, fortnightly or weekly pay."
+  },
+  {
+    "raw": "Match tiers need increasing upper employee rates.",
+    "error": "The pension matching bands aren’t in order. List their upper employee percentages from lowest to highest.",
+    "display": "The pension matching bands aren’t in order. List their upper employee percentages from lowest to highest."
+  },
+  {
+    "raw": "Use a tax year such as 2026-27.",
+    "error": "Enter a tax year like 2026/27.",
+    "display": "Enter a tax year like 2026/27."
+  },
+  {
+    "raw": "Evidence notes exceed 2,000 characters.",
+    "error": "These notes are over 2,000 characters. Shorten them and try again.",
+    "display": "These notes are over 2,000 characters. Shorten them and try again."
+  },
+  {
+    "raw": "Use a valid calendar date.",
+    "error": "Enter a date like 18/10/2026.",
+    "display": "Enter a date like 18/10/2026."
+  },
+  {
+    "raw": "Choose a valid period anchor.",
+    "error": "The first payday can’t be read. Enter a date like 18/10/2026.",
+    "display": "The first payday can’t be read. Enter a date like 18/10/2026."
+  },
+  {
+    "raw": "Choose a supported period.",
+    "error": "This payment frequency isn’t supported. Choose one of the listed frequencies.",
+    "display": "This payment frequency isn’t supported. Choose one of the listed frequencies."
+  },
+  {
+    "raw": "Choose a valid period date.",
+    "error": "The period date can’t be read. Enter a date like 18/10/2026.",
+    "display": "The period date can’t be read. Enter a date like 18/10/2026."
+  },
+  {
+    "raw": "Amounts must be non-negative.",
+    "error": "This amount is below zero. Enter zero or more.",
+    "display": "This amount is below zero. Enter zero or more."
+  },
+  {
+    "raw": "Use a valid YYYY-MM-DD date.",
+    "error": "Enter a date like 18/10/2026.",
+    "display": "Enter a date like 18/10/2026."
+  },
+  {
+    "raw": "Choose a supported option.",
+    "error": "This option isn’t supported. Choose an option from the list.",
+    "display": "This option isn’t supported. Choose an option from the list."
+  },
+  {
+    "raw": "Choose yes or no.",
+    "error": "This choice can’t be read. Set the switch on or off and try again.",
+    "display": "This choice can’t be read. Set the switch on or off and try again."
+  },
+  {
+    "raw": "Invalid planning records.",
+    "error": "These planning details can’t be read. Check them and try again.",
+    "display": "These planning details can’t be read. Check them and try again."
+  },
+  {
+    "raw": "Planning record identities must be unique.",
+    "error": "Some planning records have the same reference. Check the source data or restore a recent backup.",
+    "display": "Some planning records have the same reference. Check the source data or restore a recent backup."
+  },
+  {
+    "raw": "Unsupported planning version.",
+    "error": "This data is from a version Headroom can’t read. Update the app and try again.",
+    "display": "This data is from a version Headroom can’t read. Update the app and try again."
+  },
+  {
+    "raw": "Use a unique custom category name.",
+    "error": "That category name is already used. Choose another name.",
+    "display": "That category name is already used. Choose another name."
+  },
+  {
+    "raw": "A subcategory needs a root category in the same group.",
+    "error": "This subcategory needs a main category in the same group. Choose a main category without its own parent.",
+    "display": "This subcategory needs a main category in the same group. Choose a main category without its own parent."
+  },
+  {
+    "raw": "Budget end must follow its start.",
+    "error": "The budget ends before or on its start date. Choose a later end date.",
+    "display": "The budget ends before or on its start date. Choose a later end date."
+  },
+  {
+    "raw": "Choose an existing budget category.",
+    "error": "That budget category isn’t available. Choose a category from the list.",
+    "display": "That budget category isn’t available. Choose a category from the list."
+  },
+  {
+    "raw": "Invalid closed period.",
+    "error": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "End date precedes the first payment.",
+    "error": "The end date is before the first payment. Check both dates and try again.",
+    "display": "The end date is before the first payment. Check both dates and try again."
+  },
+  {
+    "raw": "One price per effective date.",
+    "error": "More than one price is recorded for the same date. Keep one price for each date.",
+    "display": "More than one price is recorded for the same date. Keep one price for each date."
+  },
+  {
+    "raw": "A due date may be settled once.",
+    "error": "This due date already has a matched payment. Check the existing match before adding another.",
+    "display": "This due date already has a matched payment. Check the existing match before adding another."
+  },
+  {
+    "raw": "Cancellation instructions exceed 2,000 characters.",
+    "error": "The cancellation notes are over 2,000 characters. Shorten them and try again.",
+    "display": "The cancellation notes are over 2,000 characters. Shorten them and try again."
+  },
+  {
+    "raw": "A booked transaction may settle only one expected event.",
+    "error": "This transaction is already linked to another expected payment or refund. Check that match before linking it again.",
+    "display": "This transaction is already linked to another expected payment or refund. Check that match before linking it again."
+  },
+  {
+    "raw": "Choose valid forecast accounts and a horizon from 1 to 366 days.",
+    "error": "The forecast needs listed accounts and a period of 1 to 366 days. Check both and try again.",
+    "display": "The forecast needs listed accounts and a period of 1 to 366 days. Check both and try again."
+  },
+  {
+    "raw": "Your figures changed after this preview. Reopen it before applying.",
+    "error": "Your data changed after this preview. Open the preview again before applying it.",
+    "display": "Your data changed after this preview. Open the preview again before applying it."
+  },
+  {
+    "raw": "Explicitly confirm the excluded Other spending, or recategorise it first.",
+    "error": "Explicitly confirm the excluded Other spending, or recategorise it first.",
+    "display": "Explicitly confirm the excluded Other spending, or recategorise it first."
+  },
+  {
+    "raw": "Confirm annual bills are excluded and the annual reserve stays unchanged.",
+    "error": "Confirm annual bills are excluded and the annual reserve stays unchanged.",
+    "display": "Confirm annual bills are excluded and the annual reserve stays unchanged."
+  },
+  {
+    "raw": "Only manual transactions can have their source details edited.",
+    "error": "Downloaded amounts, dates and accounts can’t be edited here. Change the transaction’s type or category instead.",
+    "display": "Downloaded amounts, dates and accounts can’t be edited here. Change the transaction’s type or category instead."
+  },
+  {
+    "raw": "Only manual transactions can be deleted here. Disconnecting a bank does not delete its imported history.",
+    "error": "Only transactions you entered manually can be deleted here. Disconnecting a bank keeps its downloaded history; check the transaction source.",
+    "display": "Only transactions you entered manually can be deleted here. Disconnecting a bank keeps its downloaded history; check the transaction source."
+  },
+  {
+    "raw": "Select two existing transfer entries.",
+    "error": "Select two existing transfer entries.",
+    "display": "Select two existing transfer entries."
+  },
+  {
+    "raw": "Transfer match changed or is ambiguous. Review both sides individually.",
+    "error": "Transfer match changed or is ambiguous. Review both sides individually.",
+    "display": "Transfer match changed or is ambiguous. Review both sides individually."
+  },
+  {
+    "raw": "Enter a merchant, account, valid past or current date and a positive amount.",
+    "error": "Enter a merchant, account, valid past or current date and a positive amount.",
+    "display": "Enter a merchant, account, valid past or current date and a positive amount."
+  },
+  {
+    "raw": "Invalid backup structure.",
+    "error": "This file isn’t a Headroom backup. Choose a file exported from Headroom.",
+    "display": "This file isn’t a Headroom backup. Choose a file exported from Headroom."
+  },
+  {
+    "raw": "Invalid backup text.",
+    "error": "This backup file can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "This backup file can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid backup amount.",
+    "error": "This backup file can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "This backup file can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid backup list.",
+    "error": "This backup file can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "This backup file can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid backup date.",
+    "error": "This backup file can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "This backup file can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid coverage confirmation.",
+    "error": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid planning rate.",
+    "error": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Annual total and monthly reserve disagree.",
+    "error": "The yearly bills total and monthly reserve don’t match. Check both amounts and try again.",
+    "display": "The yearly bills total and monthly reserve don’t match. Check both amounts and try again."
+  },
+  {
+    "raw": "Invalid debt APR.",
+    "error": "This debt’s interest rate can’t be read. Check the rate and try again.",
+    "display": "This debt’s interest rate can’t be read. Check the rate and try again."
+  },
+  {
+    "raw": "Invalid debt minimum or goal priority.",
+    "error": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid backup transaction.",
+    "error": "This backup file can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "This backup file can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Duplicate transaction identities in backup.",
+    "error": "This backup file can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "This backup file can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Unknown move assumption.",
+    "error": "These move assumptions can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These move assumptions can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid move assumption type.",
+    "error": "These move assumptions can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These move assumptions can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid move assumptions.",
+    "error": "These move assumptions can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These move assumptions can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "No current housing payment must have a zero amount.",
+    "error": "A plan with no current housing payment still has an amount. Set the current housing payment to zero.",
+    "display": "A plan with no current housing payment still has an amount. Set the current housing payment to zero."
+  },
+  {
+    "raw": "Invalid move input origin.",
+    "error": "These move assumptions can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These move assumptions can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid completed month.",
+    "error": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid account coverage.",
+    "error": "These account details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These account details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Duplicate or empty coverage accounts.",
+    "error": "These account details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These account details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Duplicate covered months.",
+    "error": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "A workspace supports at most 1,000 merchant rules. Remove unused rules before adding more.",
+    "error": "You can save up to 1,000 merchant rules. Remove unused rules before adding more.",
+    "display": "You can save up to 1,000 merchant rules. Remove unused rules before adding more."
+  },
+  {
+    "raw": "Invalid merchant rule.",
+    "error": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid rule direction.",
+    "error": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid example guide step.",
+    "error": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid setup checklist.",
+    "error": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid import receipt.",
+    "error": "These transaction details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These transaction details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid import outcome.",
+    "error": "These transaction details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These transaction details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Invalid import count.",
+    "error": "These transaction details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These transaction details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "This workspace exceeds the 20 MB backup limit. Export your existing data before adding more.",
+    "error": "Your data is over the 20 MB backup limit. Export your existing data before adding more.",
+    "display": "Your data is over the 20 MB backup limit. Export your existing data before adding more."
+  },
+  {
+    "raw": "This workspace exceeds the 20 MB backup limit.",
+    "error": "Your data is over the 20 MB backup limit. Reduce its size before exporting again.",
+    "display": "Your data is over the 20 MB backup limit. Reduce its size before exporting again."
+  },
+  {
+    "raw": "Backup exceeds 20 MB.",
+    "error": "This backup is over 20 MB. Choose a smaller Headroom backup.",
+    "display": "This backup is over 20 MB. Choose a smaller Headroom backup."
+  },
+  {
+    "raw": "This file is not valid JSON. Choose an exported Headroom backup.",
+    "error": "This file can’t be read as a Headroom backup. Choose a file exported from Headroom.",
+    "display": "This file can’t be read as a Headroom backup. Choose a file exported from Headroom."
+  },
+  {
+    "raw": "Choose a Headroom version 2, 3 or 4 backup.",
+    "error": "This backup format isn’t supported. Update Headroom or choose a supported Headroom backup.",
+    "display": "This backup format isn’t supported. Update Headroom or choose a supported Headroom backup."
+  },
+  {
+    "raw": "Saved data uses an unsupported version.",
+    "error": "This data is from a version Headroom can’t read. Update the app and try again.",
+    "display": "This data is from a version Headroom can’t read. Update the app and try again."
+  },
+  {
+    "raw": "Restored data hasn’t been saved. Try saving again before closing Headroom.",
+    "error": "Restored data hasn’t been saved. Try saving again before closing Headroom.",
+    "display": "Restored data hasn’t been saved. Try saving again before closing Headroom."
+  },
+  {
+    "raw": "Enrol device biometrics before enabling app lock.",
+    "error": "Set up fingerprint or face unlock in your phone settings, then try again.",
+    "display": "Set up fingerprint or face unlock in your phone settings, then try again."
+  },
+  {
+    "raw": "Authentication was not completed.",
+    "error": "App lock wasn’t changed. Try again and unlock using your phone.",
+    "display": "App lock wasn’t changed. Try again and unlock using your phone."
+  },
+  {
+    "raw": "Restored data hasn’t been saved yet. Try saving again before closing Headroom.",
+    "error": "Restored data hasn’t been saved yet. Try saving again before closing Headroom.",
+    "display": "Restored data hasn’t been saved yet. Try saving again before closing Headroom."
+  },
+  {
+    "raw": "Use your finance API HTTPS origin, with no path.",
+    "error": "Enter your server’s HTTPS address with no path after the host name.",
+    "display": "Enter your server’s HTTPS address with no path after the host name."
+  },
+  {
+    "raw": "Use the server device token (at least 43 characters).",
+    "error": "Ask the server owner for the full access code, then try linking this phone again.",
+    "display": "Ask the server owner for the full access code, then try linking this phone again."
+  },
+  {
+    "raw": "Pair your finance server in Settings first.",
+    "error": "Link this phone in Settings before connecting a bank.",
+    "display": "Link this phone in Settings before connecting a bank."
+  },
+  {
+    "raw": "Your finance server returned an unreadable response. Check its HTTPS address and try again.",
+    "error": "Your finance server returned an unreadable response. Check its HTTPS address and try again.",
+    "display": "Your finance server returned an unreadable response. Check its HTTPS address and try again."
+  },
+  {
+    "raw": "File sharing is unavailable on this device.",
+    "error": "This phone can’t share files right now. Check its sharing settings and try again.",
+    "display": "This phone can’t share files right now. Check its sharing settings and try again."
+  },
+  {
+    "raw": "File sharing is unavailable.",
+    "error": "This phone can’t share files right now. Check its sharing settings and try again.",
+    "display": "This phone can’t share files right now. Check its sharing settings and try again."
+  },
+  {
+    "raw": "Use the HTTPS pairing link generated by your server.",
+    "error": "This linking code can’t be used. Ask the server owner for a new HTTPS link.",
+    "display": "This linking code can’t be used. Ask the server owner for a new HTTPS link."
+  },
+  {
+    "raw": "The pairing ticket is invalid.",
+    "error": "This linking code can’t be used. Ask the server owner for a new link.",
+    "display": "This linking code can’t be used. Ask the server owner for a new link."
+  },
+  {
+    "raw": "Pairing expired or was already used. Generate another link.",
+    "error": "This linking code expired or was already used. Ask the server owner for a new link.",
+    "display": "This linking code expired or was already used. Ask the server owner for a new link."
+  },
+  {
+    "raw": "Leave example mode to connect a real bank.",
+    "error": "Show your data before connecting a real bank.",
+    "display": "Show your data before connecting a real bank."
+  },
+  {
+    "raw": "Restore saved storage before importing transactions.",
+    "error": "Your saved data needs recovery before transactions can be added. Reopen it or restore a backup first.",
+    "display": "Your saved data needs recovery before transactions can be added. Reopen it or restore a backup first."
+  },
+  {
+    "raw": "Leave example mode before importing real accounts.",
+    "error": "Show your data before refreshing real accounts.",
+    "display": "Show your data before refreshing real accounts."
+  },
+  {
+    "raw": "Workspace changed during import. Return to personal figures and refresh again.",
+    "error": "Your data changed during refresh. Show your data and refresh transactions again.",
+    "display": "Your data changed during refresh. Show your data and refresh transactions again."
+  },
+  {
+    "raw": "Unsupported storage version.",
+    "error": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again.",
+    "display": "These planning details can’t be read. Check the details or choose a recent Headroom backup and try again."
+  },
+  {
+    "raw": "Stored transaction identities do not match their records.",
+    "error": "The saved transaction references don’t match their records. Reopen your data or restore a recent backup.",
+    "display": "The saved transaction references don’t match their records. Reopen your data or restore a recent backup."
+  },
+  {
+    "raw": "The selected transactions changed. Select them again.",
+    "error": "The selected transactions changed. Select them again.",
+    "display": "The selected transactions changed. Select them again."
+  },
+  {
+    "raw": "This treatment does not match the selected debit/credit directions.",
+    "error": "This type doesn’t match the selected money in or money out. Check the type and try again.",
+    "display": "This type doesn’t match the selected money in or money out. Check the type and try again."
+  },
+  {
+    "raw": "Use a valid YYYY-MM-DD export date.",
+    "error": "Enter an export date like 18/10/2026.",
+    "display": "Enter an export date like 18/10/2026."
+  },
+  {
+    "raw": "Export end must follow start.",
+    "error": "The export end date is before its start date. Choose an end date on or after the start.",
+    "display": "The export end date is before its start date. Choose an end date on or after the start."
+  },
+  {
+    "raw": "Use a valid past or current balance date.",
+    "error": "This balance date can’t be used. Enter today or an earlier date, like 18/10/2026.",
+    "display": "This balance date can’t be used. Enter today or an earlier date, like 18/10/2026."
+  },
+  {
+    "raw": "Use upper employee percentage = employer match rate on each line.",
+    "error": "A matching band can’t be read. Write one band per line, like 6 = 100, with the employee percentage first.",
+    "display": "A matching band can’t be read. Write one band per line, like 6 = 100, with the employee percentage first."
+  },
+  {
+    "raw": "A rule already exists for this merchant and direction. Edit that rule instead.",
+    "error": "A rule already exists for this merchant and money flow. Edit that rule instead.",
+    "display": "A rule already exists for this merchant and money flow. Edit that rule instead."
+  },
+  {
+    "raw": "Use category = pounds for each split.",
+    "error": "A split needs a category and amount. Write each line like Groceries = 12.50.",
+    "display": "A split needs a category and amount. Write each line like Groceries = 12.50."
+  },
+  {
+    "raw": "Enter an application ID and a PKCS#8 PEM private key (BEGIN PRIVATE KEY).",
+    "error": "Ask the server owner to check the Enable Banking account details and signing key, then try again.",
+    "display": "Ask the server owner to check the Enable Banking account details and signing key, then try again."
+  },
+  {
+    "raw": "The restored figures have not been saved. Retry saving before closing the app.",
+    "error": "Restored data hasn’t been saved. Try saving again before closing Headroom.",
+    "display": "Restored data hasn’t been saved. Try saving again before closing Headroom."
+  },
+  {
+    "raw": "Saved data could not be opened. Your existing records have not been replaced.",
+    "error": "Your saved data couldn’t be opened; the original records are still there. Try opening again or restore a backup.",
+    "display": "Your saved data couldn’t be opened; the original records are still there. Try opening again or restore a backup."
+  },
+  {
+    "raw": "Changes are in memory but could not be saved. Retry before closing the app.",
+    "error": "Your changes haven’t been saved to this phone. Try saving again before closing Headroom.",
+    "display": "Your changes haven’t been saved to this phone. Try saving again before closing Headroom."
+  },
+  {
+    "raw": "The edit could not be validated. Your previous figures are unchanged.",
+    "error": "This edit couldn’t be checked; your earlier data is unchanged. Check the details and try again.",
+    "display": "This edit couldn’t be checked; your earlier data is unchanged. Check the details and try again."
+  },
+  {
+    "raw": "Restore or reopen your saved data before editing.",
+    "error": "Your saved data needs recovery. Try opening it again or restore a backup before editing.",
+    "display": "Your saved data needs recovery. Try opening it again or restore a backup before editing."
+  },
+  {
+    "raw": "Use the named debt or goal list to change these figures.",
+    "error": "This amount belongs to a named debt or goal. Open that debt or goal to change it.",
+    "display": "This amount belongs to a named debt or goal. Open that debt or goal to change it."
+  },
+  {
+    "raw": "Examples could not be reset.",
+    "error": "Example data couldn’t be reset. Try again.",
+    "display": "Example data couldn’t be reset. Try again."
+  },
+  {
+    "raw": "Storage is unavailable. Retry opening the saved data before restoring a backup.",
+    "error": "Saved data can’t be opened right now. Try opening it again before restoring a backup.",
+    "display": "Saved data can’t be opened right now. Try opening it again before restoring a backup."
+  },
+  {
+    "raw": "Backup could not be restored.",
+    "error": "The backup couldn’t be restored. Choose a supported Headroom backup and try again.",
+    "display": "The backup couldn’t be restored. Choose a supported Headroom backup and try again."
+  },
+  {
+    "raw": "Screenshot protection could not be applied. Your financial screens remain hidden until you retry or explicitly turn this request off.",
+    "error": "Screen protection couldn’t be applied; your financial screens remain hidden. Try again or turn protection off.",
+    "display": "Screen protection couldn’t be applied; your financial screens remain hidden. Try again or turn protection off."
+  },
+  {
+    "raw": "Screen protection could not be disabled. Its last confirmed state is shown.",
+    "error": "Screen protection couldn’t be turned off. Check the switch for its last confirmed setting and try again.",
+    "display": "Screen protection couldn’t be turned off. Check the switch for its last confirmed setting and try again."
+  },
+  {
+    "raw": "The finance API could not complete this request.",
+    "error": "The server couldn’t complete this request. Check the connection and try again.",
+    "display": "The server couldn’t complete this request. Check the connection and try again."
+  },
+  {
+    "raw": "Money must be safe integer pence",
+    "error": "This amount can’t be read. Check the amount and try again.",
+    "display": "Money must be safe integer pence"
+  },
+  {
+    "raw": "Enter a target month such as 2027-06.",
+    "error": "Enter a month like 06/2027.",
+    "display": "Enter a target month such as 2027-06."
+  },
+  {
+    "raw": "consent expired. Reconnect your bank.",
+    "error": "Something went wrong. Check the latest saved data and try again.",
+    "display": "Permission expired. Connect this bank again."
+  },
+  {
+    "raw": "cached retrieval remains incomplete. Check account coverage and retry after the 15-minute cache window.",
+    "error": "Something went wrong. Check the latest saved data and try again.",
+    "display": "Some downloaded transactions are still missing. Check this bank’s accounts and refresh again after 15 minutes."
+  },
+  {
+    "raw": "non-GBP account omitted.",
+    "error": "Something went wrong. Check the latest saved data and try again.",
+    "display": "An account in another currency was left out. Only GBP accounts are supported."
+  },
+  {
+    "raw": "a transaction was omitted because its reference, date or currency was unavailable.",
+    "error": "Something went wrong. Check the latest saved data and try again.",
+    "display": "A transaction was left out because its reference, date or currency was missing. Check your bank statement."
+  },
+  {
+    "raw": "Enable Banking is busy. Please try again later.",
+    "error": "Something went wrong. Check the latest saved data and try again.",
+    "display": "Enable Banking is busy. Try again later."
+  },
+  {
+    "raw": "Enable Banking declined access. Check your application, linked accounts and consent.",
+    "error": "Something went wrong. Check the latest saved data and try again.",
+    "display": "Enable Banking refused access. Ask the server owner to check the application, linked accounts and bank permission, then try again."
+  },
+  {
+    "raw": "Confirm full month coverage in Activity first.",
+    "error": "Something went wrong. Check the latest saved data and try again.",
+    "display": "Check this month is complete in Activity first."
+  },
+  {
+    "raw": "Confirm three complete reviewed past months before generating suggestions.",
+    "error": "Something went wrong. Check the latest saved data and try again.",
+    "display": "Check three past months are complete and reviewed before viewing suggestions."
+  },
+  {
+    "raw": "Choose spendable accounts with dated balance snapshots.",
+    "error": "Something went wrong. Check the latest saved data and try again.",
+    "display": "Choose accounts you can spend from and record a balance date for each."
+  },
+  {
+    "raw": "At least one starting snapshot is older than 24 hours.",
+    "error": "Something went wrong. Check the latest saved data and try again.",
+    "display": "At least one starting balance is over 24 hours old."
+  },
+  {
+    "raw": "Ambiguous booked matches need explicit reconciliation.",
+    "error": "Something went wrong. Check the latest saved data and try again.",
+    "display": "Some payments have more than one possible match. Check and link each one."
+  },
+  {
+    "raw": "Exact bank/card coverage depends on consent and provider permissions. Missing balances are unknown.",
+    "error": "Something went wrong. Check the latest saved data and try again.",
+    "display": "Support depends on your exact bank or card and its permission. Missing balances are unknown."
+  },
+  {
+    "raw": "Explicitly linked booked entry",
+    "error": "Something went wrong. Check the latest saved data and try again.",
+    "display": "Payment linked by you"
+  },
+  {
+    "raw": "Exact merchant, account, amount; within three days",
+    "error": "Something went wrong. Check the latest saved data and try again.",
+    "display": "Same merchant, account and amount, within three days"
+  },
+  {
+    "raw": "Linked entry missing or changed; review required",
+    "error": "Something went wrong. Check the latest saved data and try again.",
+    "display": "Linked payment is missing or changed. Check the match."
+  },
+  {
+    "raw": "Defined-benefit/hybrid inputs are recorded only; DC match scenarios are unavailable.",
+    "error": "Something went wrong. Check the latest saved data and try again.",
+    "display": "Defined benefit and hybrid details are records only. Employer-match comparisons are available only for defined contribution schemes."
+  }
+]
