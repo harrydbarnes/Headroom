@@ -216,3 +216,7 @@ separate verification requirements.
 Tests cover legacy financial calculation parity, SDLT bands, mortgage and budget
 calculations, allocation conservation, investment gating, duplicate imports,
 review retention, transfer/repayment exclusions and API authentication boundaries.
+
+## Period budgets, bills and pension matching
+
+Plan now includes period budgets, custom categories and manual pension matching; Plan/Activity include confirmed bills, expected refunds and planning forecasts. See [usage, financial assumptions and verification boundaries](docs/priority-2-3-delivery-2026-10-17.md). These local tools work without a bank connection and do not execute payments or payroll changes.

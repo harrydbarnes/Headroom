@@ -2,7 +2,9 @@
 
 Prepared 15 October 2026. Planning baseline: Headroom source 0.2.3. This is a proposed delivery roadmap, not a claim that the features below exist. It preserves the existing Move, headroom, goals, debt and private/manual workflows.
 
-Implementation update, 16 October: priorities 0-1 now have source implementation. See [delivery evidence and remaining release gates](priority-0-1-delivery-2026-10-16.md). Native acceptance and dependency remediation remain open.
+Implementation update, 16 October: priorities 0-1 now have source implementation. See [delivery evidence and remaining release gates](priority-0-1-delivery-2026-10-16.md). Dependency mitigations and scoped native acceptance were subsequently completed; live-provider verification remains open.
+
+Implementation update, 17 October: priorities 2–3 and the manual pension calculator alongside them now have source implementation. See [capabilities, calculation boundaries and verification](priority-2-3-delivery-2026-10-17.md). New-screen physical acceptance remains separate.
 
 ## Product outcome and scope
 

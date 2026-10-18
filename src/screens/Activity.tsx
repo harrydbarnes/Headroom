@@ -1,3 +1,5 @@
+import {BillTools} from '../ui/BillTools';
+import {categoryGroup} from '../lib/planning';
 import {TransactionDetails} from '../ui/TransactionDetails';
 import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {Alert,FlatList,Pressable,ScrollView,Text,View} from 'react-native';
@@ -12,9 +14,9 @@ import {MonthChooser} from '../ui/MonthChooser';
 import {CoverageEditor} from '../ui/CoverageEditor';
 import {styles as s,useTheme} from '../ui/theme';
 const treatments:Movement[]=['purchase','income','transfer','repayment','refund','review'];
-const categories=['Uncategorised','Essentials','Flexible','Annual bills','Income','Transfers','Debt repayment','Other'];
+const baseCategories=['Uncategorised','Essentials','Flexible','Annual bills','Income','Transfers','Debt repayment','Other'];
 export function Activity({banking,request}:{banking:Banking;request?:{month:string;key:number}}){
- const store=useWorkspace(),w=store.workspace,{colors:c,hideAmounts}=useTheme();
+ const store=useWorkspace(),w=store.workspace,{colors:c,hideAmounts}=useTheme(),categories=[...baseCategories,...(w.planning?.categories.filter(c=>!c.archived).map(c=>c.name)??[])];
  const [actionsOpen,setActionsOpen]=useState(false),[monthsOpen,setMonthsOpen]=useState(false),[filtersOpen,setFiltersOpen]=useState(false),[coverageOpen,setCoverageOpen]=useState(false),[treatmentFilter,setTreatmentFilter]=useState('All');
  const [month,setMonth]=useState(monthKey()),[query,setQuery]=useState(''),[account,setAccount]=useState('All'),[categoryFilter,setCategoryFilter]=useState('All'),[direction,setDirection]=useState<'all'|'in'|'out'>('all'),[onlyReview,setOnlyReview]=useState(true),[allDates,setAllDates]=useState(false),[minAmount,setMinAmount]=useState(''),[maxAmount,setMaxAmount]=useState(''),[checked,setChecked]=useState<string[]>([]),[selected,setSelected]=useState<string[]>([]),[open,setOpen]=useState(false),[movement,setMovement]=useState<Movement>('review'),[category,setCategory]=useState('Uncategorised'),[remember,setRemember]=useState(false);
  const [manualOpen,setManualOpen]=useState(false),[editingId,setEditingId]=useState<string|null>(null),[merchant,setMerchant]=useState(''),[manualAccount,setManualAccount]=useState('Cash'),[date,setDate]=useState(dayKey()),[amount,setAmount]=useState(0),[incoming,setIncoming]=useState(false),[manualError,setManualError]=useState('');
@@ -30,7 +32,7 @@ export function Activity({banking,request}:{banking:Banking;request?:{month:stri
  const rowIds=new Set(rows.map(t=>t.id)),checkedSet=new Set(checked);
  const selectedSet=new Set(selected),selectedRows=w.transactions.filter(t=>selectedSet.has(t.id));
  const single=selectedRows.length===1?selectedRows[0]:undefined;
- const conflict=(movement==='purchase'||movement==='refund')&&['Income','Transfers','Debt repayment'].includes(category)||movement==='income'&&['Essentials','Flexible','Annual bills'].includes(category)||movement==='transfer'&&category!=='Transfers'||movement==='repayment'&&category!=='Debt repayment';
+ const conflict=(movement==='purchase'||movement==='refund')&&['Income','Transfers','Debt repayment'].includes(category)||movement==='income'&&['Essentials','Flexible','Annual bills'].includes(categoryGroup(w.planning?.categories??[],category))||movement==='transfer'&&category!=='Transfers'||movement==='repayment'&&category!=='Debt repayment';
  const mixed=selectedRows.some(t=>t.amount<0)&&selectedRows.some(t=>t.amount>=0);
  const pairs=single?w.transactions.filter(t=>t.id!==single.id&&t.account!==single.account&&t.amount===-single.amount&&Math.abs(Date.parse(t.date)-Date.parse(single.date))<=3*86400000):[];const pair=pairs.length===1?pairs[0]:undefined;
  const choose=(ids:string[])=>{returnId.current=ids.length===1?ids[0]:null;setSelected(ids);const first=w.transactions.find(t=>t.id===ids[0]);setMovement(first?.movement||'review');setCategory(first?.category||'Uncategorised');setRemember(false);store.dismissMutationError();setOpen(true);};
@@ -40,7 +42,7 @@ export function Activity({banking,request}:{banking:Banking;request?:{month:stri
   const apply=()=>{try{let okay=false;if(editingId)okay=store.editManual(editingId,draft);else{const t=manualTransaction(merchant,manualAccount,date,amount,incoming);okay=store.change(x=>({...x,transactions:[t,...x.transactions].sort((a,b)=>b.date.localeCompare(a.date)),coverage:x.coverage.filter(v=>v.month!==date.slice(0,7))}));}if(okay){setMonth(date.slice(0,7));setChecked([]);setManualOpen(false);}}catch(e){setManualError(e instanceof Error?e.message:'Check the transaction details.');}};
   if(duplicateManual(w.transactions,draft,editingId||undefined))Alert.alert('Possible duplicate','A transaction with this merchant, account, date and amount already exists. Save only if this is a separate payment.',[{text:'Cancel',style:'cancel'},{text:'Save separate transaction',onPress:apply}]);else apply();
  };
- return <View style={{flex:1}}><FlatList ref={list} data={rows} keyExtractor={t=>t.id} contentContainerStyle={s.page} keyboardShouldPersistTaps="handled" ListHeaderComponent={<View style={{gap:16,marginBottom:16}}>
+ return <View style={{flex:1}}><FlatList ref={list} data={rows} keyExtractor={t=>t.id} contentContainerStyle={s.page} keyboardShouldPersistTaps="handled" ListHeaderComponent={<View style={{gap:16,marginBottom:16}}><BillTools/>
   <View style={[s.row,{gap:8}]}><Pressable accessibilityRole="button" accessibilityLabel="Previous month" onPress={()=>setMonth(shiftMonth(month,-1))} style={{minWidth:48,minHeight:48,alignItems:'center',justifyContent:'center'}}><MaterialCommunityIcons name="chevron-left" size={24} color={c.text}/></Pressable><Pressable accessibilityRole="button" accessibilityLabel={month+' · choose month'} onPress={()=>setMonthsOpen(true)} style={{flex:1,minHeight:48,justifyContent:'center',alignItems:'center'}}><Text ref={titleRef} style={[s.heading,{color:c.text,textAlign:'center'}]}>{new Date(month+'-01T12:00:00').toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</Text></Pressable><Pressable accessibilityRole="button" accessibilityLabel="Next month" accessibilityState={{disabled:month>=monthKey()}} disabled={month>=monthKey()} onPress={()=>setMonth(shiftMonth(month,1))} style={{minWidth:48,minHeight:48,alignItems:'center',justifyContent:'center',opacity:month>=monthKey()?.4:1}}><MaterialCommunityIcons name="chevron-right" size={24} color={c.text}/></Pressable></View>
   <Copy small>{allDates?'Search results span all dates. Summary figures use the selected calendar month. ' : ''}{totals.unreviewed} to review · {rows.length} of {monthRows.length} transactions{onlyReview?' · Needs review':''}</Copy>
   <View style={s.wrap}><Button secondary title="Filters" onPress={()=>setFiltersOpen(true)}/><Button secondary title="Summary & actions" onPress={()=>setActionsOpen(true)}/></View>

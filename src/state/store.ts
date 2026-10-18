@@ -24,7 +24,7 @@ export const useFinance=create<State>((set,get)=>({exampleGeneration:0,data:immu
  },
  change(f){
   if(get().storageBlocked){set({mutationError:'Restore or reopen your saved data before editing.'});return false;}
-  try{const data=get().data,key=data.demo?'example':'personal',previous=active(data),candidate=f(previous),next=validateWorkspace(candidate,previous);const affectsUndo=next.ledger!==previous.ledger||next.transactions!==previous.transactions||next.rules!==previous.rules||next.coverage!==previous.coverage;
+  try{const data=get().data,key=data.demo?'example':'personal',previous=active(data),candidate=f(previous),validated=validateWorkspace(candidate,previous);const changedAnnotations=new Set([...(previous.ledger?.annotations??[]),...(validated.ledger?.annotations??[])].filter(a=>JSON.stringify(previous.ledger?.annotations.find(z=>z.transactionId===a.transactionId)?.splits??[])!==JSON.stringify(validated.ledger?.annotations.find(z=>z.transactionId===a.transactionId)?.splits??[])).map(a=>a.transactionId));const affectedMonths=new Set(validated.transactions.filter(t=>changedAnnotations.has(t.id)).map(t=>t.date.slice(0,7)));const next=affectedMonths.size?{...validated,coverage:validated.coverage.filter(c=>!affectedMonths.has(c.month))}:validated;const affectsUndo=next.ledger!==previous.ledger||next.transactions!==previous.transactions||next.rules!==previous.rules||next.coverage!==previous.coverage;
    set({data:immutable({...data,[key]:next}),mutationError:null,...(affectsUndo?{undo:null}:{})});schedule();return true;
   }catch(e){set({mutationError:e instanceof Error?e.message:'The edit could not be validated. Your previous figures are unchanged.'});return false;}
  },
