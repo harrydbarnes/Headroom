@@ -4,7 +4,7 @@ import ts from 'typescript';
 const parse=(file:string)=>ts.createSourceFile(file,readFileSync(file,'utf8'),ts.ScriptTarget.Latest,true,file.endsWith('.tsx')?ts.ScriptKind.TSX:ts.ScriptKind.TS);
 const copyFiles=readdirSync('src/strings').filter(f=>f.endsWith('.ts')).map(f=>'src/strings/'+f);
 const uiFiles=['App.tsx',...['src/screens','src/ui'].flatMap(dir=>readdirSync(dir).filter(f=>f.endsWith('.tsx')).map(f=>dir+'/'+f))];
-const forbidden=/[\u2013\u2014]| -- |\b(?:SQLite|SecureStore|heuristic|attestation|workspace|figures|authorize|organize|categorize|enroll|canceled|please)\b/i;
+const forbidden=/[\u2013\u2014]| -- |\b(?:SQLite|SecureStore|heuristic|attestation|workspace|figures|authorize|organize|categorize|enroll|canceled|please|linking code|access code|finance server|finance API|pairing ticket|HTTPS origin)\b/i;
 const objects=new Map<string,Map<string,ts.Expression>>();
 for(const file of copyFiles){const source=parse(file);function collect(node:ts.Node){if(ts.isVariableDeclaration(node)&&ts.isIdentifier(node.name)){let value=node.initializer;if(value&&ts.isAsExpression(value))value=value.expression;if(value&&ts.isObjectLiteralExpression(value)){const entries=new Map<string,ts.Expression>();for(const p of value.properties)if(ts.isPropertyAssignment(p))entries.set(ts.isIdentifier(p.name)?p.name.text:ts.isStringLiteral(p.name)?p.name.text:'',p.initializer);objects.set(node.name.text,entries);}}ts.forEachChild(node,collect);}collect(source);}
 function choices(node:ts.Expression):string[]{

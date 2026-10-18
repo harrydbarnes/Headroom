@@ -9,6 +9,11 @@ Use British English, sentence case and typographic apostrophes. Be direct, calm 
 | Incoming/outgoing money | Money in / Money out |
 | Transaction classification | Type: Spending, Income, Refund, Transfer, Repayment, Needs review |
 | Phone/server setup | Link this phone |
+| Remove this phone's server link | Unlink this phone |
+| Server-issued link that works once | pairing link |
+| Credential for manual entry | device token |
+| Owner's server | your Headroom server |
+| Address of that server | server address |
 | Bank access | Connect a bank; bank permission |
 | Fetching transactions | Refresh transactions |
 | Completeness | Check this month is complete |

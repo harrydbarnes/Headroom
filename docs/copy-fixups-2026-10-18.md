@@ -6,6 +6,7 @@ Base: `8ae0253`, merged PR 14 on `main`. Six ordered pull requests.
 
 1. Privacy: distinguish Headroom's own encryption from phone protection. Explain the server cache. Describe server connection credentials rather than bank login details. Qualify backup exclusion as application behaviour, since user notes can contain arbitrary text.
 2. Error layer: one exact-entry catalogue and ordered patterns in errors.ts. Compatibility exports in messages.ts contain no tables. The one-off AST extraction captured 172 old keys and both old entry-point outputs before replacing the tables. The fixture regression preserves the old precedence, including warning passthrough. All eight calculator guards now have specific input messages: projection, debt projection, buyer type, tax period, non-negative money, percentage, rate and mortgage term. These validate data reaching calculators from forms or imports, so none was dismissed as internal-only. The reported empty-message throw is now a store-message-or-fallback expression in useBanking; both branches are covered without changing behaviour. The AST coverage additionally found and mapped dynamic CSV row messages, missing record references and reconciliation reasons. Reviewed dynamic exceptions carry written reasons in the coverage test. No thrown literal changed, and no error constants were introduced.
+3. Terminology: presentation values use pairing link, device token, your Headroom server and server address. Updated the server helper's console instruction, README setup path and Settings address placeholder. Exact internal thrown keys, routes and environment variables remain unchanged. The regression fixture's presentation outputs were updated for these intentional wording changes; its raw inputs remain fixed. Copy lint rejects the six banned setup phrases in presentation values. Internal exception keys are exempt because they are exact-match contracts, not presentation text.
 
 ## Claims audit
 
@@ -60,3 +61,5 @@ Not run: device, emulator, TalkBack, font scale, live bank connection, deployed 
 Workstream 1: typecheck passed, 245 tests passed, Android export passed. Metro emitted a NO_COLOR/FORCE_COLOR environment warning.
 
 Workstream 2: typecheck passed, 248 tests passed, Android export passed. One-off extraction preserved all 172 existing exact keys and their entry-point precedence in the regression fixture.
+
+Workstream 3: typecheck passed, 248 tests passed, Android export passed with EXPO_OFFLINE=1 after a stalled network-enabled export was stopped. No dependency or export-script change.
