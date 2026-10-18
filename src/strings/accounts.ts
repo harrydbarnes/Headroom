@@ -53,7 +53,7 @@ export const accountsCopy = {
  setUpBanking: "Set up banking",
  connectYourBank: "Connect your bank",
 
- enableBankingGivesDetail: "Enable Banking is the service Headroom uses to request transactions from your bank. You sign in with your bank and approve access; Headroom never asks for your banking password.",
+ enableBankingGivesDetail: "Enable Banking lets Headroom request transactions after you approve access with your bank. You sign in through your bank; Headroom never sees your password.",
  youReViewingExampleDataReadThe: "You’re viewing example data. Read the guide here, then show your data before linking this phone or connecting a real bank.",
  createEnableBankingDetail: "If you set up Headroom yourself, create an Enable Banking account and register an application in its Control Panel. Add the application ID and private signing key to your Headroom server. The key identifies the application to Enable Banking, so keep it on the server and never enter it on your phone. If someone else manages the server, ask them to finish these steps and send you a one-use pairing link.",
  realAccountsActivateSummary: "Use Production to connect your own bank. Sandbox is for testing with simulated data.",
