@@ -5,7 +5,7 @@ export const shellCopy = {
  unlockWasnTCompletedTryAgainTo: "Unlock wasn’t completed. Try again to open your data.",
  authenticationUnavailable: "Device authentication is unavailable. Check your phone’s unlock settings, then try again.",
  headroom: "Headroom",
- yourDataIsPrivate: "Your data is private.",
+ yourDataIsPrivate: "Your data is hidden.",
  authenticating: "Authenticating…",
  unlockHeadroom: "Unlock Headroom",
  protectionPending: "Applying screen protection before opening your data…",

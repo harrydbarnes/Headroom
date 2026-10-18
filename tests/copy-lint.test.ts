@@ -18,6 +18,13 @@ function choices(node:ts.Expression):string[]{
  return ['value'];
 }
 const words=(value:string)=>value.trim().split(/\s+/).filter(Boolean).length;
+it('marks every Cancel alert button as a native cancel action',()=>{
+ let checked=0;
+ for(const file of uiFiles){const source=parse(file);function visit(node:ts.Node){if(ts.isCallExpression(node)&&node.expression.getText(source)==='Alert.alert'&&node.arguments[2]&&ts.isArrayLiteralExpression(node.arguments[2]))for(const button of node.arguments[2].elements)if(ts.isObjectLiteralExpression(button)){
+  const label=button.properties.find((p):p is ts.PropertyAssignment=>ts.isPropertyAssignment(p)&&p.name.getText(source)==='text');
+  if(label&&(choices(label.initializer).includes('Cancel')||ts.isPropertyAccessExpression(label.initializer)&&label.initializer.name.text==='cancel')){checked++;const style=button.properties.find((p):p is ts.PropertyAssignment=>ts.isPropertyAssignment(p)&&p.name.getText(source)==='style');expect(style&&ts.isStringLiteral(style.initializer)&&style.initializer.text==='cancel',file).toBe(true);}
+ }ts.forEachChild(node,visit);}visit(source);}expect(checked).toBeGreaterThan(0);
+});
 function internalKey(node:ts.Node,source:ts.SourceFile){
  if(ts.isPropertyAssignment(node.parent)&&node.parent.name===node)return true;
  // Exact thrown messages are internal contracts checked by error-coverage.test.

@@ -7,12 +7,13 @@ import {chooseBackup,shareBackup} from '../services/backup';
 import {redeemPairingLink} from '../services/pairing';
 import {useScreenProtection} from '../ui/ScreenProtection';
 import {useWorkspace} from '../state/hooks';
+import {useFinance} from '../state/store';
 import {Button,Copy,Input,Notice} from '../ui/components';
 import {ActionRow,DetailScreen,HelpNote,NavRow,SegmentedControl,SettingsGroup,ToggleRow} from '../ui/settings/components';
 import {RuleManager} from '../ui/RuleManager';
 import {CoverWorkspace} from '../ui/privacy';
 import {deviceColorSupported} from '../ui/theme';
-import {settingsTarget,ruleSummary,exampleSummary,linkSummary,appLockSummary,protectionSummary,type SettingsRoute,type SettingsAnchor} from '../lib/settingsModel';
+import {deleteWithReceipt,settingsTarget,ruleSummary,exampleSummary,linkSummary,appLockSummary,protectionSummary,type SettingsRoute,type SettingsAnchor} from '../lib/settingsModel';
 import {settingsUI as copy} from '../strings/settingsRework';
 import {counts} from '../strings/format';
 import {toUserMessage} from '../strings/errors';
@@ -39,9 +40,10 @@ export function Settings({banking:b,request,active=true,onBackHandler,onRequestH
  const run=async(scope:SettingsRoute|'privacy',f:(show:(text:string,error?:boolean)=>void)=>Promise<void>)=>{if(busyGuard.current)return;busyGuard.current=true;setBusy(true);const version=generation.current;setNotices(v=>({...v,[scope]:undefined}));const show=(text:string,error=false)=>{if(activeRef.current&&generation.current===version)receipt(scope,text,error);};try{await f(show);}catch(e){show(toUserMessage(e),true);}finally{busyGuard.current=false;setBusy(false);}};
  const notice=(scope:SettingsRoute|'privacy')=>notices[scope]&&<Notice error={notices[scope]!.error} kind="success">{notices[scope]!.text}</Notice>;
  const lock=(value:boolean)=>void run('privacy',async show=>{if(value&&(!await LocalAuthentication.hasHardwareAsync()||!await LocalAuthentication.isEnrolledAsync())){setLockUnavailable(true);show(copy.lockUnavailable,true);return;}setLockUnavailable(false);const result=await LocalAuthentication.authenticateAsync({promptMessage:value?copy.enableAppLock:copy.disableAppLock,cancelLabel:copy.cancel,promptSubtitle:copy.unlockSubtitle,disableDeviceFallback:false});if(!result.success){show(copy.lockCancelled,true);return;}store.preferences({appLock:value});});
- const deleteData=()=>Alert.alert(store.demo?copy.deleteExampleTitle:copy.deleteTitle,copy.deleteBody(counts.transaction(store.workspace.transactions.length),counts.merchantRule(store.workspace.rules.length),counts.scenario(store.workspace.scenarios.length)),[{text:copy.cancel,style:'cancel'},{text:copy.deleteConfirm,style:'destructive',onPress:()=>store.clear()}]);
+ const deleteData=()=>Alert.alert(store.demo?copy.deleteExampleTitle:copy.deleteTitle,copy.deleteBody(counts.transaction(store.workspace.transactions.length),counts.merchantRule(store.workspace.rules.length),counts.scenario(store.workspace.scenarios.length)),[{text:copy.cancel,style:'cancel'},{text:copy.deleteConfirm,style:'destructive',onPress:()=>void run('home',async show=>{const result=await deleteWithReceipt(useFinance.getState);show(result.deleted?(result.example?copy.exampleDeleted:copy.dataDeleted):toUserMessage(result.error),!result.deleted);homeOffset.current=0;home.current?.scrollTo({y:0,animated:false});})}]);
  const titles={backup:copy.backup,rules:copy.rules,examples:copy.examples,link:copy.link,about:copy.about};
  return <View style={{flex:1}}><View pointerEvents={route==='home'?'auto':'none'} accessibilityElementsHidden={route!=='home'} importantForAccessibility={route==='home'?'auto':'no-hide-descendants'} style={{position:'absolute',top:0,bottom:0,left:0,right:0,opacity:route==='home'?1:0}}><ScrollView ref={home} onScroll={e=>{if(routeRef.current==='home')homeOffset.current=e.nativeEvent.contentOffset.y;}} scrollEventThrottle={16} onLayout={e=>{if(e.nativeEvent.layout.height>0){if(!pendingAnchor.current)home.current?.scrollTo({y:homeOffset.current,animated:false});scrollAnchor();}}} keyboardShouldPersistTaps="handled" contentContainerStyle={{padding:16,paddingBottom:40,gap:12,width:'100%',maxWidth:640,alignSelf:'center'}}>
+ {notice('home')}
  <View onLayout={e=>{if(e.nativeEvent.layout.height>0){anchors.current.appearance=e.nativeEvent.layout.y;scrollAnchor();}}}><SettingsGroup title={copy.appearance}>
  <SegmentedControl label={copy.theme} options={(['system','light','dark'] as const).map(value=>({value,label:copy.themeLabels[value]}))} value={p.theme} onChange={theme=>store.preferences({theme})}/>
  <ToggleRow title={copy.wallpaper} subtitle={deviceColorSupported?copy.wallpaperHint:copy.wallpaperUnsupported} value={p.dynamicColor} disabled={!deviceColorSupported} onChange={dynamicColor=>store.preferences({dynamicColor})}/>
@@ -75,7 +77,7 @@ export function Settings({banking:b,request,active=true,onBackHandler,onRequestH
  {route==='rules'&&<RuleManager/>}
  {route==='examples'&&<>
  <Copy>{copy.examplesIntro}</Copy><ActionRow icon="flask-outline" title={store.demo?copy.ownData:copy.tryExamples} onPress={()=>store.setDemo(!store.demo)}/>
- <Button secondary title={copy.reset} disabled={busy||b.busy||store.storageBlocked} onPress={()=>Alert.alert(copy.resetTitle,copy.resetBody,[{text:copy.cancel,style:'cancel'},{text:copy.resetConfirm,onPress:()=>{if(store.resetExample())receipt('examples',copy.resetSuccess);}}])}/>
+ <Button secondary title={copy.reset} disabled={busy||b.busy||store.storageBlocked} onPress={()=>Alert.alert(copy.resetTitle,copy.resetBody,[{text:copy.cancel,style:'cancel'},{text:copy.resetConfirm,onPress:()=>{if(store.resetExample())receipt('examples',copy.resetSuccess);else receipt('examples',copy.resetFailure,true);}}])}/>
  {store.storageBlocked&&<Copy small>{copy.storageReason}</Copy>}
  <Button secondary title={copy.restart} onPress={()=>store.change(w=>({...w,onboardingStep:0}))}/><Copy small>{copy.restartHint}</Copy>
  </>}
@@ -87,7 +89,7 @@ export function Settings({banking:b,request,active=true,onBackHandler,onRequestH
  <Button title={copy.link} disabled={busy||b.busy||!pairing||store.demo} onPress={()=>void run('link',async show=>{await redeemPairingLink(pairing);setPairing('');await b.refreshStatus();show(copy.linkSuccess);})}/>
  <ActionRow icon={advanced?'chevron-up':'chevron-down'} title={copy.manual} expanded={advanced} onPress={()=>setAdvanced(v=>!v)}/>
  {advanced&&<><Input label={copy.address} value={address} onChangeText={setAddress} autoCapitalize="none" autoCorrect={false} placeholder={b.origin||copy.addressPlaceholder}/><Input label={copy.token} value={token} onChangeText={setToken} secureTextEntry autoCapitalize="none" autoCorrect={false}/><Button title={copy.save} disabled={busy||b.busy||store.demo} onPress={()=>{const secret=token;setToken('');setNotices(v=>({...v,link:undefined}));manualReceipt.current={version:generation.current};void b.save(address,secret).then(()=>setManualCompleted(v=>v+1));}}/><Copy small>{copy.keyHint}</Copy></>}
- <ActionRow icon="link-variant-off" danger title={copy.unlink} disabled={busy||b.busy||!b.paired||store.demo} onPress={()=>Alert.alert(copy.unlinkTitle,copy.unlinkBody,[{text:copy.cancel},{text:copy.unlinkConfirm,style:'destructive',onPress:()=>void run('link',async show=>{await forgetConnection();b.reset();setAddress('');show(copy.unlinkSuccess);})}])}/>
+ <ActionRow icon="link-variant-off" danger title={copy.unlink} disabled={busy||b.busy||!b.paired||store.demo} onPress={()=>Alert.alert(copy.unlinkTitle,copy.unlinkBody,[{style:'cancel',text:copy.cancel},{text:copy.unlinkConfirm,style:'destructive',onPress:()=>void run('link',async show=>{await forgetConnection();b.reset();setAddress('');show(copy.unlinkSuccess);})}])}/>
  </>}
  {route==='about'&&<><Copy>{copy.tagline}</Copy><Copy small>{copy.versionSentence(packageInfo.version)}</Copy><Copy small>{copy.currency}</Copy><SettingsGroup title={copy.numbers}><View style={{padding:16,gap:12}}><Copy>{copy.headroom}</Copy><Copy>{copy.score}</Copy><Copy>{copy.limits}</Copy></View></SettingsGroup><HelpNote title={copy.dataTitle} summary={copy.dataSummary}><Copy small>{copy.dataDetail}</Copy></HelpNote></>}
  </DetailScreen>}

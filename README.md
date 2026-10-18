@@ -177,8 +177,9 @@ not to log callback query strings, launch tickets, bodies or authorisation
 headers. Use HTTPS, access controls, patching and disk protections on that host.
 
 Disconnecting revokes that provider session and deletes its server cache.
-Deleting a workspace clears its plan, transactions, coverage, rules and move
-scenarios, but does not revoke provider consent. Personal and example deletion
+Deleting current data clears its plan, transactions, coverage, rules and move
+scenarios, but does not revoke provider consent. Older migration recovery records
+on the phone and exported backups remain. Personal and example deletion
 are separate. The old house key is removed after migrated state is saved. Forgetting the API token only unpairs this device.
 To remove all server records after disconnecting, stop the server and delete its
 private data directory, key file and managed secrets according to your backup policy.
