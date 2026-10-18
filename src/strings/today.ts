@@ -11,7 +11,7 @@ export const todayCopy = {
  monthReviewStatus:(part0:string|number,part1:string|number)=>`${part0} confirmed · ${part1} to review this month`,
  scoreEvidenceHelp:(part0:string|number,part1:string|number,part2:string|number)=>`Baseline: ${part0} · all accounts included: ${part1} · past months: ${part2}/3. Cash reflects emergency savings, headroom reflects income left, and debt reflects lower-cost or cleared balances.`,
  makeRoomForWhatMatters: "Make room for what matters",
- aFewAmountsGiveYouAFirst: "A few amounts give you a first monthly plan. Connecting a bank is optional.",
+ aFewAmountsGiveYouAFirst: "A few details give you your first monthly plan. Connecting a bank is optional.",
 
  monthlyHouseholdTakeHomeIncome: "Monthly household take-home income",
  useIncomeAfterText: "Use income after tax and payroll deductions. You can return to this later.",
