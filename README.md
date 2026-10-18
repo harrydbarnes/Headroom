@@ -153,7 +153,8 @@ Guidance consulted 15 October 2026:
 Use Settings > Backup and restore to export personal financial data. On Android,
 choose a folder using the system picker; the app writes readable JSON there.
 Keep it private. Restore validates the file and asks before replacing your
-your data. Backups exclude pairing and server credentials. They include
+data. Headroom does not add pairing or server credentials to backups. Your notes
+are included, so keep secrets out of them. Backups include
 the plan, transactions, rules, coverage and move scenarios. The format limit is
 20 MB and 100,000 transactions. Exported files remain until you delete them.
 
