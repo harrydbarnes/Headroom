@@ -1,3 +1,4 @@
+import {errorCatalog} from './errorCatalog';
 /** Keep internal exception messages and tests stable. Only translate at UI boundaries.
  * Unknown failures cannot promise that a previous write did not happen.
  */
@@ -25,9 +26,11 @@ const messages:Record<string,string>={
 export function toUserMessage(error:unknown):string{
  const raw=error instanceof Error?error.message:typeof error==='string'?error:'';
  if(messages[raw])return messages[raw];
- if(Object.values(messages).includes(raw))return raw;
+ if(errorCatalog[raw])return errorCatalog[raw];
+ if(Object.values(messages).includes(raw)||Object.values(errorCatalog).includes(raw))return raw;
  const row=/^Wrong column count on row (\d+)$/.exec(raw);if(row)return `Row ${row[1]} has a different number of columns from the header. Check the file and try again.`;
  const column=/^Choose one unique column: (.+)$/.exec(raw);if(column)return `Choose a column with a unique heading for ${column[1]}.`;
+ if(/^Enter a (?:date|month|tax year) like /.test(raw))return raw;
  // Reviewed, specific plain messages are added explicitly as each screen is migrated.
  return 'Something went wrong. Check the latest saved data and try again.';
 }

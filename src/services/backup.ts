@@ -1,3 +1,4 @@
+import {bankingCopy} from '../strings/banking';
 import {File,Paths} from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import * as DocumentPicker from 'expo-document-picker';
@@ -15,7 +16,7 @@ export async function savePrivateText(contents:string,prefix='headroom-recovery'
  }
  if(!await Sharing.isAvailableAsync())throw Error('File sharing is unavailable on this device.');
  const file=new File(Paths.cache,prefix+'-'+Date.now()+'.json');
- file.create();file.write(contents);await Sharing.shareAsync(file.uri,{mimeType:'application/json',dialogTitle:'Save your Headroom data privately',UTI:'public.json'});return 'shared';
+ file.create();file.write(contents);await Sharing.shareAsync(file.uri,{mimeType:'application/json',dialogTitle:bankingCopy.shareTitle,UTI:'public.json'});return 'shared';
 }
 export async function chooseBackup(){
  const result=await DocumentPicker.getDocumentAsync({type:['application/json','text/plain'],copyToCacheDirectory:true,multiple:false});if(result.canceled)return null;
