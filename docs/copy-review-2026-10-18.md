@@ -16,6 +16,9 @@
 | Shared components | Long helper notes, no UK date adapter | HelpNote and DateField | Length and date format |
 | Shared strings | Raw type names and internal failures | Movement labels, plural/count helpers and error mapping | Consistency, plural and error clarity |
 
+| Settings.tsx | Pair bank access, Your workspace, technical privacy notes | Link this phone, Your data, expandable plain privacy notes | Consistency, jargon and length |
+| Settings dialogs | Raw counts and long reset/restore text | Plural-aware counts and consequences in two sentences | Plural and error clarity |
+
 ## Decisions needed
 
 - Unknown errors: the proposed “Your data hasn’t been changed” fallback is not provable after asynchronous writes. Default: “Something went wrong. Check the latest saved data and try again.”
