@@ -1,3 +1,6 @@
+import {activityCopy} from '../strings/activity';
+import {formatMonth} from '../lib/dates';
+import {formatCount} from '../strings/format';
 import React from 'react';
 import type {Transaction} from '../lib/finance';
 import {monthKey} from '../lib/workspace';
@@ -6,5 +9,5 @@ export function MonthChooser({visible,onClose,rows,onChoose}:{visible:boolean;on
  const counts=new Map<string,number>();counts.set(monthKey(),0);for(const row of rows){const month=row.date.slice(0,7);counts.set(month,(counts.get(month)??0)+(row.movement==='review'?1:0));}
  const months=[...counts.keys()].sort().reverse(),oldest=[...counts.keys()].sort().find(m=>(counts.get(m)??0)>0);
  const choose=(month:string)=>{onChoose(month);onClose();};
- return <Sheet visible={visible} onClose={onClose} title="Choose a month">{oldest&&<Button title={'Oldest outstanding: '+oldest} onPress={()=>choose(oldest)}/>}<Copy small>Months with transactions, plus the current month. Use Previous and Next for months without activity.</Copy>{months.map(month=><Button key={month} secondary title={`${month} · ${counts.get(month)} to review`} onPress={()=>choose(month)}/>)}</Sheet>;
+ return <Sheet visible={visible} onClose={onClose} title={activityCopy.chooseAMonth}>{oldest&&<Button title={activityCopy.review+formatMonth(oldest)} onPress={()=>choose(oldest)}/>}<Copy small>{activityCopy.monthsWithTransactionsPlusTheCurrentMonth}</Copy>{months.map(month=><Button key={month} secondary title={activityCopy.message95(formatMonth(month),formatCount(counts.get(month)??0))} onPress={()=>choose(month)}/>)}</Sheet>;
 }
