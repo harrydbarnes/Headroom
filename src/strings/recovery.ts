@@ -1,8 +1,8 @@
 // Presentation copy only. Stored values and contracts remain in the domain modules.
 export const recoveryCopy = {
- 
+
  replaceUnreadableSavedData: "Replace unreadable saved data?",
- restoreConfirmBody: (value0:unknown,value1:unknown)=>`This restores ${value0} and ${value1} from a checked backup, and resets unreadable example data; it can’t be undone. The phone link is unchanged; export recovery records first if you need the originals.`,
+ restoreConfirmBody: (value0:unknown,value1:unknown)=>`This restores ${value0} and ${value1} from a checked backup, and resets unreadable example data. It can’t be undone. The phone link is unchanged. Export recovery records first if you need the originals.`,
  cancel: "Cancel",
  restoreBackup: "Restore backup",
  recoverYourData: "Recover your data",
@@ -13,10 +13,10 @@ export const recoveryCopy = {
  exportYourBackup: "Export your backup",
  yourBackupWasWritten: "Your backup was written.",
  exportCancelled: "Export cancelled.",
- backupShareReceipt: "Share sheet closed; confirm the destination saved your backup.",
+ backupShareReceipt: "Share sheet closed. Confirm the destination saved your backup.",
  exportRecoveryRecords: "Export recovery records",
  recoveryRecordsExportedText: "Recovery records exported. Keep them private.",
- archiveShareReceipt: "Share sheet closed; confirm the destination saved the archive.",
+ archiveShareReceipt: "Share sheet closed. Confirm the destination saved the archive.",
  tryOpeningAgain: "Try opening again",
  restoreABackup: "Restore a backup",
  restoreUnavailableHelp: "If storage itself is unavailable, restore will report a save failure. No successful save is claimed until the data has been written.",

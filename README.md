@@ -108,7 +108,7 @@ Refresh is manual in this version. It does not run scheduled background imports.
 The backend is personal, single-owner software with a high-entropy device token.
 It has no multi-user registration. Do not distribute one person's token or
 Enable Banking credentials to other people. Each deployment needs its own setup.
-No credentials are embedded in the APK or committed to source.
+Keep credentials out of the APK and source. Configure server secrets on your host.
 
 ## Ratings and suggested amounts
 

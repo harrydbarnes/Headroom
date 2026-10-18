@@ -18,7 +18,7 @@ it('keeps exported copy keys short, meaningful, referenced and free of fragments
   if(!entry.references){if(dynamicStringKeys[id])seen.add(id);else failures.push(id+': unused');}
  }
  expect(failures).toEqual([]);expect([...seen].sort()).toEqual(Object.keys(dynamicStringKeys).sort());
-});
+},15000); // Builds a TypeScript program to resolve copy references across imports.
 it('formats named counts without exposing a wrong singular',()=>{expect(counts.transaction(1)).toBe('1 transaction');expect(counts.transaction(1234)).toBe('1,234 transactions');expect(counts.existingMatch(1)).toBe('1 existing match');});
 it('preserves the specific save failure when it crosses the UI twice',()=>{const text=toUserMessage('Changes are in memory but could not be saved. Retry before closing the app.');expect(text).toContain('haven’t been saved');expect(toUserMessage(text)).toBe(text);expect(toUserMessage('unexpected error')).not.toContain('unchanged');});
 it('translates bank-prefixed warnings without dropping unrelated financial caveats',()=>{

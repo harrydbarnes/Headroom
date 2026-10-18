@@ -1,5 +1,8 @@
 // Presentation copy only. Stored values and contracts remain in the domain modules.
 export const toolsCopy = {
+ pensionPaySection:"Pay and evidence",
+ pensionEmployerSection:"Employer terms",
+ pensionLimitsSection:"Scenarios and limits",
  renewalStatus:(part0:string|number,part1:string|number,part2:string|number)=>`Renewal: ${part0} · ${part1}${part2}`,
  scheduleStatus:(part0:string|number,part1:string|number,part2:string|number,part3:string|number,part4:string|number)=>`${part0} · ${part1} · first due ${part2}${part3} · ${part4}`,
  cancellationHelp:(part0:string|number)=>`Cancellation instructions: ${part0}. Recording instructions does not cancel a payment.`,
@@ -8,16 +11,16 @@ export const toolsCopy = {
  refundStatus:(part0:string|number,part1:string|number,part2:string|number)=>`${part0} · due ${part1}${part2}`,
  forecastExclusions:(part0:string|number,part1:string|number)=>`Excluded accounts: ${part0}. Last complete import: ${part1}.`,
  settlementHelp:(part0:string|number,part1:string|number)=>`Choose one reviewed booked entry to settle ${part0} due ${part1}. Confirm the account, direction and date against your statement. One entry cannot settle multiple events.`,
- budgetCalendarHelp:(part0:string|number,part1:string|number,part2:string|number)=>`Default calendar: ${part0}, first date ${part1}; weekends ${part2}. Changing this affects new budgets. Existing budgets keep their calendar.`,
+ budgetCalendarHelp:(part0:string|number,part1:string|number,part2:string|number)=>`Default calendar: ${part0}, first date ${part1}. Weekends ${part2}. Changing this affects new budgets. Existing budgets keep their calendar.`,
  budgetScopeStatus:(part0:string|number,part1:string|number,part2:string|number,part3:string|number,part4:string|number)=>`${part0}${part1} · ${part2} · starts ${part3}${part4}`,
  budgetPeriodStatus:(part0:string|number,part1:string|number,part2:string|number)=>`${part0} to ${part1} (end excluded) · ${part2} left`,
  budgetUsageStatus:(part0:string|number,part1:string|number,part2:string|number)=>`${part0} of ${part1} elapsed; ${part2}% of available budget used.`,
  dailyAllowanceHelp:(part0:string|number)=>`Allowance divides positive remaining budget by days left including today. It is not a balance or safe-to-spend forecast. ${part0} to review.`,
  schemePeriodStatus:(part0:string|number,part1:string|number,part2:string|number,part3:string|number,part4:string|number)=>`${part0}${part1} · ${part2} · ${part3} · ${part4} pay periods/year`,
- observedFundingHelp:(part0:string|number,part1:string|number)=>`Observed gross employee rate: ${part0}; observed genuine employer rate: ${part1}. Both use the confirmed denominator.`,
- csvMappingHelp:"Map exact column headings. Amounts use pounds and a decimal point. For separate debit/credit columns, enter the debit heading as Amount and the credit heading below. Matching existing rows are skipped; check overlap with bank imports before confirming. Use dates like 18/10/2026. Standard year-first bank export dates are also accepted.",
+ observedFundingHelp:(part0:string|number,part1:string|number)=>`Observed gross employee rate: ${part0}. Observed genuine employer rate: ${part1}. Both use the confirmed denominator.`,
+ csvMappingHelp:"Map exact column headings. Amounts use pounds and a decimal point. For separate debit/credit columns, enter the debit heading as Amount and the credit heading below. Matching existing rows are skipped. Check overlap with bank imports before confirming. Use dates like 18/10/2026. Standard year-first bank export dates are also accepted.",
  csvPreviewCounts:(part0:string|number,part1:string|number,part2:string|number)=>`${part0} · ${part1} · ${part2} to add`,
- bankImportLimits:(part0:string|number)=>`${part0} Booked GBP transactions only; pending items, automatic balance retrieval and scheduled refresh are not supported by this connection path.`,
+ bankImportLimits:(part0:string|number)=>`${part0} Only booked transactions in pounds are included. Pending items, automatic balance updates and scheduled refreshes aren’t supported.`,
  accountTypeStatus:(part0:string|number)=>`Account type: ${part0}`,
  accountOwnershipStatus:(part0:string|number)=>`Ownership: ${part0}`,
  billsAndCashFlow: "Bills and cash flow",
@@ -30,14 +33,14 @@ export const toolsCopy = {
  payment: "Payment",
  reviewBookedMatchFor: "Review booked match for ",
  linkBookedEntryFor: "Link booked entry for ",
- 
+
  income: "Income",
  ended: " · ended ",
  confirmed: "confirmed",
  draft: "draft",
  originalAmount: "Original amount",
  priceFrom: "Price from ",
- 
+
  editSchedule: "Edit schedule ",
  addRecurringSchedule: "Add recurring schedule",
  suggestedPatterns: "Suggested patterns",
@@ -45,15 +48,15 @@ export const toolsCopy = {
  noRepeatedPatternText: "No repeated pattern found in reviewed transactions.",
  observedLow: "Observed low",
  observedHigh: "Observed high",
- 
+
  reviewPattern: "Review pattern ",
- expectedRefundsStayDetail: "Expected refunds stay separate from income and from confirmed cash. Link the booked refund once received; overdue estimates never imply receipt.",
+ expectedRefundsStayDetail: "Expected refunds stay separate from income and from confirmed cash. Link the booked refund once received. Overdue estimates never imply receipt.",
  dismissed: " · dismissed",
  expectedRefund: "Expected refund",
  editRefund: "Edit refund ",
  addExpectedRefund: "Add expected refund",
  forecastBalanceSummary: "Choose spendable account balances on recorded dates.",
- forecastBalanceDetail: "Choose spendable account balances on recorded dates. Booked transactions after each balance date are applied once; same-day activity is assumed included. A stale, incomplete or manually recorded balance is not live cash.",
+ forecastBalanceDetail: "Choose spendable account balances on recorded dates. Booked transactions after each balance date are applied once. Same-day activity is assumed included. A stale, incomplete or manually recorded balance is not live cash.",
  forecast: "Forecast ",
  forecastNextIncome: "Forecast next income",
  forecastDays: "Forecast days",
@@ -64,7 +67,7 @@ export const toolsCopy = {
  forecastReserveDetail: "Reserves are a one-time hold for this forecast, not recurring payments. Enter only proposed pension changes, never existing payroll deductions. Avoid reserving the same bill/goal money twice.",
  balanceOnADate: " · balance on a date ",
  missing: "missing",
- 
+
  noneRecorded: "none recorded",
  modelledOpeningBalance: "Modelled opening balance",
  unknown: "Unknown",
@@ -90,7 +93,7 @@ export const toolsCopy = {
  newRecurringAmount: "New recurring amount",
  iConfirmScheduleLabel: "I confirm this schedule and next payment date",
  changingFirstDateSummary: "Changing the first date changes future recurrence.",
- changingFirstDateDetail: "Changing the first date changes future recurrence. Review dates carefully; this is a local plan, not a bank instruction. No subscription cancellation or money movement is performed.",
+ changingFirstDateDetail: "Changing the first date changes future recurrence. Review dates carefully. This is a local plan, not a bank instruction. No subscription cancellation or money movement is performed.",
  saveRecurringSchedule: "Save recurring schedule",
  discardScheduleDraft: "Discard schedule draft",
  chooseOriginalReviewedText: "Choose the original reviewed purchase",
@@ -102,7 +105,7 @@ export const toolsCopy = {
  saveExpectedRefund: "Save expected refund",
  discardRefundDraft: "Discard refund draft",
  rejectThisBookedMatch: "Reject payment match",
- 
+
  searchBookedEntriesLabel: "Search booked entries by merchant or date",
  showingUpTo100MatchesWiDetail: "Showing up to 100 matches within 35 days of the expected date.",
  link: "Link ",
@@ -110,21 +113,21 @@ export const toolsCopy = {
  periodBudgets: "Period budgets",
  categoriesPaydayPeriodsSummary: "Categories, payday periods, daily allowance and rollover",
  budgetSpendingSummary: "Actual spending uses included accounts, reviewed purchases and refunds.",
- budgetSpendingDetail: "Actual spending uses included accounts, reviewed purchases and refunds. Transfers and repayments are excluded; splits count in their own categories. Overall, category and merchant limits overlap and are never added together.",
- 
- 
+ budgetSpendingDetail: "Actual spending uses included accounts, reviewed purchases and refunds. Transfers and repayments are excluded. Splits count in their own categories. Overall, category and merchant limits overlap and are never added together.",
+
+
  setBudgetCalendar: "Set budget calendar",
  noBudgetsYetText: "No budgets yet. Set your payday calendar, then add a limit. Your monthly baseline stays unchanged.",
  endsBefore: " · ends before ",
- 
+
  allocation: "Allocation",
  rolloverIntoThisPeriod: "Rollover into this period",
  reviewedSpendingLessRefunds: "Reviewed spending less refunds",
  remaining: "Remaining",
- 
+
  sameElapsedDaysLabel: "Same elapsed days of previous period",
  dailyBudgetAllowance: "Daily budget allowance",
- 
+
  outsideItsActivePeriod: "Outside its active period.",
  spent: " · spent ",
  remainingText: " · remaining ",
@@ -161,7 +164,7 @@ export const toolsCopy = {
  startsOn: "Starts on",
  rollover: "Rollover",
  aMidPeriodStartReceivesAFull: "A mid-period start receives a full allocation from that day.",
- aMidPeriodStartReceivesDetail: "A mid-period start receives a full allocation from that day. To change a limit, end its dated budget and add the replacement. Positive carries unused funds; both also carries overspending.",
+ aMidPeriodStartReceivesDetail: "A mid-period start receives a full allocation from that day. To change a limit, end its dated budget and add the replacement. Positive carries unused funds. Both also carries overspending.",
  savePeriodBudget: "Save period budget",
  discardFormChanges: "Discard form changes",
  pensionContributions: "Pension contributions",
@@ -170,7 +173,7 @@ export const toolsCopy = {
  schemeEvidenceDetail: "Record each employment and scheme version separately. Scheme terms, payslip deductions and provider receipts are different evidence. This calculator changes neither payroll nor your household baseline.",
  addConfirmedSchemeDetail: "Add confirmed scheme terms to compare your current election with the full employer match. Unknown matching stays unknown.",
  quotedElection: "Quoted election ",
- confirmedDenominator: "; confirmed denominator ",
+ confirmedDenominator: ". Confirmed denominator ",
  perPayPeriod: " per pay period.",
  employeeFundedGrossPerPeriod: "Employee-funded gross per period",
  genuineEmployerFundingLabel: "Genuine employer funding per period",
@@ -181,10 +184,10 @@ export const toolsCopy = {
  employeeFundedMonthlyLabel: "Employee-funded monthly equivalent",
  employerFundedMonthlyLabel: "Employer-funded monthly equivalent",
  unknownText: "unknown",
- 
+
  combinedMonthlyEquivalent: "Combined monthly equivalent",
  annualRunRateLabel: "Annual run rate plus recorded one-off",
- annualRunRateText: "Annual run rate assumes unchanged pay/terms; it is not actual YTD. One-off funding is included once.",
+ annualRunRateText: "Annual run rate assumes unchanged pay/terms. It is not actual YTD. One-off funding is included once.",
  recordedEmployeeYTD: "Recorded employee YTD",
  recordedEmployerYTD: "Recorded employer YTD",
  basicReliefAddedPerPeriod: "Basic relief added per period",
@@ -219,7 +222,7 @@ export const toolsCopy = {
  fixedEmployerPaymentLabel: "Fixed employer payment per pay period",
  additionalEmployerBenefLabel: "Additional employer benefit per pay period",
  matchingTiersUpperLabel: "Matching tiers: upper employee % = match %",
- forOneForOneMatchingUpTo: "For one-for-one matching up to 6%, enter 6 = 100.",
+ forOneForOneMatchingUpTo: "On each line, enter the highest employee percentage that earns that employer match rate.",
  matchingTiersDetail: "For one-for-one matching up to 6%, enter 6 = 100. For 100% on the first 3% and 50% on the next 3%, use two lines: 3 = 100 and 6 = 50. Tiers are marginal bands, ordered by employee percentage. Empty means confirmed no match only when scheme terms are verified.",
  observedPayPeriodLabel: "Observed pay-period gross funding known",
  observedEmployeeFundedLabel: "Observed employee-funded gross this pay period",
@@ -238,7 +241,7 @@ export const toolsCopy = {
  incrementalTakeHomeLabel: "Incremental take-home cost confirmed by payroll",
  takeHomeCostLabel: "Take-home cost per £100 gross contribution (£)",
  useAPayrollConfirmedSummary: "Use a payroll-confirmed incremental factor for this tax year and comparison range.",
- useAPayrollConfirmedDetail: "Use a payroll-confirmed incremental factor for this tax year and comparison range. This is a linear estimate; tax bands, Scottish tax, benefits, student loans and pay thresholds can change the factor. No tax-table or future-rule calculation is implied.",
+ useAPayrollConfirmedDetail: "Use a payroll-confirmed incremental factor for this tax year and comparison range. This is a linear estimate. Tax bands, Scottish tax, benefits, student loans and pay thresholds can change the factor. No tax-table or future-rule calculation is implied.",
  maximumRateIndependentlLabel: "Maximum rate independently verified",
  verifiedContributionRatLabel: "Verified contribution-rate ceiling (%)",
  allPensionsAllowancesLabel: "All pensions, allowances and earnings limits checked",
@@ -263,7 +266,7 @@ export const toolsCopy = {
  addAccount: "Add account",
  selected: "Selected: ",
  statementTools: "Statement tools",
- selectAccountAboveDetail: "Select an account above to record its balance or import. Export uses the selected account; clear selection for all accounts.",
+ selectAccountAboveDetail: "Select an account above to record its balance or import. Export uses the selected account. Clear selection for all accounts.",
  clearAccountSelection: "Clear account selection",
  currentBalanceNegativeForDebt: "Current balance (£, negative for debt)",
  availableBalanceOptional: "Available balance (£, optional)",
@@ -284,14 +287,14 @@ export const toolsCopy = {
  exportCSV: "Export CSV",
  rollBackImport: "Roll back import",
  rollbackConfirmTitle: "Roll back import?",
- rollbackConfirmBody: "This removes the import’s transactions and their notes or splits; it can’t be undone. Export a backup first if you need to keep them.",
+ rollbackConfirmBody: "This removes the import’s transactions and their notes or splits. It can’t be undone. Export a backup first if you need to keep them.",
  cancel: "Cancel",
  rollBack: "Roll back",
  rollbackReceipt: "Imported rows and their annotations removed.",
  editAccount: "Edit account",
  accountNameUnique: "Account name (unique)",
  institutionOptional: "Institution (optional)",
- 
+
  saveAccount: "Save account",
  pensionLimitsSummary:"Check pension limits independently.",
  advancedPensionLimits:"Advanced pension limits",

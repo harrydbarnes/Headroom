@@ -1,7 +1,7 @@
 // Presentation copy only. Stored values and contracts remain in the domain modules.
 export const todayCopy = {
  setupProgress:(part0:string|number)=>`Step ${part0} of 4 · progress saves on this device`,
- setupConfirmHelp:(part0:string|number)=>`${part0} Confirm actual values in Plan; zero is not proof that a section is complete.`,
+ setupConfirmHelp:(part0:string|number)=>`${part0} Confirm actual values in Plan. Zero is not proof that a section is complete.`,
  headroomContext:(part0:string|number)=>`${part0} · after planned spending and annual reserves`,
  cashBalanceLimit:(part0:string|number)=>`${part0}. This is not a live account balance.`,
  setupSkippedHelp:(part0:string|number)=>`${part0} still need your review. Skipped values remain provisional.`,
@@ -12,7 +12,7 @@ export const todayCopy = {
  scoreEvidenceHelp:(part0:string|number,part1:string|number,part2:string|number)=>`Baseline: ${part0} · all accounts included: ${part1} · past months: ${part2}/3. Cash reflects emergency savings, headroom reflects income left, and debt reflects lower-cost or cleared balances.`,
  makeRoomForWhatMatters: "Make room for what matters",
  aFewAmountsGiveYouAFirst: "A few amounts give you a first monthly plan. Connecting a bank is optional.",
- 
+
  monthlyHouseholdTakeHomeIncome: "Monthly household take-home income",
  useIncomeAfterText: "Use income after tax and payroll deductions. You can return to this later.",
  essentialsIncludingMortLabel: "Essentials, including mortgage/rent and debt minimums",
@@ -44,8 +44,8 @@ export const todayCopy = {
  confirmMonthlyBaseline: "Confirm monthly baseline",
  yourPeriodBudgets: "Your period budgets",
  remaining: " remaining",
- 
- limitsOverlapDoText: "Limits overlap; do not add them together. Upcoming bills are separate from actual spending.",
+
+ limitsOverlapDoText: "Limits overlap. Do not add them together. Upcoming bills are separate from actual spending.",
  reviewBudgets: "Review budgets",
  reviewYourPensionMatch: "Review your pension match",
  confirmedSchemeTermsDetail: "Your confirmed scheme terms show additional employer funding may be available. Compare the take-home change and your cash buffer before deciding.",
@@ -64,12 +64,12 @@ export const todayCopy = {
  goalShortfallPerMonth: "Goal shortfall per month",
  dataAndCompleteness: "Data and completeness",
  noCompleteImportRecorded: "No complete import recorded",
- 
+
  complete: "Complete",
  someDataMayBeMissing: "Some data may be missing",
  noneRecorded: "None recorded",
  checkBankAccess: "Check bank access",
- 
+
  confirmEachMonthDetail: "You confirm each month is complete. Headroom can’t check this for you. Changed transactions can mean a month needs checking again.",
  checkCompleteMonths: "Check complete months",
  financialWellbeing: "Financial wellbeing",
@@ -80,7 +80,7 @@ export const todayCopy = {
  confirmedDetail: "confirmed",
  needsConfirmation: "needs confirmation",
  needed: "needed",
- 
+
  aGuideBasedOnTheDataYou: "A guide based on the data you’ve confirmed. It isn’t a credit score or a lender’s view.",
  yourMonthlyCheckIn: "Your monthly check-in",
  reviewedEssentialsFlexiLabel: "Reviewed Essentials + Flexible this month",
@@ -112,7 +112,7 @@ setupTitles:['Your income','Your monthly spending','Your cash and debt','Your fi
 } as const;
 export const exampleLessons=[
  {title:'Review a transaction',body:'Open Activity and classify the example grocer and rail payments. Try a remembered rule. Add a example cash entry to try edit/delete and undo. Three completed past months are already available in the month chooser.',tab:'Activity'},
- {title:'Understand the plan',body:'Open a Plan section, make a draft change, then apply or close it. Check the debt repayment order and individual goal funding. Use a past month to preview actuals; annual insurance stays separate from the monthly reserve.',tab:'Plan'},
+ {title:'Understand the plan',body:'Open a Plan section, make a draft change, then apply or close it. Check the debt repayment order and individual goal funding. Use a past month to preview actuals. Annual insurance stays separate from the monthly reserve.',tab:'Plan'},
  {title:'Compare a move',body:'Select both example saved scenarios to compare their mortgage, completion cash and exchange gap. Adjust an assumption, then update a saved scenario. No real property or lender data is used.',tab:'Move'},
  {title:'Check the evidence',body:'The overview score uses confirmed example data from three past months. It demonstrates the interface, not your finances. Review the component explanation and evidence checklist below.',tab:'Today'}
 ] as const;
