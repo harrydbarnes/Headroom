@@ -76,15 +76,16 @@ export function HelpNote({summary,children}:{summary:string;children:React.React
 /** Wrap Input rather than numeric Field: dates must retain the exact typed text.
  * FormScope blocks primary saves while a draft is invalid. Stored values stay ISO.
  */
-export function DateField({label,value,onChange,kind='date',optional=false}:{label:string;value:string;onChange:(value:string)=>void;kind?:'date'|'month'|'taxYear';optional?:boolean}){
+export function DateField({label,value,onChange,kind='date',optional=false,onValidityChange}:{label:string;value:string;onChange:(value:string)=>void;kind?:'date'|'month'|'taxYear';optional?:boolean;onValidityChange?:(valid:boolean)=>void}){
  const display=(value:string)=>kind==='date'?dateInput(value):kind==='month'?monthInput(value):value?formatTaxYear(value):'';
  const parse=kind==='date'?parseUkDate:kind==='month'?parseUkMonth:parseTaxYear;
  const [raw,setRaw]=useState(()=>display(value)),[error,setError]=useState(''),editing=useRef(false),id=useId(),validation=useContext(Validation),update=useRef(validation.update);update.current=validation.update;
+ const validity=useRef(onValidityChange);validity.current=onValidityChange;
  const message=kind==='date'?common.dateError:kind==='month'?common.monthError:common.taxYearError;
  const valid=(text:string)=>optional&&!text.trim()?'':parse(text);
- useEffect(()=>{if(!editing.current){setRaw(display(value));setError('');update.current(id,valid(display(value))===null);}},[value,kind,optional]);
+ useEffect(()=>{if(!editing.current){setRaw(display(value));setError('');update.current(id,valid(display(value))===null);validity.current?.(valid(display(value))!==null);}},[value,kind,optional]);
  useEffect(()=>()=>update.current(id,false),[]);
- const change=(text:string)=>{setRaw(text);const next=valid(text);update.current(id,next===null);if(next!==null){onChange(next);setError('');}};
- const finish=()=>{editing.current=false;const next=valid(raw);setError(next===null?message:'');update.current(id,next===null);if(next!==null){onChange(next);setRaw(display(next));}};
+ const change=(text:string)=>{setRaw(text);const next=valid(text);update.current(id,next===null);validity.current?.(next!==null);if(next!==null){onChange(next);setError('');}};
+ const finish=()=>{editing.current=false;const next=valid(raw);setError(next===null?message:'');update.current(id,next===null);validity.current?.(next!==null);if(next!==null){onChange(next);setRaw(display(next));}};
  return <Input label={label} value={raw} onChangeText={change} onFocus={()=>editing.current=true} onBlur={finish} onSubmitEditing={finish} error={error} placeholder={kind==='date'?common.datePlaceholder:kind==='month'?common.monthPlaceholder:common.taxYearPlaceholder} autoCorrect={false} autoCapitalize="none" keyboardType={kind==='taxYear'?'default':'numbers-and-punctuation'}/>;
 }
