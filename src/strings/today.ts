@@ -89,9 +89,9 @@ export const todayCopy = {
  yourMonthlyCheckIn: "Your monthly check-in",
  reviewedEssentialsFlexibleThisMonth: "Reviewed Essentials + Flexible this month",
  plannedEssentialsFlexible: "Planned essentials + flexible",
- outsideTheseCategoriesIncludingAnnualBillsTotal: "outside these categories (including annual bills) total .",
- outsideTheseCategoriesIncludingAnnualBillsTotal2: " outside these categories (including annual bills) total ",
- theyAreExcludedFromThisComparisonThis: ". They are excluded from this comparison. This month is still in progress. Unreviewed transactions, cash and unsupported accounts may be missing.",
+ outsideTheseCategoriesIncludingAnnualBillsTotal: "This comparison excludes spending outside Essentials and Flexible.",
+ outsideTheseCategoriesIncludingAnnualBillsTotal2: " outside these categories (including annual bills), totalling ",
+ theyAreExcludedFromThisComparisonThis: ". This spending is excluded from this comparison. This month is still in progress. Unreviewed transactions, cash and unsupported accounts may be missing.",
  showYourData: "Show your data",
  resetExampleData: "Reset example data?",
  thisReplacesOnlyExampleDataClassificationsCoverage: "This replaces only example data, classifications, coverage, rules and scenarios with the original walkthrough. Your data and settings stay as they are.",
@@ -112,6 +112,8 @@ export const todayCopy = {
  previousGuideStep: "Previous guide step",
  continueExploringReplayTheGuideWithYour: "Continue exploring, replay the guide with your current example edits, or restore the original example data.",
  replayGuide: "Replay guide",
+ scoreDataSummary:"Check the confirmed data behind your score.",
+setupTitles:['Your income','Your monthly spending','Your cash and debt','Your first plan'],
 } as const;
 export const exampleLessons=[
  {title:'Review a transaction',body:'Open Activity and classify the example grocer and rail payments. Try a remembered rule. Add a example cash entry to try edit/delete and undo. Three completed past months are already available in the month chooser.',tab:'Activity'},

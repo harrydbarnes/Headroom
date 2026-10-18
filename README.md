@@ -11,7 +11,7 @@ Current source baseline: **0.2.3**. The unreleased account/ledger work and open 
 ## What is implemented
 
 - Native React Native / Expo Android interface with Today, Activity, Plan, optional Move, Accounts and dedicated Settings.
-- Resumable manual onboarding and isolated personal/example workspaces.
+- Resumable manual onboarding and isolated personal/example datas.
 - Searchable transaction review with categories, filters, bulk actions, merchant rules and undo.
 - Manual cash/unsupported-account entries and explicit past-month coverage attestations.
 - Multiple named debts/goals, reviewed actuals versus plan and user-approved baseline updates.
@@ -25,7 +25,7 @@ Current source baseline: **0.2.3**. The unreleased account/ledger work and open 
 - Explicit purchase, income, refund, transfer, repayment and unreviewed classifications.
 - Transparent wellbeing score, comfort band and monthly debt/cash/goal/investment allocations.
 - Required mortgage, SDLT, sale proceeds, exchange timing, fees, LTV and rate stress tests using the existing pure TypeScript engines.
-- Example mode is explicitly labelled, has fictional review transactions, cannot import real bank data and uses a separate persisted workspace that preserves personal figures.
+- Example mode is explicitly labelled, has fictional review transactions, cannot import real bank data and uses a separate persisted workspace that preserves your data.
 
 This is a runnable first implementation, not an already installed or published Android app.
 No bank credentials, live account balances or transaction history have been copied from the website.
@@ -64,7 +64,7 @@ Production signing and Play Console publication require your accounts and setup.
 
 ## Configure real bank access
 
-Accounts > Set up Enable Banking now walks through registration, private-server setup, phone pairing, bank consent and import. See the [guided setup checklist](docs/enable-banking-onboarding.md).
+Accounts > Set up banking now walks through registration, private-server setup, phone pairing, bank consent and import. See the [guided setup checklist](docs/enable-banking-onboarding.md).
 
 The mobile app uses its own API server. It does not reuse ChatGPT website cookies
 or the website's encrypted credentials. Keep the website configuration intact.
@@ -86,7 +86,7 @@ or the website's encrypted credentials. Keep the website configuration intact.
 6. Run `npm run pair-device` in the server environment with PUBLIC_ORIGIN and
    DEVICE_TOKEN set. It requests a two-minute, single-use pairing ticket from your
    running HTTPS server. Keep the link private; paste it into Settings > Pair bank
-   access > One-use pairing link, then press Pair this device. Alternatively use
+   access > One-use linking code, then press Link this phone. Alternatively use
    Advanced manual pairing in Settings for the HTTPS origin and device token.
    The Enable Banking private key never belongs on the phone.
 7. In Accounts choose Find supported banks, search for your bank and authorise it
@@ -153,7 +153,7 @@ Guidance consulted 15 October 2026:
 Use Settings > Backup and restore to export personal financial data. On Android,
 choose a folder using the system picker; the app writes readable JSON there.
 Keep it private. Restore validates the file and asks before replacing your
-personal workspace. Backups exclude pairing and server credentials. They include
+your data. Backups exclude pairing and server credentials. They include
 the plan, transactions, rules, coverage and move scenarios. The format limit is
 20 MB and 100,000 transactions. Exported files remain until you delete them.
 

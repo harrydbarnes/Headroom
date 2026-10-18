@@ -20,4 +20,6 @@ Display calendar dates as 18 Oct 2026, details as 18 October 2026, months as Sep
 
 Do not use long dashes, double hyphens, internal enum values or technical storage terms in ordinary UI copy. Middle dots are visual list separators only; use commas for accessibility labels. Technical terms belong in defined Advanced/owner sections. Keep financial/tax meaning, thresholds and uncertainty intact. Never promise data was unchanged when the write outcome is unknown.
 
-Migration is incremental: foundation checks scan new string modules. Screen-specific lint and exceptions expand as screens are migrated. A foundation PR alone does not meet the full-overhaul acceptance criteria.
+Copy lint scans the migrated string modules and UI call sites. It checks jargon, UK spelling, ISO display examples, dashes, fixed button wording, helper length, alert organisation and shared date display. Internal error keys, explicit date placeholders, custom user/bank names and native status/navigation labels are documented exceptions. Transaction accessibility sentences retain the complete detail requested in the brief, even though they exceed the general eight-word label rule.
+
+Financial stress labels use “2 percentage points” to avoid confusing an absolute rate increase with a relative 2% change. Technical pension-limit wording stays intact inside Advanced pension limits details. Unknown errors direct users to check the latest saved data; they do not promise that an asynchronous write left data unchanged.

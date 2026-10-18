@@ -23,7 +23,7 @@ export const moveCopy = {
  taxBasis: "Tax basis: ",
  currentBands: "current bands",
  historicalBandsFrom: "historical bands from ",
- useCurrentTaxBands: "Use current tax bands",
+ useCurrentTaxBands: "Use current bands",
  purchasePrice: "Purchase price",
  sellingACurrentProperty: "Selling a current property",
  salePrice: "Sale price",
@@ -66,7 +66,7 @@ export const moveCopy = {
  stampDuty: "Stamp duty",
  mortgage: "Mortgage",
  lTV: "LTV",
- ifRatesRiseBy2: "If rates rise by 2%",
+ ifRatesRiseBy2: "Rate rises by 2 percentage points",
  cashNeededBeforeCompletion: "Cash needed before completion",
  exchangeDeposit2: "Exchange deposit",
  savingsAfterEarlyCosts: "Savings after early costs",
@@ -109,7 +109,7 @@ export const moveCopy = {
  headroomAfterOverlap: "Headroom after overlap",
  rate: "Rate ",
  separator3: "% · ",
- yearsOverlap: " years · overlap ",
+ yearsOverlap: " · overlap ",
  secondSelectedMinusFirstSelected: "Second selected minus first selected",
  monthlyMortgageDifference: "Monthly mortgage difference",
  cashAfterCompletionDifference: "Cash after completion difference",
@@ -119,3 +119,6 @@ export const moveCopy = {
  newScenarioName: "New scenario name",
  applyName: "Apply name",
 } as const;
+
+export const saleCostFields=[['erc','Mortgage exit charge'],['listing','Listing fee'],['aml','Anti-money laundering check fee']] as const;
+export const purchaseCostFields=[['legalNet','Legal fee before VAT'],['arrangement','Mortgage arrangement fee'],['valuation','Valuation'],['booking','Booking fee'],['survey','Survey'],['landRegistry','Land Registry'],['searches','Searches'],['epc','Energy certificate (EPC)'],['removals','Removals'],['storage','Storage'],['works','Initial works']] as const;

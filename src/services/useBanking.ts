@@ -1,5 +1,5 @@
 import {bankingCopy} from '../strings/banking';
-import {displayMessage} from '../strings/messages';
+import {displayBankMessage} from '../strings/messages';
 import {toUserMessage} from '../strings/errors';
 import {useCallback,useEffect,useRef,useState,useSyncExternalStore} from 'react';
 import {AppState} from 'react-native';
@@ -24,7 +24,7 @@ export function useBanking(){
   reset:()=>{controller.reset();setBanks([]);setOutcomes([]);},
   refresh:(connectionId?:string)=>run(async()=>{const state=useFinance.getState();if(state.storageBlocked)throw Error('Restore saved storage before importing transactions.');if(state.data.demo)throw Error('Leave example mode before importing real accounts.');const attemptedAt=new Date().toISOString();
  const eligible=()=>{const current=useFinance.getState();return current.generation===state.generation&&!current.data.demo&&!current.storageBlocked;};
- try{const d=await sync(connectionId);const current=useFinance.getState();if(!eligible())throw Error('Workspace changed during import. Return to personal figures and refresh again.');const counts=importCounts(active(current.data).transactions,d.rows),success=completeImport(d.outcomes);if(!current.merge(d.rows,success&&!connectionId,{attemptedAt,finishedAt:new Date().toISOString(),status:success?'complete':'partial',...counts,warnings:d.warnings,outcomes:d.outcomes}))throw Error(useFinance.getState().mutationError||'Imported data or receipt failed validation. Previous figures retained.');setOutcomes(d.outcomes);setMessage(bankingCopy.counts(counts.added,counts.updated,counts.unchanged,d.warnings.map(displayMessage).join(' ')));await status();
+ try{const d=await sync(connectionId);const current=useFinance.getState();if(!eligible())throw Error('Workspace changed during import. Return to personal figures and refresh again.');const counts=importCounts(active(current.data).transactions,d.rows),success=completeImport(d.outcomes);if(!current.merge(d.rows,success&&!connectionId,{attemptedAt,finishedAt:new Date().toISOString(),status:success?'complete':'partial',...counts,warnings:d.warnings,outcomes:d.outcomes}))throw Error(useFinance.getState().mutationError||'Imported data or receipt failed validation. Previous figures retained.');setOutcomes(d.outcomes);setMessage(bankingCopy.counts(counts.added,counts.updated,counts.unchanged,d.warnings.map(displayBankMessage).join(' ')));await status();
  }catch(e){if(eligible()){const warning=e instanceof Error?e.message:'Import failed. Previous data retained.';useFinance.getState().change(w=>({...w,syncReceipt:{attemptedAt,finishedAt:new Date().toISOString(),status:'failed',added:0,updated:0,unchanged:0,warnings:[warning],outcomes:[]}}));}throw e;}})
  };
 }

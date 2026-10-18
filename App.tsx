@@ -1,3 +1,5 @@
+import {destinations} from './src/strings/shell';
+import {common} from './src/strings/common';
 import {shellCopy} from './src/strings/shell';
 import {HelpNote} from './src/ui/components';
 import {toUserMessage} from './src/strings/errors';
@@ -24,7 +26,7 @@ import {useBanking} from './src/services/useBanking';
 import {layoutPolicy,motion,navigationNeedsMenu} from './src/lib/presentation';
 import {useMotionValue} from './src/ui/motion';
 import {CoverWorkspace,InterfaceVisible,useInterfaceVisible} from './src/ui/privacy';
-const destinations=[['Today','view-dashboard-outline'],['Activity','format-list-bulleted'],['Plan','chart-donut'],['Move','home-outline'],['Accounts','bank-outline']] as const;
+
 export default function App(){
  const ready=useFinance(s=>s.ready),preferences=useFinance(s=>s.data.preferences),blocked=useFinance(s=>s.storageBlocked);useEffect(()=>{void useFinance.getState().init();},[]);
  return <SafeAreaProvider><ThemeProvider preferences={preferences}>{ready?<ScreenProtectionProvider requested={preferences.blockCapture}><PrivacyGate>{blocked?<Recovery/>:<AppShell/>}</PrivacyGate></ScreenProtectionProvider>:<View style={{flex:1,justifyContent:'center'}}><ActivityIndicator accessibilityLabel={shellCopy.openingYourData}/></View>}</ThemeProvider></SafeAreaProvider>;
@@ -35,7 +37,7 @@ function PrivacyGate({children}:{children:React.ReactNode}){
  useEffect(()=>{if(preferences.appLock&&!previousLock.current)setLocked(false);previousLock.current=preferences.appLock;},[preferences.appLock]);
  useEffect(()=>{const sub=AppState.addEventListener('change',state=>{if(authenticating.current)return;setBackground(state!=='active');if(state!=='active'){void useFinance.getState().flushSave();if(useFinance.getState().data.preferences.appLock)setLocked(true);}});return()=>sub.remove();},[]);
 
- const unlock=async()=>{if(authenticating.current)return;authenticating.current=true;setAuthBusy(true);setError(shellCopy.separator);try{const result=await LocalAuthentication.authenticateAsync({promptMessage:'Unlock Headroom',disableDeviceFallback:false});if(result.success){const foreground=AppState.currentState==='active';setLocked(!foreground);setBackground(!foreground);}else setError(shellCopy.unlockWasnTCompletedTryAgainTo);}catch{setError(shellCopy.deviceAuthenticationIsUnavailableCheckYourPhone);}finally{authenticating.current=false;setAuthBusy(false);}};
+ const unlock=async()=>{if(authenticating.current)return;authenticating.current=true;setAuthBusy(true);setError(shellCopy.separator);try{const result=await LocalAuthentication.authenticateAsync({promptMessage:shellCopy.unlockPrompt,cancelLabel:common.cancel,promptSubtitle:shellCopy.unlockSubtitle,disableDeviceFallback:false});if(result.success){const foreground=AppState.currentState==='active';setLocked(!foreground);setBackground(!foreground);}else setError(shellCopy.unlockWasnTCompletedTryAgainTo);}catch{setError(shellCopy.deviceAuthenticationIsUnavailableCheckYourPhone);}finally{authenticating.current=false;setAuthBusy(false);}};
  const obscured=(preferences.appLock&&locked)||background||captureBlocked;if(!obscured)opened.current=true;
  return <InterfaceVisible.Provider value={!obscured}><View style={{flex:1,backgroundColor:c.surface}}>{opened.current&&<View accessibilityElementsHidden={obscured} importantForAccessibility={obscured?'no-hide-descendants':'auto'} style={{flex:1,display:obscured?'none':'flex'}}>{!obscured&&!!error&&<Notice error>{error}</Notice>}{children}</View>}{obscured&&<SafeAreaView style={{flex:1,backgroundColor:c.surface,justifyContent:'center',padding:24,gap:20}}><StatusBar style={dark?'light':'dark'}/><Text style={[s.title,{color:c.text}]}>{shellCopy.headroom}</Text><Copy>{shellCopy.yourDataIsPrivate}</Copy>{!!error&&<Notice error>{error}</Notice>}{!background&&preferences.appLock&&locked&&<Button title={authBusy?shellCopy.authenticating:shellCopy.unlockHeadroom} disabled={authBusy} onPress={()=>void unlock()}/>}{!background&&captureBlocked&&<><Copy>{protection.state.status==='pending'?shellCopy.applyingScreenProtectionBeforeOpeningYourData:shellCopy.screenProtectionNeedsAttention}</Copy>{protection.state.error&&<Notice error>{toUserMessage(protection.state.error)}</Notice>}<Button title={shellCopy.tryProtectionAgain} disabled={protection.state.status==='pending'} onPress={protection.retry}/><Button secondary title={shellCopy.turnProtectionOff} disabled={preferences.appLock&&locked} onPress={()=>useFinance.getState().preferences({blockCapture:false})}/></>}</SafeAreaView>}</View></InterfaceVisible.Provider>;
 
