@@ -84,10 +84,11 @@ or the website's encrypted credentials. Keep the website configuration intact.
 5. Start with `npm run server`. Supply environment variables via your host's
    secret manager; the example file is not loaded automatically.
 6. Run `npm run pair-device` in the server environment with PUBLIC_ORIGIN and
-   DEVICE_TOKEN set. It requests a two-minute, single-use pairing ticket from your
-   running HTTPS server. Keep the link private; paste it into Settings > Pair bank
-   access > One-use linking code, then press Link this phone. Alternatively use
-   Advanced manual pairing in Settings for the HTTPS origin and device token.
+   DEVICE_TOKEN set. It requests a pairing link from your running Headroom server.
+   Keep the pairing link private. It works once and expires after two minutes.
+   Paste it into Settings > Link this phone > Pairing link, then choose Link this
+   phone. Alternatively choose Enter details manually for the server address and
+   device token.
    The Enable Banking private key never belongs on the phone.
 7. In Accounts choose Find supported banks, search for your bank and authorise it
    in the browser. The completion page distinguishes success from cancellation
