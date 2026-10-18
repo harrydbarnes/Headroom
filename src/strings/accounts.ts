@@ -68,7 +68,7 @@ export const accountsCopy = {
  readServerInstructions: "Read server instructions",
  serverHTTPSAddressCallbLabel: "Server address (preview only)",
  httpsYourServerExample: "https://your-server.example",
- registerExactAllowedDetail: "Add this exact return address to your Enable Banking application. It tells the bank where to send you after sign-in. This screen only previews the address; it does not configure or start your server.",
+ registerExactAllowedDetail: "Add this exact address to the Enable Banking application. It sends you back to Headroom after sign-in. This preview does not set up your server.",
  allowedRedirectURL: "Bank return address",
  applicationCheckSummary: "Your server checks that the application is active and set to Production before connecting your own bank.",
  applicationCheckDetail: "Your server checks that the Enable Banking application is active, set to Production for your own bank, and using the return address saved in its Control Panel. Keep the signing key and one-use phone link private.",
