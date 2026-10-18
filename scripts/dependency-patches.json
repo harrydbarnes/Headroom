@@ -1,0 +1,100 @@
+[
+  {
+    "package": "braces",
+    "version": "3.0.3",
+    "file": "lib/depth-guard.js",
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": "914c607d7691aab3665a6e70366665945802f1e428131d60f6f776aabf1126e0",
+    "replacements": [
+      [
+        "",
+        "'use strict';\n// Iterative validation before recursive AST walkers; parent back-references are ignored.\nmodule.exports = ast => {\n  const pending = [[ast, 0]];\n  let visited = 0;\n  while (pending.length) {\n    const [node, depth] = pending.pop();\n    if (depth > 128 || ++visited > 100000) throw new RangeError('Brace AST nesting limit exceeded');\n    if (node && Array.isArray(node.nodes)) for (const child of node.nodes) pending.push([child, depth + 1]);\n  }\n};\n",
+        1
+      ]
+    ]
+  },
+  {
+    "package": "braces",
+    "version": "3.0.3",
+    "file": "lib/parse.js",
+    "before": "e572166565f15fa6ad9865ae49d678218e32aabfd1b3720f6d0d43d39800d310",
+    "after": "414997d85e90f726c46525fbb8642002b0b68300a64aff2d9243f9da9f7d6b2f",
+    "replacements": [
+      [
+        "      stack.push(block);",
+        "      if (stack.length >= 128) throw new RangeError('Brace pattern nesting limit exceeded');\n      stack.push(block);",
+        2
+      ]
+    ]
+  },
+  {
+    "package": "braces",
+    "version": "3.0.3",
+    "file": "lib/compile.js",
+    "before": "dc98f22eee3d511785d92a00758d5f0d48efed5f5813bdecc2de430c529b5c9f",
+    "after": "a510c72a3b19bc6d4b977fdf4f95dc6772eb8ab2a79a157e6fcfd1da4972dfe4",
+    "replacements": [
+      [
+        "const compile = (ast, options = {}) => {",
+        "const compile = (ast, options = {}) => {\n  require('./depth-guard')(ast);",
+        1
+      ]
+    ]
+  },
+  {
+    "package": "braces",
+    "version": "3.0.3",
+    "file": "lib/expand.js",
+    "before": "41ccc196ebfa7b7781a634e721eb744e4e7bcb54cba427a7e3d6806a1b9e58f7",
+    "after": "5d1ce7db79681c0b5d2badedfa33874d066b5dbd71e95a84918df4a6801f51e4",
+    "replacements": [
+      [
+        "const expand = (ast, options = {}) => {",
+        "const expand = (ast, options = {}) => {\n  require('./depth-guard')(ast);",
+        1
+      ]
+    ]
+  },
+  {
+    "package": "braces",
+    "version": "3.0.3",
+    "file": "lib/stringify.js",
+    "before": "379f22d77bfa1478341ccd49c5e4267464aabcbba03558bab332aac23fc6f23a",
+    "after": "1397d63ee729537996592e4e45e31846afb661e19a9e3378090d75af4abb2c77",
+    "replacements": [
+      [
+        "module.exports = (ast, options = {}) => {",
+        "module.exports = (ast, options = {}) => {\n  require('./depth-guard')(ast);",
+        1
+      ]
+    ]
+  },
+  {
+    "package": "node-forge",
+    "version": "1.4.0",
+    "file": "lib/rsa.js",
+    "before": "fd4740238145ec26470eb3f06a627c72039538ce1307dbdce40521f94dfd0a50",
+    "after": "ac8ba8f298b3b27be37d0b018413389ec29f915c0943ca3d5f5782a70de5f80a",
+    "replacements": [
+      [
+        "            obj.value.length !== 2) {",
+        "            obj.value.length !== 2 ||\n            obj.value[0].value.length < 1 || obj.value[0].value.length > 2 ||\n            (obj.value[0].value.length === 2 &&\n              (obj.value[0].value[1].tagClass !== asn1.Class.UNIVERSAL ||\n               obj.value[0].value[1].type !== asn1.Type.NULL ||\n               obj.value[0].value[1].constructed !== false ||\n               obj.value[0].value[1].value !== ''))) {",
+        1
+      ]
+    ]
+  },
+  {
+    "package": "@expo/metro-file-map",
+    "version": "57.0.4",
+    "file": "build/lib/RootPathUtils.js",
+    "before": "bc3a22513b1e0465c1cd8bb228c7ba881450c913d6ebc2b5a42d3df2c1fb3365",
+    "after": "4821c0d17df023d7f24f9a02030ec5c79a84caa0cdb527d53e0aeb30e00c9e72",
+    "replacements": [
+      [
+        "            (0, invariant_1.default)(collapsed != null, 'Failed to collapse');",
+        "            // Fall back to the existing Node path normalisation when ./ prevents\n            // the fast ancestor-collapse optimisation (e.g. clean Linux builds).\n            if (collapsed == null) {\n                return { collapsedSegments: 0, normalPath: this.relativeToNormal(rawPath) };\n            }",
+        1
+      ]
+    ]
+  }
+]
