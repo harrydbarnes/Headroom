@@ -27,6 +27,8 @@ Do not use long dashes, double hyphens, internal enum values or technical storag
 
 Copy lint scans the migrated string modules and UI call sites. It checks jargon, UK spelling, ISO display examples, dashes, fixed button wording, helper length, alert organisation and shared date display. Internal error keys, explicit date placeholders, custom user/bank names and native status/navigation labels are documented exceptions. Transaction accessibility sentences retain the complete detail requested in the brief, even though they exceed the general eight-word label rule.
 
+Name keys by their role, such as `activity.emptyMonth`, `plan.goalTargetMonthLabel` and `settings.unlinkConfirm`. Keep keys within 30 characters. Do not add numbered duplicates, punctuation keys or sentence fragments. Keep complete sentences in one entry or function. Local punctuation joiners and empty logic values remain literals. Indexed theme and CSV mapping labels are the documented dynamic-reference exceptions in `tests/string-structure.ts`.
+
 Financial stress labels use “2 percentage points” to avoid confusing an absolute rate increase with a relative 2% change. Technical pension-limit wording stays intact inside Advanced pension limits details. Unknown errors must not promise that an asynchronous write left data unchanged.
 
 Describe Headroom's own database encryption separately from Android storage encryption and screen lock. Explain that linked bank data is also cached on the owner's server. Describe encrypted server connection credentials, not stored bank passwords. Backup exclusion describes what the application adds; free-text notes are included. See the claims audit in `copy-fixups-2026-10-18.md`.

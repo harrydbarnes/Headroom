@@ -1,4 +1,7 @@
 export const settingsUI={
+ unlockSubtitle:'Use your phone’s unlock method',
+ disableAppLock:'Disable app lock',
+ enableAppLock:'Enable app lock',
  addressPlaceholder:'https://your-server.example.com',
  appearance:'Appearance',theme:'Theme',themeLabels:{system:'System',light:'Light',dark:'Dark'},
  wallpaper:'Use wallpaper colours',wallpaperHint:'Match your Android wallpaper.',wallpaperUnsupported:'Needs Android 12 or later.',
@@ -8,7 +11,7 @@ export const settingsUI={
  protection:'Hide in screenshots and recent apps',protectionHint:'Stops screenshots and previews of Headroom.',protectionPending:'Applying.',protectionFailed:'Couldn’t change this. Try again.',retry:'Try again',
  cover:'Hide screen now',coverHint:'Covers Headroom until you come back.',privacySummary:"How private is my data? Your own data is stored on this phone.",privacyDetail:"Headroom doesn't add its own encryption. Your phone's storage encryption and screen lock still apply, if you've set them up. App lock stops other people opening Headroom but doesn't encrypt anything. Amounts stay visible while you edit a field. Deleting data here doesn't remove bank permission.",
  data:'Your data',backup:'Backup and restore',rules:'Merchant rules',examples:'Example data and guide',bank:'Bank access (optional)',link:'Link this phone',aboutGroup:'About',about:'About Headroom',remove:'Remove data',delete:'Delete your data',deleteExample:'Delete example data',deleteTitle:'Delete your data?',deleteExampleTitle:'Delete example data?',removeFooter:'Removes data from this phone only. Bank permission isn’t affected.',
- noRules:'No rules',on:'On',off:'Off',linked:'Linked',notLinked:'Not linked',version:(v:string)=>`Version ${v}`,versionSentence:(v:string)=>`Version ${v}.`,
+ noRules:'No rules',off:'Off',linked:'Linked',notLinked:'Not linked',version:(v:string)=>`Version ${v}`,versionSentence:(v:string)=>`Version ${v}.`,
  ruleCount:(n:number)=>`${n} ${n===1?'rule':'rules'}`,
  backupIntro:'A backup is a readable file with all your financial data. Keep it somewhere private.',backupHelp:"Headroom does not add bank tokens or server credentials to backups. Your own notes are included, so keep secrets out of them.",export:'Export backup',restore:'Restore from backup',saved:'Backup saved to the folder you chose.',cancelled:'Export cancelled. No backup was saved.',shared:'Share sheet closed. Check the backup reached where you sent it.',replaceTitle:'Replace your data?',replace:'Replace data',
  restoreBody:(n:string,m:string,x:string,y:string)=>`This backup has ${n} and ${m}. It will replace your current ${x} and ${y}, including anything unsaved. Export a backup first if you want to keep your current data.`,
