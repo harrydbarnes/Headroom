@@ -38,7 +38,7 @@ it('maps every thrown static message and explicitly reviews dynamic exceptions',
      if(!reason||file!=='server/index.ts')check(arg);
     }
    }
-   if(ts.isThrowStatement(node)&&ts.isStringLiteralLike(node.expression))check(node.expression);
+   if(ts.isThrowStatement(node)&&(ts.isStringLiteralLike(node.expression)||ts.isTemplateExpression(node.expression)))check(node.expression);
    if(file==='src/lib/reconciliation.ts'&&ts.isCallExpression(node)&&node.expression.getText(source)==='reasons.push')for(const arg of node.arguments)check(arg);
    if(file==='src/lib/connectionStatus.ts'&&ts.isConditionalExpression(node)&&ts.isStringLiteralLike(node.whenFalse))check(node.whenFalse);
    ts.forEachChild(node,visit);

@@ -87,5 +87,6 @@ export function DateField({label,value,onChange,kind='date',optional=false,onVal
  useEffect(()=>()=>update.current(id,false),[]);
  const change=(text:string)=>{setRaw(text);const next=valid(text);update.current(id,next===null);validity.current?.(next!==null);if(next!==null){onChange(next);setError('');}};
  const finish=()=>{editing.current=false;const next=valid(raw);setError(next===null?message:'');update.current(id,next===null);validity.current?.(next!==null);if(next!==null){onChange(next);setRaw(display(next));}};
- return <Input label={label} value={raw} onChangeText={change} onFocus={()=>editing.current=true} onBlur={finish} onSubmitEditing={finish} error={error} placeholder={kind==='date'?common.datePlaceholder:kind==='month'?common.monthPlaceholder:common.taxYearPlaceholder} autoCorrect={false} autoCapitalize="none" keyboardType={kind==='taxYear'?'default':'numbers-and-punctuation'}/>;
+ // Android uses the default keyboard because its numeric pad has no slash.
+ return <Input label={label} value={raw} onChangeText={change} onFocus={()=>editing.current=true} onBlur={finish} onSubmitEditing={finish} error={error} placeholder={kind==='date'?common.datePlaceholder:kind==='month'?common.monthPlaceholder:common.taxYearPlaceholder} autoCorrect={false} autoCapitalize="none" keyboardType={kind==='taxYear'?'default':Platform.select({ios:'numbers-and-punctuation',default:'default'})}/>;
 }
