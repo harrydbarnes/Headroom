@@ -17,6 +17,9 @@ import {effectivePlan,monthKey} from '../lib/workspace';
 import {Button,Card,Copy,Field,Heading,Line,Money,Notice,Page} from '../ui/components';
 import {AdaptiveColumns} from '../ui/AdaptiveColumns';
 import {ExampleGuide} from '../ui/ExampleGuide';
+import {HeadroomBar} from '../ui/HeadroomBar';
+import type {Plan} from '../lib/finance';
+import type {Workspace} from '../lib/workspace';
 import {SetupProgress} from '../ui/SetupProgress';
 import {DebtFields} from '../ui/DebtFields';
 import {styles as s,useTheme} from '../ui/theme';
@@ -36,7 +39,7 @@ export function Today({navigate,banking}:{banking:Banking;navigate:(tab:string,m
    {w.onboardingStep>0&&<Button secondary title={todayCopy.previousStep} onPress={()=>store.change(x=>({...x,onboardingStep:x.onboardingStep-1}))}/>}</Card>
   <Button secondary title={todayCopy.tryExampleData} onPress={()=>store.setDemo(true)}/><Button secondary title={todayCopy.connectAccountsInstead} onPress={()=>navigate('Accounts')}/>
  </Page>;
- return <Page><ExampleGuide navigate={navigate}/><View style={[s.hero,{backgroundColor:c.primaryContainer}]}><Copy strong>{todayCopy.monthlyHeadroom}</Copy><Copy small>{todayCopy.whatSLeftEachMonthAfterPlanned}</Copy>{p.income>0?<Money textStyle={[s.number,{color:c.onPrimaryContainer}]} value={r.surplus}/>:<Text style={[s.number,{color:c.onPrimaryContainer}]}>{todayCopy.notSet}</Text>}<Line label={todayCopy.monthlyIncome} value={<Money value={p.income}/>}/><Line label={todayCopy.spendingAndReserves} value={<Money value={r.committed}/>}/><Copy>{todayCopy.headroomContext(p.income>0?r.comfort:todayCopy.addYourIncomeToSeeYourPlan)}</Copy><Copy small>{todayCopy.cashBalanceLimit(w.planConfirmedAt?todayCopy.baselineConfirmed+formatDateTime(w.planConfirmedAt):todayCopy.provisionalConfirmBaselText)}</Copy></View>
+ return <Page><ExampleGuide navigate={navigate}/><TodayHero plan={p} workspace={w}/>
   {!!w.setupSkipped?.length&&<Card title={todayCopy.finishYourSetupChecks}><Copy>{todayCopy.setupSkippedHelp(w.setupSkipped.map(n=>common.setupSections[n]).join(', '))}</Copy><Button secondary title={todayCopy.reviewSetupChecks} onPress={()=>navigate('Plan')}/></Card>}
   {!w.planConfirmedAt&&<Button title={todayCopy.confirmMonthlyBaseline} onPress={()=>navigate('Plan')}/>}
   {!!w.planning?.budgets.length&&<Card title={todayCopy.yourPeriodBudgets}>{w.planning.budgets.slice(0,3).map(b=>{const r=budgetLedger(w,b,dayKey());return r.current?<View key={b.id}><Line label={b.name+todayCopy.remaining} value={<Money value={r.current.remaining}/>}/><Copy small>{todayCopy.budgetPeriodStatus(formatRange(r.current.start,r.current.end),counts.day(r.daysLeft),counts.transaction(r.unreviewed))}</Copy></View>:null;})}<Copy small>{todayCopy.limitsOverlapDoText}</Copy><Button secondary title={todayCopy.reviewBudgets} onPress={()=>navigate('Plan')}/></Card>}
@@ -49,4 +52,21 @@ export function Today({navigate,banking}:{banking:Banking;navigate:(tab:string,m
 </AdaptiveColumns>
   <Button secondary title={store.demo?todayCopy.showYourData:todayCopy.tryExampleData} onPress={()=>store.setDemo(!store.demo)}/>
  </Page>;
+}
+
+function TodayHero({plan, workspace}: {plan: Plan; workspace: Workspace}) {
+  const {colors: c} = useTheme();
+  const result = assess(plan);
+  return (
+    <View style={[s.hero, {backgroundColor: c.card}]}>
+      <Copy strong>{todayCopy.monthlyHeadroom}</Copy>
+      <Copy small>{todayCopy.whatSLeftEachMonthAfterPlanned}</Copy>
+      {plan.income > 0 && <Money textStyle={[s.number, {color: c.text}]} value={result.surplus}/>}
+      <HeadroomBar plan={plan}/>
+      <Line label={todayCopy.monthlyIncome} value={<Money value={plan.income}/>}/>
+      <Line label={todayCopy.spendingAndReserves} value={<Money value={result.committed}/>}/>
+      <Copy>{todayCopy.headroomContext(plan.income > 0 ? result.comfort : todayCopy.addYourIncomeToSeeYourPlan)}</Copy>
+      <Copy small>{todayCopy.cashBalanceLimit(workspace.planConfirmedAt ? todayCopy.baselineConfirmed + formatDateTime(workspace.planConfirmedAt) : todayCopy.provisionalConfirmBaselText)}</Copy>
+    </View>
+  );
 }

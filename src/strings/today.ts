@@ -41,7 +41,6 @@ export const todayCopy = {
  connectAccountsInstead: "Connect accounts instead",
  monthlyHeadroom: "Monthly headroom",
  whatSLeftEachMonthAfterPlanned: "What’s left each month after planned spending. Your monthly baseline is your confirmed monthly income and spending.",
- notSet: "Not set",
  monthlyIncome: "Monthly income",
  spendingAndReserves: "Spending and reserves",
  addYourIncomeToSeeYourPlan: "Add your income to see your plan.",
