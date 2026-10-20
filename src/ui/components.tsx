@@ -15,7 +15,26 @@ function FormScope({children}:{children:React.ReactNode}){const [invalid,setInva
 export function Copy({children,small=false,strong=false}:{children:React.ReactNode;small?:boolean;strong?:boolean}){const {colors:c}=useTheme(),style=[small?s.small:s.body,{color:small?c.muted:c.text,fontWeight:strong?'600' as const:'400' as const}];if(React.isValidElement<{textStyle?:StyleProp<TextStyle>}>(children)&&children.type===Money)return React.cloneElement(children,{textStyle:style});return <AmountTextContext.Provider value={style}><Text style={style}>{children}</Text></AmountTextContext.Provider>;}
 export function Heading({children,focusRef}:{children:React.ReactNode;focusRef?:React.RefObject<Text|null>}){const {colors:c}=useTheme();return <Text ref={focusRef} accessible accessibilityRole="header" style={[s.heading,{color:c.text}]}>{children}</Text>;}
 export function Card({title,children,titleRef,variant='filled'}:{title?:string;children:React.ReactNode;titleRef?:React.RefObject<Text|null>;variant?:'filled'|'plain'|'outlined'}){const {colors:c}=useTheme();return <View style={[s.card,{backgroundColor:variant==='filled'?c.card:'transparent',borderWidth:variant==='outlined'?1:0,borderColor:c.divider,paddingHorizontal:variant==='plain'?0:20}]}>{title&&<Heading focusRef={titleRef}>{title}</Heading>}{children}</View>;}
-export function Button({title,onPress,secondary=false,disabled=false,danger=false}:{title:string;onPress:()=>void;secondary?:boolean;disabled?:boolean;danger?:boolean}){const {colors:c}=useTheme(),validation=useContext(Validation);const blocked=disabled||(!secondary&&!danger&&validation.invalid);return <Pressable accessibilityRole="button" accessibilityLabel={title.replace(/ · /g,', ')} accessibilityState={{disabled:blocked}} disabled={blocked} onPress={()=>{Keyboard.dismiss();onPress();}} android_ripple={{color:c.primaryContainer}} style={({pressed})=>[s.button,{overflow:'hidden',backgroundColor:danger?c.error:secondary?c.container:c.primary,opacity:blocked?.45:pressed?.7:1}]}><Text style={{color:danger?c.onError:secondary?c.text:c.onPrimary,fontSize:14,lineHeight:20,fontWeight:'700',textAlign:'center'}}>{title}</Text></Pressable>;}
+export function Button({title, onPress, secondary = false, variant, disabled = false, danger = false}: {
+  title: string; onPress: () => void; secondary?: boolean;
+  variant?: 'primary' | 'secondary' | 'text'; disabled?: boolean; danger?: boolean;
+}) {
+  const {colors: c} = useTheme();
+  const validation = useContext(Validation);
+  const appearance = variant ?? (secondary ? 'secondary' : 'primary');
+  const blocked = disabled || (appearance === 'primary' && !danger && validation.invalid);
+  const backgroundColor = appearance === 'text' ? undefined : danger ? c.error : appearance === 'secondary' ? c.container : c.primary;
+  const color = appearance === 'text' ? (danger ? c.error : c.primary) : danger ? c.onError : appearance === 'secondary' ? c.text : c.onPrimary;
+  return (
+    <Pressable accessibilityRole="button" accessibilityLabel={title.replace(/ · /g, ', ')}
+      accessibilityState={{disabled: blocked}} disabled={blocked}
+      onPress={() => {Keyboard.dismiss(); onPress();}}
+      android_ripple={{color: c.primaryContainer}}
+      style={({pressed}) => [s.button, {overflow: 'hidden', backgroundColor, opacity: blocked ? .45 : pressed ? .7 : 1}]}>
+      <Text style={{color, fontSize: 14, lineHeight: 20, fontWeight: '700', textAlign: 'center'}}>{title}</Text>
+    </Pressable>
+  );
+}
 export function Choice({title,selected,onPress,disabled=false}:{title:string;selected:boolean;onPress:()=>void;disabled?:boolean}){const {colors:c}=useTheme();return <Pressable accessibilityRole="button" accessibilityLabel={title.replace(/ · /g,', ')} accessibilityState={{selected,disabled}} disabled={disabled} onPress={onPress} style={({pressed})=>[s.chip,{backgroundColor:selected?c.primaryContainer:c.card,borderColor:selected?c.primary:c.outline,opacity:disabled?.4:pressed?.7:1}]}><Text style={{color:selected?c.onPrimaryContainer:c.text,fontSize:14,lineHeight:20,fontWeight:selected?'700':'400'}}>{title}</Text></Pressable>;}
 export function Toggle({label,value,onChange,disabled=false}:{label:string;value:boolean;onChange:(v:boolean)=>void;disabled?:boolean}){const {colors:c}=useTheme();return <View style={s.row}><View style={{flex:1}}><Copy>{label}</Copy></View><Switch accessibilityLabel={label} disabled={disabled} value={value} onValueChange={onChange} trackColor={{true:c.primary,false:c.outline}}/></View>;}
 export function Input({label,error,...props}:TextInputProps&{label:string;error?:string}){const {colors:c}=useTheme(),labelId=useId();return <View style={{gap:6}}><Text nativeID={labelId} style={[s.label,{color:c.muted}]}>{label}</Text><TextInput {...props} selectionColor={c.primary} cursorColor={c.primary} accessibilityLabel={label} accessibilityLabelledBy={Platform.OS==='android'?labelId:undefined} accessibilityHint={error?common.inputErrorHint(error):props.accessibilityHint} placeholderTextColor={c.muted} style={[s.input,{color:c.text,borderColor:error?c.error:c.outline,backgroundColor:c.surface},props.style]}/>{!!error&&<Text accessibilityLiveRegion="assertive" style={[s.small,{color:c.error}]}>{error}{common.unsavedEdit}</Text>}</View>;}

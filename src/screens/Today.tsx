@@ -1,3 +1,4 @@
+import {TextButton} from '../ui/TextButton';
 import {common} from '../strings/common';
 import {counts} from '../strings/format';
 import {todayCopy} from '../strings/today';
@@ -31,9 +32,9 @@ export function Today({navigate,banking}:{banking:Banking;navigate:(tab:string,m
    {w.onboardingStep===0&&<><Field label={todayCopy.monthlyHouseholdTakeHomeIncome} value={p.income} onChange={v=>store.patch({income:v})}/><Copy small>{todayCopy.useIncomeAfterText}</Copy></>}
    {w.onboardingStep===1&&<><Field label={todayCopy.essentialsIncludingMortLabel} value={p.essentials} onChange={v=>store.patch({essentials:v})}/><Field label={todayCopy.flexibleSpending} value={p.flexible} onChange={v=>store.patch({flexible:v})}/><Field label={todayCopy.annualBillsDividedByLabel} value={p.annualReserve} onChange={v=>store.patch({annualReserve:v,annualTotal:undefined})}/></>}
    {w.onboardingStep===2&&<><Field label={todayCopy.emergencyCashExcludingLabel} value={p.cash} onChange={v=>store.patch({cash:v})}/><DebtFields plan={p} onChange={debts=>store.patch({debts})}/><Copy small>{todayCopy.unknownLeaveThisStepForNowAnd}</Copy></>}
-   {w.onboardingStep===3&&<><Line label={todayCopy.provisionalMonthlyHeadroom} value={<Money value={r.surplus}/>}/><Copy>{todayCopy.usesPlannedSpendingText}</Copy><Button title={todayCopy.reviewMonthlyBaseline} onPress={()=>navigate('Plan')}/></>}
-   {w.onboardingStep<3&&<Button secondary title={todayCopy.skipThisSection} onPress={()=>store.change(x=>({...x,setupSkipped:[...new Set([...(x.setupSkipped??[]),x.onboardingStep])],onboardingStep:x.onboardingStep+1}))}/>}{w.onboardingStep===3&&<Copy small>{todayCopy.setupConfirmHelp(w.setupSkipped?.length?todayCopy.setupChecklist(w.setupSkipped.map(n=>common.setupSections[n].toLowerCase()).join(', ')):todayCopy.allSetupSectionsVisited)}</Copy>}<Button title={w.onboardingStep===3?todayCopy.openMyOverview:todayCopy.saveAndContinue} onPress={()=>store.change(x=>({...x,onboardingStep:Math.min(4,x.onboardingStep+1),setupSkipped:(x.setupSkipped??[]).filter(n=>n!==x.onboardingStep)}))}/>
-   {w.onboardingStep>0&&<Button secondary title={todayCopy.previousStep} onPress={()=>store.change(x=>({...x,onboardingStep:x.onboardingStep-1}))}/>}</Card>
+   {w.onboardingStep===3&&<><Line label={todayCopy.provisionalMonthlyHeadroom} value={<Money value={r.surplus}/>}/><Copy>{todayCopy.usesPlannedSpendingText}</Copy><TextButton title={todayCopy.reviewMonthlyBaseline} onPress={()=>navigate('Plan')}/></>}
+   {w.onboardingStep<3&&<TextButton title={todayCopy.skipThisSection} onPress={()=>store.change(x=>({...x,setupSkipped:[...new Set([...(x.setupSkipped??[]),x.onboardingStep])],onboardingStep:x.onboardingStep+1}))}/>}{w.onboardingStep===3&&<Copy small>{todayCopy.setupConfirmHelp(w.setupSkipped?.length?todayCopy.setupChecklist(w.setupSkipped.map(n=>common.setupSections[n].toLowerCase()).join(', ')):todayCopy.allSetupSectionsVisited)}</Copy>}<Button title={w.onboardingStep===3?todayCopy.openMyOverview:todayCopy.saveAndContinue} onPress={()=>store.change(x=>({...x,onboardingStep:Math.min(4,x.onboardingStep+1),setupSkipped:(x.setupSkipped??[]).filter(n=>n!==x.onboardingStep)}))}/>
+   {w.onboardingStep>0&&<TextButton title={todayCopy.previousStep} onPress={()=>store.change(x=>({...x,onboardingStep:x.onboardingStep-1}))}/>}</Card>
   <Button secondary title={todayCopy.tryExampleData} onPress={()=>store.setDemo(true)}/><Button secondary title={todayCopy.connectAccountsInstead} onPress={()=>navigate('Accounts')}/>
  </Page>;
  return <TodayOverview navigate={navigate} banking={banking}/>;
