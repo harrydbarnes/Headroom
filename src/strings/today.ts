@@ -1,5 +1,10 @@
 // Presentation copy only. Stored values and contracts remain in the domain modules.
 export const todayCopy = {
+ moreDetail: 'More detail',
+ needsAttention: 'Needs attention',
+ attentionCount: (count: number) => `${count} ${count === 1 ? 'check' : 'checks'} to review`,
+ heroConfirmed: 'Based on your confirmed monthly plan. This is not a live account balance.',
+ heroProvisional: 'Provisional monthly plan. Confirm your baseline in Plan. This is not a live account balance.',
  setupProgress:(part0:string|number)=>`Step ${part0} of 4 · progress saves on this device`,
  setupConfirmHelp:(part0:string|number)=>`${part0} Confirm actual values in Plan. Zero is not proof that a section is complete.`,
  headroomContext:(part0:string|number)=>`${part0} · after planned spending and annual reserves`,
