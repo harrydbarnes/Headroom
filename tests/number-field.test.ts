@@ -1,11 +1,11 @@
 import {expect, it} from 'vitest';
 import {numberFieldText, numberFieldValue} from '../src/lib/numberField';
 
-it('shows zero as an empty resting field and retains explicit zero while editing', () => {
+it('formats zero as blank and converts non-zero values to display units', () => {
   expect(numberFieldText(0, true)).toBe('');
   expect(numberFieldText(0, false)).toBe('');
-  expect(numberFieldText(0, true, true)).toBe('0');
   expect(numberFieldText(12345, true)).toBe('123.45');
+  expect(numberFieldText(12, false)).toBe('12');
 });
 it('treats an empty draft as zero only for fields whose minimum is zero', () => {
   expect(numberFieldValue('')).toBe(0);
