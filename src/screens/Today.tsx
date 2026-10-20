@@ -19,6 +19,8 @@ import {Button,Card,Copy,Field,Heading,Line,Money,Notice,Page} from '../ui/compo
 import {AdaptiveColumns} from '../ui/AdaptiveColumns';
 import {ExampleGuide} from '../ui/ExampleGuide';
 import {Disclosure} from '../ui/Disclosure';
+import {TonalCard} from '../ui/components';
+import {shapeRoles} from '../lib/presentation';
 import {HeadroomBar} from '../ui/HeadroomBar';
 import type {Plan} from '../lib/finance';
 import type {Workspace} from '../lib/workspace';
@@ -121,9 +123,7 @@ function TodayAttention({
   return (
     <Disclosure
       title={todayCopy.needsAttention}
-      summary={todayCopy.attentionCount(
-        Number(backlog > 0) + Number(expired) + Number(skipped > 0),
-      )}
+      summary={todayCopy.attentionSummary(backlog, expired, skipped)}
     >
       {backlog > 0 && (
         <Button
@@ -158,13 +158,12 @@ function TodayNextAction({
   title: string;
   onPress: () => void;
 }) {
-  const { colors: c } = useTheme();
   return (
-    <View style={{ padding: 16, gap: 8, borderRadius: 20, backgroundColor: c.primaryContainer }}>
+    <TonalCard>
       <Heading>{todayCopy.yourNextAction}</Heading>
       <Copy>{message}</Copy>
       <Button title={title} onPress={onPress} />
-    </View>
+    </TonalCard>
   );
 }
 
@@ -341,7 +340,7 @@ function TodayHero({ plan, workspace }: { plan: Plan; workspace: Workspace }) {
   const { colors: c, hideAmounts } = useTheme();
   const result = assess(plan);
   return (
-    <View style={{ padding: 16, gap: 8, borderRadius: 24, backgroundColor: c.card }}>
+    <View style={{ padding: 16, gap: 8, borderRadius: shapeRoles.hero, backgroundColor: c.card }}>
       <Copy strong>{todayCopy.monthlyHeadroom}</Copy>
       {(hideAmounts || plan.income > 0) && (
         <Money textStyle={[s.number, { color: c.text }]} value={result.surplus} />

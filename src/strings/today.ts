@@ -3,7 +3,11 @@ import {counts} from './format';
 export const todayCopy = {
  moreDetail: 'More detail',
  needsAttention: 'Needs attention',
- attentionCount: (count: number) => `${count} ${count === 1 ? 'check' : 'checks'} to review`,
+ attentionSummary: (backlog: number, expired: boolean, skipped: number) => [
+   backlog > 0 ? `${counts.transaction(backlog)} to review` : '',
+   expired ? 'Bank permission expired' : '',
+   skipped > 0 ? 'Setup checks incomplete' : '',
+ ].filter(Boolean).join(' · '),
  heroConfirmed: 'Based on your confirmed monthly plan. This is not a live account balance.',
  heroProvisional: 'Provisional monthly plan. Confirm your baseline in Plan. This is not a live account balance.',
  setupProgress:(part0:string|number)=>`Step ${part0} of 4 · progress saves on this device`,

@@ -1,15 +1,14 @@
 import React from 'react';
-import {View} from 'react-native';
 import {houseMove} from '../lib/calculators/houseMove';
 import {moveBudget, type Workspace} from '../lib/workspace';
 import {displayMessage} from '../strings/messages';
 import {moveCopy} from '../strings/move';
-import {Copy, Heading, Line, Money} from './components';
+import {Copy, Heading, Line, Money, TonalCard} from './components';
 import {useTheme} from './theme';
 
 /** Present the calculator's existing warning order, with the evidence that drives it. */
 export function MoveVerdict({workspace}: {workspace: Workspace}) {
-  const {colors: c, hideAmounts} = useTheme();
+  const {hideAmounts} = useTheme();
   const move = workspace.move;
   const input = move.input;
   const result = houseMove(input);
@@ -47,11 +46,11 @@ export function MoveVerdict({workspace}: {workspace: Workspace}) {
     ...(budget !== null ? [{label: moveCopy.monthlyHeadroomAfterLabel, value: budget}] : []),
   ];
   return (
-    <View style={{backgroundColor: c.primaryContainer, borderRadius: 20, padding: 16, gap: 12}}>
+    <TonalCard>
       <Heading>{moveCopy.mainConstraint}</Heading>
       <Copy>{message}</Copy>
       {confirmed && evidence.map(item => <Line key={item.label} label={item.label}
         value={item.percent && !hideAmounts ? <Copy>{moveCopy.percentValue(item.value.toFixed(1))}</Copy> : <Money value={item.value}/>}/>)}
-    </View>
+    </TonalCard>
   );
 }

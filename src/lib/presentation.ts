@@ -1,5 +1,12 @@
 /** Shared presentation policy, independent of native rendering. Dimensions are logical pixels. */
 export const motion={duration:{short:140,screen:180,privacy:200},spring:{damping:28,stiffness:280,mass:1},sheet:{entry:24,dismissDistance:100,dragStart:8}} as const;
+export const shapeRoles = {card: 20, hero: 24, bar: 16, chip: 4} as const;
+
+/** A close request may open a confirmation rather than actually hide the sheet. */
+export function releaseSheetDrag(distance: number, settle: () => void, requestClose: () => void) {
+  settle();
+  if (distance > motion.sheet.dismissDistance) requestClose();
+}
 export function layoutPolicy(width:number,height:number,fontScale=1){
  const scale=Math.max(1,fontScale),rail=width>=840&&height>=420;
  return {rail,railWidth:Math.max(96,Math.min(160,96*scale)),stackValues:width/scale<380,centerSheet:width>=720&&height>=600,sheetPadding:width<380?16:24,contentPadding:width<380?16:24};

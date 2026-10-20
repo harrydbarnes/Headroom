@@ -2,7 +2,7 @@ import React,{createContext,useContext,useEffect,useId,useLayoutEffect,useRef,us
 import {AccessibilityInfo,Animated,findNodeHandle,Keyboard,KeyboardAvoidingView,Modal,PanResponder,Platform,Pressable,ScrollView,StyleSheet,Switch,Text,TextInput,View,useWindowDimensions,type TextInputProps,type TextStyle,type StyleProp} from 'react-native';
 import {styles as s,useTheme} from './theme';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {layoutPolicy,motion,TransitionSlot} from '../lib/presentation';
+import {layoutPolicy,motion,TransitionSlot,shapeRoles,releaseSheetDrag} from '../lib/presentation';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import {common} from '../strings/common';
 import {dateInput,monthInput,formatTaxYear,parseUkDate,parseUkMonth,parseTaxYear} from '../lib/dates';
@@ -10,11 +10,77 @@ import {numberFieldText, numberFieldValue} from '../lib/numberField';
 import {amountContent} from '../lib/amountDisplay';
 import {CoverWorkspace,useInterfaceVisible} from './privacy';
 const AmountTextContext=createContext<StyleProp<TextStyle>|null>(null);
+const ContainerTextColor=createContext<TextStyle['color']>(undefined);
 const Validation=createContext({invalid:false,update:(_id:string,_invalid:boolean)=>{}});
 function FormScope({children}:{children:React.ReactNode}){const [invalid,setInvalid]=useState<string[]>([]);return <Validation.Provider value={{invalid:invalid.length>0,update:(id,bad)=>setInvalid(prior=>bad?(prior.includes(id)?prior:[...prior,id]):prior.includes(id)?prior.filter(x=>x!==id):prior)}}>{children}</Validation.Provider>;}
 
-export function Copy({children,small=false,strong=false}:{children:React.ReactNode;small?:boolean;strong?:boolean}){const {colors:c}=useTheme(),style=[small?s.small:s.body,{color:small?c.muted:c.text,fontWeight:strong?'600' as const:'400' as const}];if(React.isValidElement<{textStyle?:StyleProp<TextStyle>}>(children)&&children.type===Money)return React.cloneElement(children,{textStyle:style});return <AmountTextContext.Provider value={style}><Text style={style}>{children}</Text></AmountTextContext.Provider>;}
-export function Heading({children,focusRef}:{children:React.ReactNode;focusRef?:React.RefObject<Text|null>}){const {colors:c}=useTheme();return <Text ref={focusRef} accessible accessibilityRole="header" style={[s.heading,{color:c.text}]}>{children}</Text>;}
+export function Copy({
+  children,
+  small = false,
+  strong = false,
+}: {
+  children: React.ReactNode;
+  small?: boolean;
+  strong?: boolean;
+}) {
+  const { colors: c } = useTheme(),
+    containerColor = useContext(ContainerTextColor),
+    style = [
+      small ? s.small : s.body,
+      {
+        color: containerColor ?? (small ? c.muted : c.text),
+        fontWeight: strong ? ('600' as const) : ('400' as const),
+      },
+    ];
+  if (
+    React.isValidElement<{ textStyle?: StyleProp<TextStyle> }>(children) &&
+    children.type === Money
+  )
+    return React.cloneElement(children, { textStyle: style });
+  return (
+    <AmountTextContext.Provider value={style}>
+      <Text style={style}>{children}</Text>
+    </AmountTextContext.Provider>
+  );
+}
+export function Heading({
+  children,
+  focusRef,
+}: {
+  children: React.ReactNode;
+  focusRef?: React.RefObject<Text | null>;
+}) {
+  const { colors: c } = useTheme(),
+    containerColor = useContext(ContainerTextColor);
+  return (
+    <Text
+      ref={focusRef}
+      accessible
+      accessibilityRole="header"
+      style={[s.heading, { color: containerColor ?? c.text }]}
+    >
+      {children}
+    </Text>
+  );
+}
+
+export function TonalCard({ children }: { children: React.ReactNode }) {
+  const { colors: c } = useTheme();
+  return (
+    <ContainerTextColor.Provider value={c.onPrimaryContainer}>
+      <View
+        style={{
+          padding: 16,
+          gap: 8,
+          borderRadius: shapeRoles.card,
+          backgroundColor: c.primaryContainer,
+        }}
+      >
+        {children}
+      </View>
+    </ContainerTextColor.Provider>
+  );
+}
 export function Card({title,children,titleRef,variant='filled'}:{title?:string;children:React.ReactNode;titleRef?:React.RefObject<Text|null>;variant?:'filled'|'plain'|'outlined'}){const {colors:c}=useTheme();return <View style={[s.card,{backgroundColor:variant==='filled'?c.card:'transparent',borderWidth:variant==='outlined'?1:0,borderColor:c.divider,paddingHorizontal:variant==='plain'?0:20}]}>{title&&<Heading focusRef={titleRef}>{title}</Heading>}{children}</View>;}
 export function Button({title, onPress, secondary = false, variant, disabled = false, danger = false}: {
   title: string; onPress: () => void; secondary?: boolean;
@@ -117,7 +183,7 @@ export function Sheet({visible,onClose,title,children,returnFocus}:{visible:bool
  const settle=()=>{slot.stop();offset.stopAnimation();if(reducedMotion){offset.setValue(0);return;}const animation=Animated.spring(offset,{toValue:0,...motion.spring,useNativeDriver:true});slot.replace({start:()=>animation.start(),stop:()=>animation.stop()});};
  useEffect(()=>{if(wasVisible.current&&!shown&&interfaceVisible){const timer=setTimeout(()=>restore.current?.(),0);wasVisible.current=shown;return()=>clearTimeout(timer);}wasVisible.current=shown;},[shown,interfaceVisible]);
  useEffect(()=>{slot.stop();offset.stopAnimation();offset.setValue(shown&&!reducedMotion&&!layout.centerSheet?motion.sheet.entry:0);if(shown&&!reducedMotion&&!layout.centerSheet)settle();return()=>slot.stop();},[shown,reducedMotion,layout.centerSheet]);
- const drag=PanResponder.create({onMoveShouldSetPanResponderCapture:(_,g)=>!layout.centerSheet&&g.dy>motion.sheet.dragStart&&Math.abs(g.dy)>Math.abs(g.dx),onMoveShouldSetPanResponder:(_,g)=>!layout.centerSheet&&g.dy>motion.sheet.dragStart&&Math.abs(g.dy)>Math.abs(g.dx),onPanResponderGrant:()=>{slot.stop();offset.stopAnimation();},onPanResponderMove:(_,g)=>{if(!reducedMotion)offset.setValue(Math.max(0,g.dy));},onPanResponderRelease:(_,g)=>{if(g.dy>motion.sheet.dismissDistance){onClose();return;}settle();},onPanResponderTerminate:settle});
+ const drag=PanResponder.create({onMoveShouldSetPanResponderCapture:(_,g)=>!layout.centerSheet&&g.dy>motion.sheet.dragStart&&Math.abs(g.dy)>Math.abs(g.dx),onMoveShouldSetPanResponder:(_,g)=>!layout.centerSheet&&g.dy>motion.sheet.dragStart&&Math.abs(g.dy)>Math.abs(g.dx),onPanResponderGrant:()=>{slot.stop();offset.stopAnimation();},onPanResponderMove:(_,g)=>{if(!reducedMotion)offset.setValue(Math.max(0,g.dy));},onPanResponderRelease:(_,g)=>releaseSheetDrag(g.dy,settle,onClose),onPanResponderTerminate:settle});
  return <FormScope><Modal visible={shown} onShow={()=>focusNative(heading.current)} transparent animationType="none" onRequestClose={onClose}><KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':undefined} style={{flex:1,justifyContent:layout.centerSheet?'center':'flex-end',alignItems:'center',backgroundColor:'#00000088',paddingTop:insets.top+16,paddingHorizontal:layout.centerSheet?24:0,paddingBottom:layout.centerSheet?insets.bottom+16:0}}><Pressable accessibilityRole="button" accessibilityLabel={common.closeDetails} onPress={onClose} style={{position:'absolute',top:0,left:0,right:0,bottom:0}}/><Animated.View accessibilityViewIsModal style={{width:'100%',maxWidth:layout.centerSheet?720:undefined,maxHeight:Math.max(120,height-insets.top-insets.bottom-32),backgroundColor:c.surface,borderTopLeftRadius:24,borderTopRightRadius:24,borderBottomLeftRadius:layout.centerSheet?24:0,borderBottomRightRadius:layout.centerSheet?24:0,padding:layout.sheetPadding,paddingBottom:layout.centerSheet?24:Math.max(24,insets.bottom+16),transform:[{translateY:offset}]}}>{!layout.centerSheet&&<View {...drag.panHandlers} onStartShouldSetResponder={()=>true} accessible accessibilityRole="button" accessibilityLabel={common.close+' '+title} accessibilityHint={common.closeHint} accessibilityActions={[{name:'activate',label:common.closeSection}]} onAccessibilityAction={event=>{if(event.nativeEvent.actionName==='activate')onClose();}} onAccessibilityTap={onClose} style={{alignItems:'center',justifyContent:'center',minHeight:44,padding:10}}><View style={{height:4,width:36,borderRadius:2,backgroundColor:c.outline}}/></View>}<View {...(!layout.centerSheet?drag.panHandlers:{})} style={[s.row,{paddingBottom:16}]}><View style={{flex:1,minWidth:0}}><Heading focusRef={heading}>{title}</Heading></View>{cover&&<Pressable accessibilityRole="button" accessibilityLabel={common.hideScreen} onPress={cover} style={{minWidth:48,minHeight:48,justifyContent:'center',alignItems:'center'}}><MaterialCommunityIcons name="eye-off-outline" size={24} color={c.text}/></Pressable>}<Pressable accessibilityRole="button" accessibilityLabel={'Close '+title} onPress={onClose} style={{minHeight:48,minWidth:48,justifyContent:'center',alignItems:'center',borderRadius:24,backgroundColor:c.container}}><Copy strong>×</Copy></Pressable></View><ScrollView keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={{gap:20}}>{children}<Button secondary title={common.close} onPress={onClose}/></ScrollView></Animated.View></KeyboardAvoidingView></Modal></FormScope>;
 }
 export function focusNative(target:any){const tag=findNodeHandle(target);if(tag)AccessibilityInfo.setAccessibilityFocus(tag);}

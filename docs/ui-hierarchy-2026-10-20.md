@@ -68,7 +68,7 @@ Took the permitted per-section route. Plan holds one draft for the currently ope
 
 ## Verification
 
-- TypeScript and the full Vitest suite passed after each task. The final suite includes 273 tests.
+- TypeScript and the full Vitest suite passed after each task. The final suite includes 276 tests.
 - Existing light and dark palette contrast tests now include text and text-action pairs used on the new surfaces. These are static palette checks, not rendered theme checks or dynamic Android colour checks.
 - Taste source lint for HeadroomBar, MoveVerdict and Disclosure reported zero failures and zero warnings.
 - No dependencies, stored data shapes, calculator functions, thresholds or finance rules were changed.
@@ -82,9 +82,17 @@ Human verification is still needed for light and dark appearance, 360 by 800 fra
 
 ## Decisions and recommendations
 
-- Confirm that collapsed Needs attention is the preferred tradeoff for keeping the next action visible when multiple checks are outstanding. The checks and their actions remain available in one tap.
+- Needs attention now names each outstanding check in its collapsed summary, including expired bank permission. Explanations and actions remain available in one tap.
 - Consider a separate coordinated draft model if one save action across baseline, budgets, pensions and bills becomes a product requirement.
 - Consider explaining the relationship between setup checks, baseline confirmation and move confirmation in one place. They remain distinct in this change.
 - Accounts remains in the tab bar. Any navigation change needs a separate product decision.
 - The server pairing flow retains its structure. Only the competing manual-entry action uses the quieter button appearance.
 - No visual review score or screenshot-based approval is claimed without running the native screens.
+
+## Material and Android review follow-up
+
+- A sheet now settles back to its resting position before requesting dismissal. Cancelling a dirty Plan draft warning therefore keeps the sheet fully in view. Regression tests cover both dismissal requests and short drags.
+- Today and Move share a TonalCard with primaryContainer and onPrimaryContainer. Headings, helper text and inline Money inherit the appropriate foreground role. Filled buttons retain their own primary and onPrimary pairing.
+- The attention summary names transaction review, expired permission and incomplete setup separately rather than showing only a count.
+- Shared shape roles and existing typography styles replace local values in the new chart, disclosure and focal cards.
+- Native device, TalkBack, dynamic colour, font scaling and compact viewport checks remain outstanding. No visual compliance score is claimed by these changes.
