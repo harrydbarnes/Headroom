@@ -6,6 +6,7 @@ import {layoutPolicy,motion,TransitionSlot} from '../lib/presentation';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import {common} from '../strings/common';
 import {dateInput,monthInput,formatTaxYear,parseUkDate,parseUkMonth,parseTaxYear} from '../lib/dates';
+import {numberFieldText, numberFieldValue} from '../lib/numberField';
 import {amountContent} from '../lib/amountDisplay';
 import {CoverWorkspace,useInterfaceVisible} from './privacy';
 const AmountTextContext=createContext<StyleProp<TextStyle>|null>(null);
@@ -38,14 +39,48 @@ export function Button({title, onPress, secondary = false, variant, disabled = f
 export function Choice({title,selected,onPress,disabled=false}:{title:string;selected:boolean;onPress:()=>void;disabled?:boolean}){const {colors:c}=useTheme();return <Pressable accessibilityRole="button" accessibilityLabel={title.replace(/ · /g,', ')} accessibilityState={{selected,disabled}} disabled={disabled} onPress={onPress} style={({pressed})=>[s.chip,{backgroundColor:selected?c.primaryContainer:c.card,borderColor:selected?c.primary:c.outline,opacity:disabled?.4:pressed?.7:1}]}><Text style={{color:selected?c.onPrimaryContainer:c.text,fontSize:14,lineHeight:20,fontWeight:selected?'700':'400'}}>{title}</Text></Pressable>;}
 export function Toggle({label,value,onChange,disabled=false}:{label:string;value:boolean;onChange:(v:boolean)=>void;disabled?:boolean}){const {colors:c}=useTheme();return <View style={s.row}><View style={{flex:1}}><Copy>{label}</Copy></View><Switch accessibilityLabel={label} disabled={disabled} value={value} onValueChange={onChange} trackColor={{true:c.primary,false:c.outline}}/></View>;}
 export function Input({label,error,...props}:TextInputProps&{label:string;error?:string}){const {colors:c}=useTheme(),labelId=useId();return <View style={{gap:6}}><Text nativeID={labelId} style={[s.label,{color:c.muted}]}>{label}</Text><TextInput {...props} selectionColor={c.primary} cursorColor={c.primary} accessibilityLabel={label} accessibilityLabelledBy={Platform.OS==='android'?labelId:undefined} accessibilityHint={error?common.inputErrorHint(error):props.accessibilityHint} placeholderTextColor={c.muted} style={[s.input,{color:c.text,borderColor:error?c.error:c.outline,backgroundColor:c.surface},props.style]}/>{!!error&&<Text accessibilityLiveRegion="assertive" style={[s.small,{color:c.error}]}>{error}{common.unsavedEdit}</Text>}</View>;}
-export function Field({label,value,onChange,money=true,min=0,max=1e10,integer=false}:{label:string;value:number;onChange:(v:number)=>void;money?:boolean;min?:number;max?:number;integer?:boolean}){
- const [raw,setRaw]=useState(String(money?value/100:value)),[error,setError]=useState('');const editing=useRef(false),fieldId=useId(),validation=useContext(Validation),updateValidation=useRef(validation.update);updateValidation.current=validation.update;
- useEffect(()=>{if(!editing.current){setRaw(String(money?value/100:value));setError('');updateValidation.current(fieldId,false);}},[value,money]);
- useEffect(()=>()=>updateValidation.current(fieldId,false),[]);
- const valid=(text:string)=>{const n=Number(text);return /^(?:\d+(?:\.\d{0,2})?|\.\d{1,2})$/.test(text)&&Number.isFinite(n)&&n>=min&&n<=max&&(!integer||Number.isInteger(n));};
- const change=(text:string)=>{setRaw(text);const okay=valid(text);updateValidation.current(fieldId,!okay);setError(okay?'':common.numberRange(integer,min,max));if(okay)onChange(money?Math.round(Number(text)*100):Number(text));};
- const finish=()=>{editing.current=false;if(valid(raw))setRaw(String(Number(raw)));};
- return <View style={{gap:4}}><Input label={label+(money?' (£)':'')} error={error} keyboardType="decimal-pad" value={raw} onFocus={()=>editing.current=true} onChangeText={change} onBlur={finish} onSubmitEditing={finish}/></View>;
+export function Field({label, value, onChange, money = true, min = 0, max = 1e10, integer = false}: {
+  label: string; value: number; onChange: (value: number) => void;
+  money?: boolean; min?: number; max?: number; integer?: boolean;
+}) {
+  const [raw, setRaw] = useState(() => numberFieldText(value, money));
+  const [error, setError] = useState('');
+  const editing = useRef(false);
+  const fieldId = useId();
+  const validation = useContext(Validation);
+  const updateValidation = useRef(validation.update);
+  updateValidation.current = validation.update;
+  const parse = (text: string) => numberFieldValue(text, {money, min, max, integer});
+
+  useEffect(() => {
+    if (!editing.current) {
+      setRaw(numberFieldText(value, money));
+      setError('');
+      updateValidation.current(fieldId, false);
+    }
+  }, [value, money]);
+  useEffect(() => () => updateValidation.current(fieldId, false), []);
+
+  const change = (text: string) => {
+    setRaw(text);
+    const next = parse(text);
+    updateValidation.current(fieldId, next === null);
+    setError(next === null ? common.numberRange(integer, min, max) : '');
+    if (next !== null) onChange(next);
+  };
+  const finish = () => {
+    editing.current = false;
+    const next = parse(raw);
+    if (next !== null) setRaw(numberFieldText(next, money));
+  };
+
+  return (
+    <View style={{gap: 4}}>
+      <Input label={label + (money ? ' (£)' : '')} error={error} keyboardType="decimal-pad"
+        value={raw} placeholder={String(0)} onFocus={() => {editing.current = true;}}
+        onChangeText={change} onBlur={finish} onSubmitEditing={finish}/>
+    </View>
+  );
 }
 export function Money({value,precise=false,textStyle}:{value:number;precise?:boolean;textStyle?:StyleProp<TextStyle>}){
  const {hideAmounts,colors:c,reducedMotion}=useTheme(),visible=useInterfaceVisible(),inlineStyle=useContext(AmountTextContext),{fontScale}=useWindowDimensions();

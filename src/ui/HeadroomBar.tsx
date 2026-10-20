@@ -1,6 +1,7 @@
 import React from 'react';
 import {Animated, View} from 'react-native';
 import type {Plan} from '../lib/finance';
+import {amountContent} from '../lib/amountDisplay';
 import {headroomSegments, type HeadroomPart, type HeadroomSegment} from '../lib/headroomSegments';
 import {headroomCopy} from '../strings/headroom';
 import {Copy, Money} from './components';
@@ -44,7 +45,8 @@ function LegendRow({segment, hidden}: {segment: HeadroomSegment; hidden: boolean
   const {colors: c} = useTheme();
   const style = useSegmentStyle(segment.id, hidden);
   return (
-    <View style={{flexDirection: 'row', alignItems: 'flex-start', gap: 8}}>
+    <View accessible accessibilityLabel={`${labels[segment.id]}, ${amountContent(segment.amount, false, hidden).label}`}
+      style={{flexDirection: 'row', alignItems: 'flex-start', gap: 8}}>
       <View accessible={false} style={[style, {width: 12, height: 12, borderRadius: 4, marginTop: 4}]}/>
       <View style={{flex: 1, minWidth: 0}}><Copy small>{labels[segment.id]}</Copy></View>
       <Money value={segment.amount} textStyle={{color: c.text, fontSize: 13, lineHeight: 20, fontVariant: ['tabular-nums']}}/>
@@ -67,7 +69,7 @@ export function HeadroomBar({plan}: {plan: Plan}) {
         style={{height: 32, borderRadius: 16, overflow: 'hidden', flexDirection: 'row', backgroundColor: c.divider}}>
         {!empty && (model.overspent && !hideAmounts
           ? <View style={{flex: 1, backgroundColor: c.error}}/>
-          : segments.map(segment => <BarSegment key={`${segment.id}:${segment.share}`} segment={segment} hidden={hideAmounts}/>))}
+          : segments.map(segment => <BarSegment key={`${segment.id}:${segment.share}:${segment.amount}`} segment={segment} hidden={hideAmounts}/>))}
       </View>
       {empty ? <Copy small>{headroomCopy.emptyPrompt}</Copy> : <>
         {!hideAmounts && model.overspent && <Copy strong>{headroomCopy.overspendLabel}</Copy>}

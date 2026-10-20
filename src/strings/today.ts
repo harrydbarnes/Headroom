@@ -1,3 +1,4 @@
+import {counts} from './format';
 // Presentation copy only. Stored values and contracts remain in the domain modules.
 export const todayCopy = {
  moreDetail: 'More detail',
@@ -63,7 +64,7 @@ export const todayCopy = {
  confirmedSchemeTermsDetail: "Your confirmed scheme terms show additional employer funding may be available. Compare the take-home change and your cash buffer before deciding.",
  comparePensionContributions: "Compare pension contributions",
  yourNextAction: "Your next action",
- reviewBacklog: (value0:unknown,value1:unknown,value2:unknown)=>`${value0} ${value1} review. Oldest month: ${value2}.`,
+ reviewBacklog: (count:number,month:string)=>`${counts.transaction(count)} ${count===1?'needs':'need'} review. Oldest month: ${month}.`,
  bankPermissionExpiredText: "Bank permission expired. Reconnect to refresh transactions.",
  completeConfirmSavedText: "Complete and confirm your saved baseline.",
  planSpendsMoreText: "Your plan spends more than your income. Review your baseline.",
