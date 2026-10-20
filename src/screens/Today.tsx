@@ -17,6 +17,7 @@ import {effectivePlan,monthKey} from '../lib/workspace';
 import {Button,Card,Copy,Field,Heading,Line,Money,Notice,Page} from '../ui/components';
 import {AdaptiveColumns} from '../ui/AdaptiveColumns';
 import {ExampleGuide} from '../ui/ExampleGuide';
+import {SetupProgress} from '../ui/SetupProgress';
 import {DebtFields} from '../ui/DebtFields';
 import {styles as s,useTheme} from '../ui/theme';
 export function Today({navigate,banking}:{banking:Banking;navigate:(tab:string,month?:string)=>void}){
@@ -25,7 +26,7 @@ export function Today({navigate,banking}:{banking:Banking;navigate:(tab:string,m
  const backlog=w.transactions.filter(t=>t.movement==='review').sort((a,b)=>a.date.localeCompare(b.date)),oldest=backlog[0]?.date.slice(0,7);
  const spending=spendingParts(w.transactions,w.ledger).filter(t=>t.date.startsWith(monthKey())).map(t=>({...t,category:categoryGroup(w.planning?.categories??[],t.category)}));
  const scoped=spending.filter(t=>['Essentials','Flexible'].includes(t.category)).reduce((sum,t)=>sum+t.amount,0),excluded=spending.filter(t=>!['Essentials','Flexible'].includes(t.category));
- if(w.onboardingStep<4)return <Page key={w.onboardingStep}><Heading>{todayCopy.makeRoomForWhatMatters}</Heading><Copy>{todayCopy.aFewAmountsGiveYouAFirst}</Copy><Copy small>{todayCopy.setupProgress(w.onboardingStep+1)}</Copy>
+ if(w.onboardingStep<4)return <Page key={w.onboardingStep}><Heading>{todayCopy.makeRoomForWhatMatters}</Heading><Copy>{todayCopy.aFewAmountsGiveYouAFirst}</Copy><Copy small>{todayCopy.setupProgress(w.onboardingStep+1)}</Copy><SetupProgress step={w.onboardingStep} total={4}/>
   <Card title={todayCopy.setupTitles[w.onboardingStep]}>
    {w.onboardingStep===0&&<><Field label={todayCopy.monthlyHouseholdTakeHomeIncome} value={p.income} onChange={v=>store.patch({income:v})}/><Copy small>{todayCopy.useIncomeAfterText}</Copy></>}
    {w.onboardingStep===1&&<><Field label={todayCopy.essentialsIncludingMortLabel} value={p.essentials} onChange={v=>store.patch({essentials:v})}/><Field label={todayCopy.flexibleSpending} value={p.flexible} onChange={v=>store.patch({flexible:v})}/><Field label={todayCopy.annualBillsDividedByLabel} value={p.annualReserve} onChange={v=>store.patch({annualReserve:v,annualTotal:undefined})}/></>}

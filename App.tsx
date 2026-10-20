@@ -18,6 +18,7 @@ import {useShallow} from 'zustand/react/shallow';
 import {ThemeProvider,styles as s,useTheme} from './src/ui/theme';
 import {Button,Choice,Copy,Notice,Sheet,focusNative} from './src/ui/components';
 import {Today} from './src/screens/Today';
+import {Intro} from './src/ui/Intro';
 import {Activity} from './src/screens/Activity';
 import {Plan} from './src/screens/Plan';
 import {Move} from './src/screens/Move';
@@ -29,8 +30,8 @@ import {useMotionValue} from './src/ui/motion';
 import {CoverWorkspace,InterfaceVisible,useInterfaceVisible} from './src/ui/privacy';
 
 export default function App(){
- const ready=useFinance(s=>s.ready),preferences=useFinance(s=>s.data.preferences),blocked=useFinance(s=>s.storageBlocked);useEffect(()=>{void useFinance.getState().init();},[]);
- return <SafeAreaProvider><ThemeProvider preferences={preferences}>{ready?<ScreenProtectionProvider requested={preferences.blockCapture}><PrivacyGate>{blocked?<Recovery/>:<AppShell/>}</PrivacyGate></ScreenProtectionProvider>:<View style={{flex:1,justifyContent:'center'}}><ActivityIndicator accessibilityLabel={shellCopy.openingYourData}/></View>}</ThemeProvider></SafeAreaProvider>;
+ const ready=useFinance(s=>s.ready),preferences=useFinance(s=>s.data.preferences),blocked=useFinance(s=>s.storageBlocked),introNeeded=useFinance(s=>!s.data.preferences.introSeen&&!s.data.demo&&s.data.personal.onboardingStep===0&&s.data.personal.plan.income===0&&s.data.personal.transactions.length===0);useEffect(()=>{void useFinance.getState().init();},[]);
+ return <SafeAreaProvider><ThemeProvider preferences={preferences}>{ready?<ScreenProtectionProvider requested={preferences.blockCapture}><PrivacyGate>{blocked?<Recovery/>:introNeeded?<Intro onStart={()=>useFinance.getState().preferences({introSeen:true})} onExample={()=>{const f=useFinance.getState();f.preferences({introSeen:true});f.setDemo(true);}}/>:<AppShell/>}</PrivacyGate></ScreenProtectionProvider>:<View style={{flex:1,justifyContent:'center'}}><ActivityIndicator accessibilityLabel={shellCopy.openingYourData}/></View>}</ThemeProvider></SafeAreaProvider>;
 
 }
 function PrivacyGate({children}:{children:React.ReactNode}){
