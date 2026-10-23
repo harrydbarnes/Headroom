@@ -68,7 +68,7 @@ it('keeps fixed action titles short and uses verbs or documented status/navigati
  const verbs=/^(?:Add|Apply|Archive|Ask|Cancel|Check|Choose|Clear|Close|Compare|Confirm|Connect|Continue|Delete|Disable|Discard|Disconnect|Dismiss|Edit|Enable|End|Explore|Export|Filter|Find|Finish|Forecast|Hide|Import|Link|Load|Open|Preview|Read|Record|Reconnect|Refresh|Reject|Remove|Rename|Reopen|Replace|Replay|Reset|Restart|Restore|Return|Review|Roll|Save|Select|Set|Show|Skip|Try|Turn|Undo|Unlink|Unlock|Update|Use)\b/;
  // Busy labels report progress; confirmed labels report state; previous/next navigate.
  const exceptions=/^(?:Working|Checking|Authenticating|Baseline confirmed|Assumptions confirmed|Previous|Next)/;
- for(const file of uiFiles){const source=parse(file);function visit(node:ts.Node){if(ts.isJsxAttribute(node)&&node.name.getText(source)==='title'&&node.parent.parent.tagName.getText(source)==='Button'){
+ for(const file of uiFiles){const source=parse(file);function visit(node:ts.Node){if(ts.isJsxAttribute(node)&&node.name.getText(source)==='title'&&/^(?:Button|TextButton)$/.test(node.parent.parent.tagName.getText(source))){
  const init=node.initializer,expr=init&&ts.isJsxExpression(init)?init.expression:init&&ts.isStringLiteral(init)?init:undefined;
  if(expr&&!ts.isCallExpression(expr))for(const title of choices(expr)){if(title==='value'||title.includes('value'))continue;expect(words(title),`${file}: ${title}`).toBeLessThanOrEqual(3);expect(verbs.test(title)||exceptions.test(title),`${file}: ${title}`).toBe(true);}
  }ts.forEachChild(node,visit);}visit(source);}

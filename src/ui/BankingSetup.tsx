@@ -1,3 +1,4 @@
+import {TextButton} from './TextButton';
 import {bankingSetupTitles as titles} from '../strings/accounts';
 import {counts} from '../strings/format';
 import {accountsCopy} from '../strings/accounts';
@@ -30,6 +31,6 @@ export function BankingSetup({banking:b,demo,openSettings}:{banking:Banking;demo
  {step===4&&<><Copy>{accountsCopy.afterBankPermissionDetail}</Copy><Button title={accountsCopy.refreshTransactions} disabled={!status.canImport||b.busy} onPress={()=>{setOpen(false);void b.refresh();}}/>{!status.canImport&&<Notice>{accountsCopy.refreshNeedsAReachableDetail}</Notice>}<HelpNote summary={accountsCopy.bankImportSummary}><Copy small>{accountsCopy.bankImportDetail}</Copy></HelpNote></>}
  <Copy small>{accountsCopy.connectionStatus(bankStatusLabel(b.statusState),b.statusState==='verified'?(b.configured?accountsCopy.serverConfigured:accountsCopy.serverNeedsEnableBankingSetup):"",counts.recordedBankConnection(b.connections.length))}</Copy>
  {!!error&&<Notice error>{error}</Notice>}
- {step>0&&<Button secondary title={accountsCopy.previousSetupStep} onPress={()=>setStep(step-1)}/>}{step<4&&<Button title={accountsCopy.nextSetupStep} onPress={()=>setStep(step+1)}/>}
+ {step>0&&<TextButton title={accountsCopy.previousSetupStep} onPress={()=>setStep(step-1)}/>}{step<4&&<Button title={accountsCopy.nextSetupStep} onPress={()=>setStep(step+1)}/>}
  </Sheet></>;
 }

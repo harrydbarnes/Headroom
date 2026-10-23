@@ -1,5 +1,15 @@
+import {counts} from './format';
 // Presentation copy only. Stored values and contracts remain in the domain modules.
 export const todayCopy = {
+ moreDetail: 'More detail',
+ needsAttention: 'Needs attention',
+ attentionSummary: (backlog: number, expired: boolean, skipped: number) => [
+   backlog > 0 ? `${counts.transaction(backlog)} to review` : '',
+   expired ? 'Bank permission expired' : '',
+   skipped > 0 ? 'Setup checks incomplete' : '',
+ ].filter(Boolean).join(' · '),
+ heroConfirmed: 'Based on your confirmed monthly plan. This is not a live account balance.',
+ heroProvisional: 'Provisional monthly plan. Confirm your baseline in Plan. This is not a live account balance.',
  setupProgress:(part0:string|number)=>`Step ${part0} of 4 · progress saves on this device`,
  setupConfirmHelp:(part0:string|number)=>`${part0} Confirm actual values in Plan. Zero is not proof that a section is complete.`,
  headroomContext:(part0:string|number)=>`${part0} · after planned spending and annual reserves`,
@@ -41,7 +51,6 @@ export const todayCopy = {
  connectAccountsInstead: "Connect accounts instead",
  monthlyHeadroom: "Monthly headroom",
  whatSLeftEachMonthAfterPlanned: "What’s left each month after planned spending. Your monthly baseline is your confirmed monthly income and spending.",
- notSet: "Not set",
  monthlyIncome: "Monthly income",
  spendingAndReserves: "Spending and reserves",
  addYourIncomeToSeeYourPlan: "Add your income to see your plan.",
@@ -59,7 +68,7 @@ export const todayCopy = {
  confirmedSchemeTermsDetail: "Your confirmed scheme terms show additional employer funding may be available. Compare the take-home change and your cash buffer before deciding.",
  comparePensionContributions: "Compare pension contributions",
  yourNextAction: "Your next action",
- reviewBacklog: (value0:unknown,value1:unknown,value2:unknown)=>`${value0} ${value1} review. Oldest month: ${value2}.`,
+ reviewBacklog: (count:number,month:string)=>`${counts.transaction(count)} ${count===1?'needs':'need'} review. Oldest month: ${month}.`,
  bankPermissionExpiredText: "Bank permission expired. Reconnect to refresh transactions.",
  completeConfirmSavedText: "Complete and confirm your saved baseline.",
  planSpendsMoreText: "Your plan spends more than your income. Review your baseline.",
