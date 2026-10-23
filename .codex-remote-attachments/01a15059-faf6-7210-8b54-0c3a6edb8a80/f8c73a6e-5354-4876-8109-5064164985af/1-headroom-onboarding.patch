@@ -1,0 +1,174 @@
+diff --git a/App.tsx b/App.tsx
+index 25c3716..1dc1119 100644
+--- a/App.tsx
++++ b/App.tsx
+@@ -18,6 +18,7 @@ import {useShallow} from 'zustand/react/shallow';
+ import {ThemeProvider,styles as s,useTheme} from './src/ui/theme';
+ import {Button,Choice,Copy,Notice,Sheet,focusNative} from './src/ui/components';
+ import {Today} from './src/screens/Today';
++import {Intro} from './src/ui/Intro';
+ import {Activity} from './src/screens/Activity';
+ import {Plan} from './src/screens/Plan';
+ import {Move} from './src/screens/Move';
+@@ -29,8 +30,8 @@ import {useMotionValue} from './src/ui/motion';
+ import {CoverWorkspace,InterfaceVisible,useInterfaceVisible} from './src/ui/privacy';
+ 
+ export default function App(){
+- const ready=useFinance(s=>s.ready),preferences=useFinance(s=>s.data.preferences),blocked=useFinance(s=>s.storageBlocked);useEffect(()=>{void useFinance.getState().init();},[]);
+- return <SafeAreaProvider><ThemeProvider preferences={preferences}>{ready?<ScreenProtectionProvider requested={preferences.blockCapture}><PrivacyGate>{blocked?<Recovery/>:<AppShell/>}</PrivacyGate></ScreenProtectionProvider>:<View style={{flex:1,justifyContent:'center'}}><ActivityIndicator accessibilityLabel={shellCopy.openingYourData}/></View>}</ThemeProvider></SafeAreaProvider>;
++ const ready=useFinance(s=>s.ready),preferences=useFinance(s=>s.data.preferences),blocked=useFinance(s=>s.storageBlocked),introNeeded=useFinance(s=>!s.data.preferences.introSeen&&!s.data.demo&&s.data.personal.onboardingStep===0&&s.data.personal.plan.income===0&&s.data.personal.transactions.length===0);useEffect(()=>{void useFinance.getState().init();},[]);
++ return <SafeAreaProvider><ThemeProvider preferences={preferences}>{ready?<ScreenProtectionProvider requested={preferences.blockCapture}><PrivacyGate>{blocked?<Recovery/>:introNeeded?<Intro onStart={()=>useFinance.getState().preferences({introSeen:true})} onExample={()=>{const f=useFinance.getState();f.preferences({introSeen:true});f.setDemo(true);}}/>:<AppShell/>}</PrivacyGate></ScreenProtectionProvider>:<View style={{flex:1,justifyContent:'center'}}><ActivityIndicator accessibilityLabel={shellCopy.openingYourData}/></View>}</ThemeProvider></SafeAreaProvider>;
+ 
+ }
+ function PrivacyGate({children}:{children:React.ReactNode}){
+diff --git a/src/lib/workspace.ts b/src/lib/workspace.ts
+index 46a1502..fcbd419 100644
+--- a/src/lib/workspace.ts
++++ b/src/lib/workspace.ts
+@@ -10,7 +10,7 @@ export type Rule={id:string;merchant:string;movement:Movement;category:string;di
+ export type Coverage={month:string;confirmedAt:string;accounts?:{name:string;status:'complete'|'noActivity'}[]};
+ export type SyncReceipt={attemptedAt:string;finishedAt:string;status:'complete'|'partial'|'failed';added:number;updated:number;unchanged:number;warnings:string[];outcomes:{id:string;provider:string;status:'success'|'cached'|'partial'|'failed'|'expired';lastSync:string|null;count:number}[]};
+ export type Workspace={planning?:Planning;ledger?:Ledger;exampleStep?:number;syncReceipt?:SyncReceipt;setupSkipped?:number[];plan:Plan;transactions:Transaction[];lastSync:string|null;planConfirmedAt:string|null;onboardingStep:number;coverage:Coverage[];rules:Rule[];move:MoveState;scenarios:Scenario[]};
+-export type Preferences={theme:'system'|'light'|'dark';dynamicColor:boolean;reduceMotion:boolean;hideAmounts:boolean;moveEnabled:boolean;appLock:boolean;blockCapture:boolean};
++export type Preferences={theme:'system'|'light'|'dark';dynamicColor:boolean;reduceMotion:boolean;hideAmounts:boolean;moveEnabled:boolean;appLock:boolean;blockCapture:boolean;introSeen:boolean};
+ export type AppData={version:2;personal:Workspace;example:Workspace;demo:boolean;preferences:Preferences};
+ export const clone=<T,>(v:T):T=>JSON.parse(JSON.stringify(v));
+ /** Prevent rejected mutation callbacks from changing live objects in place. */
+@@ -39,7 +39,7 @@ export function exampleWorkspace(asOf=new Date()):Workspace{
+  w.scenarios=[{...clone(w.move),id:'example:move-a',name:'Example £590k purchase'},{...cheaper,id:'example:move-b',name:'Example £550k purchase'}];
+  w.transactions.sort((a,b)=>b.date.localeCompare(a.date));return w;
+ }
+-export function freshData():AppData{return {version:2,personal:freshWorkspace(),example:exampleWorkspace(),demo:false,preferences:{theme:'system',dynamicColor:false,reduceMotion:false,hideAmounts:false,moveEnabled:true,appLock:false,blockCapture:false}};}
++export function freshData():AppData{return {version:2,personal:freshWorkspace(),example:exampleWorkspace(),demo:false,preferences:{theme:'system',dynamicColor:false,reduceMotion:false,hideAmounts:false,moveEnabled:true,appLock:false,blockCapture:false,introSeen:false}};}
+ export function active(data:AppData){return data.demo?data.example:data.personal;}
+ export function switchWorkspace(data:AppData,demo:boolean):AppData{return {...data,demo};}
+ export function treatmentFits(movement:Movement,amount:number){return movement==='purchase'?amount>=0:movement==='income'||movement==='refund'?amount<=0:true;}
+@@ -109,7 +109,7 @@ export function anchorGoalDates(w:Workspace){const anchor=monthKey(w.planConfirm
+ export function migrateLegacy(saved:any,oldHouse?:any):AppData{
+  const d=freshData();if(!saved)saved={plan:emptyPlan,transactions:[],demo:false,lastSync:null};
+  if(saved.version!==undefined&&saved.version!==2)throw Error('Saved data uses an unsupported version.');
+- if(saved.version===2){d.personal=anchorGoalDates(validateWorkspace(saved.personal));d.example=anchorGoalDates(validateWorkspace(saved.example));d.demo=saved.demo===true;const p=object(saved.preferences);if(['system','light','dark'].includes(p.theme))d.preferences.theme=p.theme;for(const k of ['dynamicColor','reduceMotion','hideAmounts','moveEnabled','appLock','blockCapture'] as const)if(typeof p[k]==='boolean')d.preferences[k]=p[k];return d;}
++ if(saved.version===2){d.personal=anchorGoalDates(validateWorkspace(saved.personal));d.example=anchorGoalDates(validateWorkspace(saved.example));d.demo=saved.demo===true;const p=object(saved.preferences);if(['system','light','dark'].includes(p.theme))d.preferences.theme=p.theme;for(const k of ['dynamicColor','reduceMotion','hideAmounts','moveEnabled','appLock','blockCapture','introSeen'] as const)if(typeof p[k]==='boolean')d.preferences[k]=p[k];if(typeof p.introSeen!=='boolean')d.preferences.introSeen=true;return d;}
+  const w=freshWorkspace();w.move.provenance='example-template';w.move.input=clone(initialHouse);w.move.currentHousing=136578;w.move.housingType='mortgage';w.move.housingStops=true;w.plan={...emptyPlan,...saved.plan};assess(w.plan);w.plan.monthsReviewed=0;w.plan.coverageConfirmed=false;w.transactions=saved.transactions||[];w.lastSync=saved.lastSync||null;
+  if(oldHouse){w.move={input:oldHouse.house||oldHouse,currentHousing:oldHouse.currentMortgage??136578,housingType:'mortgage',housingStops:true,overlapMonths:0,confirmed:false,housingConfirmed:false};houseMove(w.move.input);}
+  const checked=anchorGoalDates(validateWorkspace(w));if(saved.demo){d.example=checked;d.demo=true;if(oldHouse)d.personal.move=clone(checked.move);}else d.personal=checked;return d;
+diff --git a/src/screens/Today.tsx b/src/screens/Today.tsx
+index 6f60160..38d0193 100644
+--- a/src/screens/Today.tsx
++++ b/src/screens/Today.tsx
+@@ -17,6 +17,7 @@ import {effectivePlan,monthKey} from '../lib/workspace';
+ import {Button,Card,Copy,Field,Heading,Line,Money,Notice,Page} from '../ui/components';
+ import {AdaptiveColumns} from '../ui/AdaptiveColumns';
+ import {ExampleGuide} from '../ui/ExampleGuide';
++import {SetupProgress} from '../ui/SetupProgress';
+ import {DebtFields} from '../ui/DebtFields';
+ import {styles as s,useTheme} from '../ui/theme';
+ export function Today({navigate,banking}:{banking:Banking;navigate:(tab:string,month?:string)=>void}){
+@@ -25,7 +26,7 @@ export function Today({navigate,banking}:{banking:Banking;navigate:(tab:string,m
+  const backlog=w.transactions.filter(t=>t.movement==='review').sort((a,b)=>a.date.localeCompare(b.date)),oldest=backlog[0]?.date.slice(0,7);
+  const spending=spendingParts(w.transactions,w.ledger).filter(t=>t.date.startsWith(monthKey())).map(t=>({...t,category:categoryGroup(w.planning?.categories??[],t.category)}));
+  const scoped=spending.filter(t=>['Essentials','Flexible'].includes(t.category)).reduce((sum,t)=>sum+t.amount,0),excluded=spending.filter(t=>!['Essentials','Flexible'].includes(t.category));
+- if(w.onboardingStep<4)return <Page key={w.onboardingStep}><Heading>{todayCopy.makeRoomForWhatMatters}</Heading><Copy>{todayCopy.aFewAmountsGiveYouAFirst}</Copy><Copy small>{todayCopy.setupProgress(w.onboardingStep+1)}</Copy>
++ if(w.onboardingStep<4)return <Page key={w.onboardingStep}><Heading>{todayCopy.makeRoomForWhatMatters}</Heading><Copy>{todayCopy.aFewAmountsGiveYouAFirst}</Copy><Copy small>{todayCopy.setupProgress(w.onboardingStep+1)}</Copy><SetupProgress step={w.onboardingStep} total={4}/>
+   <Card title={todayCopy.setupTitles[w.onboardingStep]}>
+    {w.onboardingStep===0&&<><Field label={todayCopy.monthlyHouseholdTakeHomeIncome} value={p.income} onChange={v=>store.patch({income:v})}/><Copy small>{todayCopy.useIncomeAfterText}</Copy></>}
+    {w.onboardingStep===1&&<><Field label={todayCopy.essentialsIncludingMortLabel} value={p.essentials} onChange={v=>store.patch({essentials:v})}/><Field label={todayCopy.flexibleSpending} value={p.flexible} onChange={v=>store.patch({flexible:v})}/><Field label={todayCopy.annualBillsDividedByLabel} value={p.annualReserve} onChange={v=>store.patch({annualReserve:v,annualTotal:undefined})}/></>}
+diff --git a/src/strings/today.ts b/src/strings/today.ts
+index cd1cee6..c8ab6f1 100644
+--- a/src/strings/today.ts
++++ b/src/strings/today.ts
+@@ -10,6 +10,14 @@ export const todayCopy = {
+  lastRefreshAttempt:(part0:string|number)=>`Last attempt: ${part0}. See Accounts for each bank’s download time and warnings.`,
+  monthReviewStatus:(part0:string|number,part1:string|number)=>`${part0} confirmed · ${part1} to review this month`,
+  scoreEvidenceHelp:(part0:string|number,part1:string|number,part2:string|number)=>`Baseline: ${part0} · all accounts included: ${part1} · past months: ${part2}/3. Cash reflects emergency savings, headroom reflects income left, and debt reflects lower-cost or cleared balances.`,
++ setupProgressLabel: "Setup progress",
++ setupProgressValue:(part0:string|number,part1:string|number)=>`Step ${part0} of ${part1}`,
++ introTagline: "See what’s left each month after planned spending.",
++ introAnimationLabel: "Planned spending takes part of your income and leaves headroom.",
++ introIncomeLabel: "Take-home pay",
++ introSpendingLabel: "Planned spending",
++ introHeadroomLabel: "Headroom",
++ startSetup: "Set up Headroom",
+  makeRoomForWhatMatters: "Make room for what matters",
+  aFewAmountsGiveYouAFirst: "Share a few details to get your first monthly plan. Connecting a bank is optional.",
+ 
+diff --git a/src/ui/Intro.tsx b/src/ui/Intro.tsx
+new file mode 100644
+index 0000000..f4aae1e
+--- /dev/null
++++ b/src/ui/Intro.tsx
+@@ -0,0 +1,50 @@
++import React,{useEffect,useRef,useState} from 'react';
++import {Animated,Easing,ScrollView,Text,View} from 'react-native';
++import {SafeAreaView} from 'react-native-safe-area-context';
++import {StatusBar} from 'expo-status-bar';
++import {todayCopy} from '../strings/today';
++import {Button,Copy} from './components';
++import {styles as s,useTheme} from './theme';
++
++const SPENDING_SHARE='64%',HEADROOM_SHARE='36%',ORIGIN=['0%','50%',0];
++const ease=(value:Animated.Value,duration:number)=>Animated.timing(value,{toValue:1,duration,easing:Easing.out(Easing.cubic),useNativeDriver:true});
++/** First-open intro: income, then planned spending, then the headroom that is left. */
++export function Intro({onStart,onExample}:{onStart:()=>void;onExample:()=>void}){
++ const {colors:c,dark,reducedMotion}=useTheme(),[ready,setReady]=useState(reducedMotion);
++ const income=useRef(new Animated.Value(0)).current,spending=useRef(new Animated.Value(0)).current,headroom=useRef(new Animated.Value(0)).current,glow=useRef(new Animated.Value(0)).current,words=useRef(new Animated.Value(0)).current;
++ useEffect(()=>{
++  const values=[income,spending,headroom,glow,words];
++  if(reducedMotion){values.forEach(v=>v.setValue(1));setReady(true);return;}
++  values.forEach(v=>v.setValue(0));
++  const run=Animated.sequence([ease(income,700),Animated.delay(150),ease(spending,900),Animated.delay(100),Animated.spring(headroom,{toValue:1,damping:11,stiffness:150,mass:1,useNativeDriver:true}),Animated.parallel([ease(words,500),Animated.sequence([ease(glow,450),Animated.timing(glow,{toValue:0,duration:650,easing:Easing.inOut(Easing.quad),useNativeDriver:true})])])]);
++  run.start(({finished})=>{if(finished)setReady(true);});
++  return()=>run.stop();
++ },[reducedMotion]);
++ const pulse=glow.interpolate({inputRange:[0,1],outputRange:[1,1.05]}),rise=words.interpolate({inputRange:[0,1],outputRange:[16,0]}),track={height:28,borderRadius:14,overflow:'hidden' as const,backgroundColor:c.container};
++ return <SafeAreaView style={{flex:1,backgroundColor:c.surface}}><StatusBar style={dark?'light':'dark'}/>
++  <ScrollView contentContainerStyle={{flexGrow:1,justifyContent:'center',padding:24,gap:36,maxWidth:600,width:'100%',alignSelf:'center'}}>
++   <View accessible accessibilityRole="image" accessibilityLabel={todayCopy.introAnimationLabel} style={{gap:20}}>
++    <View style={{gap:8}}>
++     <Animated.View style={{opacity:income}}><Copy small>{todayCopy.introIncomeLabel}</Copy></Animated.View>
++     <View style={track}><Animated.View style={{flex:1,backgroundColor:c.primary,transform:[{scaleX:income}],transformOrigin:ORIGIN}}/></View>
++    </View>
++    <View style={{gap:8}}>
++     <View style={[track,{flexDirection:'row'}]}>
++      <View style={{width:SPENDING_SHARE}}><Animated.View style={{flex:1,backgroundColor:c.outline,transform:[{scaleX:spending}],transformOrigin:ORIGIN}}/></View>
++      <View style={{width:HEADROOM_SHARE}}><Animated.View style={{flex:1,backgroundColor:c.primaryContainer,borderWidth:2,borderColor:c.primary,borderRadius:14,opacity:headroom,transform:[{scaleX:headroom},{scale:pulse}],transformOrigin:ORIGIN}}/></View>
++     </View>
++     <View style={{flexDirection:'row'}}>
++      <Animated.View style={{width:SPENDING_SHARE,opacity:spending}}><Copy small>{todayCopy.introSpendingLabel}</Copy></Animated.View>
++      <Animated.View style={{width:HEADROOM_SHARE,opacity:headroom}}><Copy small strong>{todayCopy.introHeadroomLabel}</Copy></Animated.View>
++     </View>
++    </View>
++   </View>
++   <Animated.View pointerEvents={ready?'auto':'none'} style={{gap:16,opacity:words,transform:[{translateY:rise}]}}>
++    <Text accessibilityRole="header" style={[s.title,{color:c.text}]}>{todayCopy.makeRoomForWhatMatters}</Text>
++    <Copy>{todayCopy.introTagline}</Copy>
++    <Button title={todayCopy.startSetup} onPress={onStart}/>
++    <Button secondary title={todayCopy.tryExampleData} onPress={onExample}/>
++   </Animated.View>
++  </ScrollView>
++ </SafeAreaView>;
++}
+diff --git a/src/ui/SetupProgress.tsx b/src/ui/SetupProgress.tsx
+new file mode 100644
+index 0000000..b676fa8
+--- /dev/null
++++ b/src/ui/SetupProgress.tsx
+@@ -0,0 +1,18 @@
++import React from 'react';
++import {Animated,View} from 'react-native';
++import {todayCopy} from '../strings/today';
++import {useMotionValue} from './motion';
++import {useInterfaceVisible} from './privacy';
++import {useTheme} from './theme';
++
++function Segment({filled,arriving,animate}:{filled:boolean;arriving:boolean;animate:boolean}){
++ const {colors:c}=useTheme(),scale=useMotionValue(filled?1:0,{enabled:animate,initial:arriving?0:filled?1:0});
++ return <View style={{flex:1,height:8,borderRadius:4,overflow:'hidden',backgroundColor:c.divider}}><Animated.View style={{flex:1,backgroundColor:c.primary,transform:[{scaleX:scale}],transformOrigin:['0%','50%',0]}}/></View>;
++}
++/** Segmented setup progress. The current segment fills as each step arrives. */
++export function SetupProgress({step,total}:{step:number;total:number}){
++ const {reducedMotion}=useTheme(),visible=useInterfaceVisible();
++ return <View accessible accessibilityRole="progressbar" accessibilityLabel={todayCopy.setupProgressLabel} accessibilityValue={{min:1,max:total,now:step+1,text:todayCopy.setupProgressValue(step+1,total)}} style={{flexDirection:'row',gap:6}}>
++  {Array.from({length:total},(_,i)=><Segment key={i} filled={i<=step} arriving={i===step} animate={visible&&!reducedMotion}/>)}
++ </View>;
++}

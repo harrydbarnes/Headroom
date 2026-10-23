@@ -77,6 +77,7 @@ function TodayOverview({
             : todayCopy.giveRemainingMoneyText;
   return (
     <Page>
+      <ExampleGuide navigate={navigate} />
       <TodayHero plan={p} workspace={w} />
       {needsAttention && (
         <TodayAttention
@@ -182,7 +183,6 @@ function TodayDetails({ navigate }: { navigate: (tab: string, month?: string) =>
   const excluded = spending.filter((t) => !['Essentials', 'Flexible'].includes(t.category));
   return (
     <View style={{ gap: 24 }}>
-      <ExampleGuide navigate={navigate} />
       <Card title={todayCopy.monthlyHeadroom}>
         <Copy small>{todayCopy.whatSLeftEachMonthAfterPlanned}</Copy>
         <Line label={todayCopy.monthlyIncome} value={<Money value={p.income} />} />

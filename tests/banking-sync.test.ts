@@ -13,6 +13,20 @@ async function fixture(){
  return {putRecord,session,request};
 }
 afterEach(()=>vi.unstubAllGlobals());
+it('marks prematurely expired consent for reconnection and avoids fetching it again',async()=>{
+ const f=await fixture();await f.putRecord('session/early',f.session('early'));
+ const fetch=vi.fn(async()=>Response.json({error:'EXPIRED_SESSION',message:'Provider detail'},{status:401}));vi.stubGlobal('fetch',fetch);
+ const result=await (await f.request()).json();
+ expect(result.rows).toEqual([]);expect(result.outcomes[0].status).toBe('expired');expect(result.outcomes[0].lastSync).toBeNull();
+ expect(result.warnings).toEqual(['early: consent expired. Reconnect your bank.']);
+ expect(completeImport(result.outcomes)).toBe(false);
+ const retry=await (await f.request()).json();expect(retry.outcomes[0].status).toBe('expired');expect(fetch).toHaveBeenCalledTimes(1);
+});
+it.each([Response.json({error:'UNAUTHORIZED_ACCESS'},{status:401}),new Response('Unavailable',{status:502})])('does not confuse other provider failures with expired consent',async response=>{
+ const f=await fixture();await f.putRecord('session/failed',f.session('failed'));
+ vi.stubGlobal('fetch',vi.fn(async()=>response.clone()));
+ const result=await (await f.request()).json();expect(result.outcomes[0].status).toBe('failed');expect(result.rows).toEqual([]);
+});
 it('reports successful, failed and expired banks independently without claiming a complete import',async()=>{
  const f=await fixture();await f.putRecord('session/ok',f.session('ok'));await f.putRecord('session/failed',f.session('failed'));await f.putRecord('session/expired',{...f.session('expired'),expires:new Date(Date.now()-1).toISOString()});
  vi.stubGlobal('fetch',vi.fn(async(url:string)=>{if(url.includes('/failed/'))throw Error('Unavailable');return Response.json({transactions:[{transaction_id:'one',booking_date:'2026-10-01',credit_debit_indicator:'DBIT',transaction_amount:{amount:'12.34',currency:'GBP'}}]});}));

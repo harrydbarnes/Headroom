@@ -9,6 +9,6 @@ export function numberFieldValue(text: string, {
   return money ? Math.round(number * 100) : number;
 }
 
-export function numberFieldText(value: number, money: boolean, focused = false) {
-  return value === 0 && !focused ? '' : String(money ? value / 100 : value);
+export function numberFieldText(value: number, money: boolean) {
+  return value === 0 ? '' : String(money ? value / 100 : value);
 }
