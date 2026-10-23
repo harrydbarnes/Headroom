@@ -10,7 +10,7 @@ export type Rule={id:string;merchant:string;movement:Movement;category:string;di
 export type Coverage={month:string;confirmedAt:string;accounts?:{name:string;status:'complete'|'noActivity'}[]};
 export type SyncReceipt={attemptedAt:string;finishedAt:string;status:'complete'|'partial'|'failed';added:number;updated:number;unchanged:number;warnings:string[];outcomes:{id:string;provider:string;status:'success'|'cached'|'partial'|'failed'|'expired';lastSync:string|null;count:number}[]};
 export type Workspace={planning?:Planning;ledger?:Ledger;exampleStep?:number;syncReceipt?:SyncReceipt;setupSkipped?:number[];plan:Plan;transactions:Transaction[];lastSync:string|null;planConfirmedAt:string|null;onboardingStep:number;coverage:Coverage[];rules:Rule[];move:MoveState;scenarios:Scenario[]};
-export type Preferences={theme:'system'|'light'|'dark';dynamicColor:boolean;reduceMotion:boolean;hideAmounts:boolean;moveEnabled:boolean;appLock:boolean;blockCapture:boolean};
+export type Preferences={theme:'system'|'light'|'dark';dynamicColor:boolean;reduceMotion:boolean;hideAmounts:boolean;moveEnabled:boolean;appLock:boolean;blockCapture:boolean;introSeen:boolean};
 export type AppData={version:2;personal:Workspace;example:Workspace;demo:boolean;preferences:Preferences};
 export const clone=<T,>(v:T):T=>JSON.parse(JSON.stringify(v));
 /** Prevent rejected mutation callbacks from changing live objects in place. */
@@ -39,7 +39,7 @@ export function exampleWorkspace(asOf=new Date()):Workspace{
  w.scenarios=[{...clone(w.move),id:'example:move-a',name:'Example £590k purchase'},{...cheaper,id:'example:move-b',name:'Example £550k purchase'}];
  w.transactions.sort((a,b)=>b.date.localeCompare(a.date));return w;
 }
-export function freshData():AppData{return {version:2,personal:freshWorkspace(),example:exampleWorkspace(),demo:false,preferences:{theme:'system',dynamicColor:false,reduceMotion:false,hideAmounts:false,moveEnabled:true,appLock:false,blockCapture:false}};}
+export function freshData():AppData{return {version:2,personal:freshWorkspace(),example:exampleWorkspace(),demo:false,preferences:{theme:'system',dynamicColor:false,reduceMotion:false,hideAmounts:false,moveEnabled:true,appLock:false,blockCapture:false,introSeen:false}};}
 export function active(data:AppData){return data.demo?data.example:data.personal;}
 export function switchWorkspace(data:AppData,demo:boolean):AppData{return {...data,demo};}
 export function treatmentFits(movement:Movement,amount:number){return movement==='purchase'?amount>=0:movement==='income'||movement==='refund'?amount<=0:true;}
@@ -107,9 +107,9 @@ export function parseBackup(raw:string):Workspace{if(utf8Bytes(raw)>BACKUP_LIMIT
 
 export function anchorGoalDates(w:Workspace){const anchor=monthKey(w.planConfirmedAt?new Date(w.planConfirmedAt):new Date());w.plan={...w.plan,goals:goalEntries(w.plan).map(g=>({...g,dueMonth:g.dueMonth??shiftMonth(anchor,g.months)}))};return w;}
 export function migrateLegacy(saved:any,oldHouse?:any):AppData{
- const d=freshData();if(!saved)saved={plan:emptyPlan,transactions:[],demo:false,lastSync:null};
+ const d=freshData();d.preferences.introSeen=!!saved||!!oldHouse;if(!saved)saved={plan:emptyPlan,transactions:[],demo:false,lastSync:null};
  if(saved.version!==undefined&&saved.version!==2)throw Error('Saved data uses an unsupported version.');
- if(saved.version===2){d.personal=anchorGoalDates(validateWorkspace(saved.personal));d.example=anchorGoalDates(validateWorkspace(saved.example));d.demo=saved.demo===true;const p=object(saved.preferences);if(['system','light','dark'].includes(p.theme))d.preferences.theme=p.theme;for(const k of ['dynamicColor','reduceMotion','hideAmounts','moveEnabled','appLock','blockCapture'] as const)if(typeof p[k]==='boolean')d.preferences[k]=p[k];return d;}
+ if(saved.version===2){d.personal=anchorGoalDates(validateWorkspace(saved.personal));d.example=anchorGoalDates(validateWorkspace(saved.example));d.demo=saved.demo===true;const p=object(saved.preferences);if(['system','light','dark'].includes(p.theme))d.preferences.theme=p.theme;for(const k of ['dynamicColor','reduceMotion','hideAmounts','moveEnabled','appLock','blockCapture','introSeen'] as const)if(typeof p[k]==='boolean')d.preferences[k]=p[k];if(typeof p.introSeen!=='boolean')d.preferences.introSeen=true;return d;}
  const w=freshWorkspace();w.move.provenance='example-template';w.move.input=clone(initialHouse);w.move.currentHousing=136578;w.move.housingType='mortgage';w.move.housingStops=true;w.plan={...emptyPlan,...saved.plan};assess(w.plan);w.plan.monthsReviewed=0;w.plan.coverageConfirmed=false;w.transactions=saved.transactions||[];w.lastSync=saved.lastSync||null;
  if(oldHouse){w.move={input:oldHouse.house||oldHouse,currentHousing:oldHouse.currentMortgage??136578,housingType:'mortgage',housingStops:true,overlapMonths:0,confirmed:false,housingConfirmed:false};houseMove(w.move.input);}
  const checked=anchorGoalDates(validateWorkspace(w));if(saved.demo){d.example=checked;d.demo=true;if(oldHouse)d.personal.move=clone(checked.move);}else d.personal=checked;return d;

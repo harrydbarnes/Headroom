@@ -4,6 +4,19 @@ import {assess,demoPlan,mergeTransactions,type Transaction} from '../src/lib/fin
 import {active,applyRules,clone,dayKey,effectivePlan,exportBackup,freshData,freshWorkspace,importCounts,manualTransaction,migrateLegacy,monthKey,moveBudget,parseBackup,reviewRows,shiftMonth,switchWorkspace} from '../src/lib/workspace';
 const row:Transaction={id:'one',account:'Current',date:shiftMonth(monthKey(),-1)+'-03',merchant:'Shop',amount:1234,movement:'review',category:'Uncategorised'};
 describe('workspace isolation and migrations',()=>{
+ it('shows the intro only for a fresh installation and preserves its saved choice',()=>{
+  expect(freshData().preferences.introSeen).toBe(false);
+  expect(migrateLegacy(null).preferences.introSeen).toBe(false);
+  const saved=freshData();
+  expect(migrateLegacy(saved).preferences.introSeen).toBe(false);
+  saved.preferences.introSeen=true;
+  expect(migrateLegacy(saved).preferences.introSeen).toBe(true);
+ });
+ it('skips the intro for existing saved data from before the intro preference',()=>{
+  const saved=JSON.parse(JSON.stringify(freshData()));delete saved.preferences.introSeen;
+  expect(migrateLegacy(saved).preferences.introSeen).toBe(true);
+  expect(migrateLegacy({plan:demoPlan,transactions:[],demo:false}).preferences.introSeen).toBe(true);
+ });
  it('preserves personal plan, transactions, rules and move data when exploring examples',()=>{let d=freshData();d.personal.plan.income=123456;d.personal.transactions=[row];d.personal.move.input.purchase=45000000;const before=clone(d.personal);d=switchWorkspace(d,true);d.example.plan.income=99;d.example.transactions=[];d.example.move.input.purchase=123;d=switchWorkspace(d,false);expect(active(d)).toEqual(before);});
  it('migrates prior personal data without claiming old typed month counts are verified',()=>{const d=migrateLegacy({plan:demoPlan,transactions:[row],demo:false,lastSync:null});expect(d.personal.plan.income).toBe(demoPlan.income);expect(d.personal.transactions).toEqual([row]);expect(d.personal.plan.coverageConfirmed).toBe(false);expect(effectivePlan(d.personal).monthsReviewed).toBe(0);expect(d.personal.planConfirmedAt).toBeNull();});
  it('migrates an old example into only the example workspace',()=>{const d=migrateLegacy({plan:demoPlan,transactions:[row],demo:true,lastSync:null});expect(d.personal.transactions).toEqual([]);expect(d.example.transactions).toEqual([row]);expect(d.demo).toBe(true);});
