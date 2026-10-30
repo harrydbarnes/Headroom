@@ -78,7 +78,7 @@ it('short-circuits oversized Zod arrays and bounds Expo CLI extension inputs and
  const schemas=require(require('node:path').join(cliRoot,'build/src/start/server/DevToolsPlugin.schema.js'));
  const command={name:'run',title:'Run',environments:['cli'],parameters:[]};
  const base={packageName:'test-plugin',packageRoot:'./test-plugin'};
- const assertPluginOversize=(cliExtensions:any,path:string[])=>{
+ const assertPluginOversize=(cliExtensions:any,path:Array<string|number>)=>{
   const result=schemas.PluginSchema.safeParse({...base,cliExtensions});
   expect(result.success).toBe(false);
   if(!result.success){expect(result.error.issues).toHaveLength(1);expect(result.error.issues[0].code).toBe('too_big');expect(result.error.issues[0].path).toEqual(path);}
