@@ -167,5 +167,73 @@
         1
       ]
     ]
+  },
+  {
+    "package": "zod",
+    "version": "3.25.76",
+    "file": "v3/types.cjs",
+    "before": "06487cc05ed45c5dd29789bf0aa75734d1ce06592a7f2665ba4ca90a68e8a3e1",
+    "after": "89a5330044bd6f2bed1ac76b8e745b27fb83b02b2b95d8c823f0a1861bc60b60",
+    "replacements": [
+      [
+        "        if (def.exactLength !== null) {\n            const tooBig = ctx.data.length > def.exactLength.value;\n            const tooSmall = ctx.data.length < def.exactLength.value;\n            if (tooBig || tooSmall) {\n                (0, parseUtil_js_1.addIssueToContext)(ctx, {\n                    code: tooBig ? ZodError_js_1.ZodIssueCode.too_big : ZodError_js_1.ZodIssueCode.too_small,\n                    minimum: (tooSmall ? def.exactLength.value : undefined),\n                    maximum: (tooBig ? def.exactLength.value : undefined),\n                    type: \"array\",\n                    inclusive: true,\n                    exact: true,\n                    message: def.exactLength.message,\n                });\n                status.dirty();\n            }\n        }\n",
+        "        if (def.exactLength !== null) {\n            const tooBig = ctx.data.length > def.exactLength.value;\n            const tooSmall = ctx.data.length < def.exactLength.value;\n            if (tooBig || tooSmall) {\n                (0, parseUtil_js_1.addIssueToContext)(ctx, {\n                    code: tooBig ? ZodError_js_1.ZodIssueCode.too_big : ZodError_js_1.ZodIssueCode.too_small,\n                    minimum: (tooSmall ? def.exactLength.value : undefined),\n                    maximum: (tooBig ? def.exactLength.value : undefined),\n                    type: \"array\",\n                    inclusive: true,\n                    exact: true,\n                    message: def.exactLength.message,\n                });\n                status.dirty();\n                if (tooBig) {\n                    return { status: status.value, value: ctx.data };\n                }\n            }\n        }\n",
+        1
+      ],
+      [
+        "        if (def.maxLength !== null) {\n            if (ctx.data.length > def.maxLength.value) {\n                (0, parseUtil_js_1.addIssueToContext)(ctx, {\n                    code: ZodError_js_1.ZodIssueCode.too_big,\n                    maximum: def.maxLength.value,\n                    type: \"array\",\n                    inclusive: true,\n                    exact: false,\n                    message: def.maxLength.message,\n                });\n                status.dirty();\n            }\n        }\n",
+        "        if (def.maxLength !== null) {\n            if (ctx.data.length > def.maxLength.value) {\n                (0, parseUtil_js_1.addIssueToContext)(ctx, {\n                    code: ZodError_js_1.ZodIssueCode.too_big,\n                    maximum: def.maxLength.value,\n                    type: \"array\",\n                    inclusive: true,\n                    exact: false,\n                    message: def.maxLength.message,\n                });\n                status.dirty();\n                return { status: status.value, value: ctx.data };\n            }\n        }\n",
+        1
+      ]
+    ]
+  },
+  {
+    "package": "zod",
+    "version": "3.25.76",
+    "file": "v3/types.js",
+    "before": "9763a2938f0e7f983363ef4bf6530e7583e3f2d54f8a4a6684efad58febc6e8e",
+    "after": "ce8371ef0a87d85a4e64fa6d2b04ae3866e092d6a5d04bcf12f2ebec5d94810f",
+    "replacements": [
+      [
+        "        if (def.exactLength !== null) {\n            const tooBig = ctx.data.length > def.exactLength.value;\n            const tooSmall = ctx.data.length < def.exactLength.value;\n            if (tooBig || tooSmall) {\n                addIssueToContext(ctx, {\n                    code: tooBig ? ZodIssueCode.too_big : ZodIssueCode.too_small,\n                    minimum: (tooSmall ? def.exactLength.value : undefined),\n                    maximum: (tooBig ? def.exactLength.value : undefined),\n                    type: \"array\",\n                    inclusive: true,\n                    exact: true,\n                    message: def.exactLength.message,\n                });\n                status.dirty();\n            }\n        }\n",
+        "        if (def.exactLength !== null) {\n            const tooBig = ctx.data.length > def.exactLength.value;\n            const tooSmall = ctx.data.length < def.exactLength.value;\n            if (tooBig || tooSmall) {\n                addIssueToContext(ctx, {\n                    code: tooBig ? ZodIssueCode.too_big : ZodIssueCode.too_small,\n                    minimum: (tooSmall ? def.exactLength.value : undefined),\n                    maximum: (tooBig ? def.exactLength.value : undefined),\n                    type: \"array\",\n                    inclusive: true,\n                    exact: true,\n                    message: def.exactLength.message,\n                });\n                status.dirty();\n                if (tooBig) {\n                    return { status: status.value, value: ctx.data };\n                }\n            }\n        }\n",
+        1
+      ],
+      [
+        "        if (def.maxLength !== null) {\n            if (ctx.data.length > def.maxLength.value) {\n                addIssueToContext(ctx, {\n                    code: ZodIssueCode.too_big,\n                    maximum: def.maxLength.value,\n                    type: \"array\",\n                    inclusive: true,\n                    exact: false,\n                    message: def.maxLength.message,\n                });\n                status.dirty();\n            }\n        }\n",
+        "        if (def.maxLength !== null) {\n            if (ctx.data.length > def.maxLength.value) {\n                addIssueToContext(ctx, {\n                    code: ZodIssueCode.too_big,\n                    maximum: def.maxLength.value,\n                    type: \"array\",\n                    inclusive: true,\n                    exact: false,\n                    message: def.maxLength.message,\n                });\n                status.dirty();\n                return { status: status.value, value: ctx.data };\n            }\n        }\n",
+        1
+      ]
+    ]
+  },
+  {
+    "package": "@expo/cli",
+    "version": "57.0.31",
+    "from": "expo",
+    "file": "build/src/start/server/DevToolsPlugin.schema.js",
+    "before": "4da5edad8daa6eda49fecc646934d372008952004b2c19abc03e27bcffc904a5",
+    "after": "ae5be297c9e76ed7bd5a423ae4c7b0fbe2913d02bef0c7bcbee7db1fbd295763",
+    "replacements": [
+      [
+        "    ])).readonly(),",
+        "    ])).max(2).readonly(),",
+        1
+      ],
+      [
+        "    parameters: _zod().z.array(CommandParameterSchema).optional()",
+        "    parameters: _zod().z.array(CommandParameterSchema).max(100).optional()",
+        1
+      ],
+      [
+        "    commands: _zod().z.array(CommandSchema).min(1),",
+        "    commands: _zod().z.array(CommandSchema).min(1).max(100),",
+        1
+      ],
+      [
+        "const DevToolsPluginOutputSchema = _zod().z.array(DevToolsPluginOutputLinesSchema);",
+        "const DevToolsPluginOutputSchema = _zod().z.array(DevToolsPluginOutputLinesSchema).max(1000);",
+        1
+      ]
+    ]
   }
 ]

@@ -5,13 +5,19 @@ const {createHash}=require('node:crypto');
 const patches=require('./dependency-patches.json');
 const hash=s=>createHash('sha256').update(s).digest('hex');
 const project=path.resolve(__dirname,'..'),lock=JSON.parse(fs.readFileSync(path.join(project,'package-lock.json'),'utf8'));
+const resolveRoot=patch=>{
+ const from=patch.from?path.join(project,'node_modules',patch.from):project;
+ return path.dirname(require.resolve(patch.package+'/package.json',{paths:[from]}));
+};
 for(const name of new Set(patches.map(p=>p.package))){
  const copies=Object.keys(lock.packages).filter(p=>p.endsWith('node_modules/'+name));
- if(copies.length!==1||path.dirname(require.resolve(name+'/package.json'))!==path.resolve(project,copies[0]))throw Error('Review all installed copies of '+name+' before building.');
+ const patch=patches.find(p=>p.package===name),root=resolveRoot(patch);
+ if(copies.length!==1||root!==path.resolve(project,copies[0]))throw Error('Review all installed copies of '+name+' before building.');
 }
 for(const patch of patches){
- const root=path.dirname(require.resolve(patch.package+'/package.json'));
- const version=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8')).version;
+ const root=resolveRoot(patch),metadata=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8'));
+ if(metadata.name!==patch.package)throw Error('Security patch package identity changed: '+patch.package);
+ const version=metadata.version;
  if(patch.package==='node-forge'&&version!==patch.version&&['1.4.0','1.4.1'].includes(version))continue;
  if(version!==patch.version)throw Error('Review security patch for upgraded '+patch.package);
  const file=path.join(root,patch.file),source=fs.existsSync(file)?fs.readFileSync(file,'utf8'):'';

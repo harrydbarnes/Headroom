@@ -11,7 +11,8 @@ if(audit.error||!audit.metadata||!audit.vulnerabilities)throw Error('Dependency 
 const mitigated=new Map([
  ['https://github.com/advisories/GHSA-vfj7-8cjw-p6xm','braces'],
  ['https://github.com/advisories/GHSA-86w9-cpqp-85rv','node-forge'],
- ['https://github.com/advisories/GHSA-gcqx-w48m-w2h4','deepmerge']
+ ['https://github.com/advisories/GHSA-gcqx-w48m-w2h4','deepmerge'],
+ ['https://github.com/advisories/GHSA-mrhx-c7xc-m3w5','zod']
 ]);
 const findings=Object.values(audit.vulnerabilities).flatMap(v=>v.via).filter(v=>typeof v==='object');
 for(const v of Object.values(audit.vulnerabilities))for(const via of v.via)if(typeof via==='string'&&!audit.vulnerabilities[via])throw Error('Unclassified dependency audit chain: '+via);

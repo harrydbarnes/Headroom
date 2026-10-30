@@ -1,7 +1,7 @@
 import {createRequire} from 'node:module';
 import {generateKeyPairSync} from 'node:crypto';
 import {it,expect} from 'vitest';
-const require=createRequire(import.meta.url),braces=require('braces'),forge=require('node-forge'),deepmerge=require('deepmerge');
+const require=createRequire(import.meta.url),braces=require('braces'),forge=require('node-forge'),deepmerge=require('deepmerge'),zod=require('zod');
 it('rejects excessive brace/parenthesis depth at parsing and public AST entry points',()=>{
  for(const [open,close] of [['{','}'],['(',')']])for(const action of [braces.parse,braces.compile,braces.expand])expect(()=>action(open.repeat(4000)+'a,b'+close.repeat(4000))).toThrow(/nesting limit/);
  let ast:any={type:'text',value:'a'};for(let i=0;i<5000;i++)ast={type:'root',nodes:[ast]};
@@ -54,4 +54,39 @@ it('ignores __proto__ at both deepmerge copy boundaries and preserves ordinary k
  const arrayResult=deepmerge([],JSON.parse('[{"__proto__":{"isAdmin":true},"safe":true}]'));
  expectClean(arrayResult[0]);
  expect(arrayResult[0].safe).toBe(true);
+});
+it('short-circuits oversized Zod arrays and bounds Expo CLI extension inputs and output',async()=>{
+ const assertShortCircuits=(z:any)=>{
+  let parsed=0;
+  const oversized=z.array(z.any().refine(()=>{parsed++;return false;})).max(2).safeParse([1,2,3]);
+  expect(oversized.success).toBe(false);
+  expect(parsed).toBe(0);
+  if(!oversized.success){expect(oversized.error.issues).toHaveLength(1);expect(oversized.error.issues[0].code).toBe('too_big');}
+  parsed=0;
+  const exact=z.array(z.any().refine(()=>{parsed++;return false;})).length(2).safeParse([1,2,3]);
+  expect(exact.success).toBe(false);
+  expect(parsed).toBe(0);
+  if(!exact.success){expect(exact.error.issues).toHaveLength(1);expect(exact.error.issues[0].code).toBe('too_big');}
+ };
+ assertShortCircuits(zod.z);
+ const esmZod=await import('zod');
+ assertShortCircuits(esmZod.z);
+
+ const expoRequire=createRequire(require.resolve('expo/package.json'));
+ const cliPackage=expoRequire.resolve('@expo/cli/package.json');
+ const cliRoot=require('node:path').dirname(cliPackage);
+ const schemas=require(require('node:path').join(cliRoot,'build/src/start/server/DevToolsPlugin.schema.js'));
+ const command={name:'run',title:'Run',environments:['cli'],parameters:[]};
+ const base={packageName:'test-plugin',packageRoot:'./test-plugin'};
+ const assertPluginOversize=(cliExtensions:any,path:string[])=>{
+  const result=schemas.PluginSchema.safeParse({...base,cliExtensions});
+  expect(result.success).toBe(false);
+  if(!result.success){expect(result.error.issues).toHaveLength(1);expect(result.error.issues[0].code).toBe('too_big');expect(result.error.issues[0].path).toEqual(path);}
+ };
+ assertPluginOversize({description:'test',entryPoint:'index.js',commands:new Array(101).fill(null)},['cliExtensions','commands']);
+ assertPluginOversize({description:'test',entryPoint:'index.js',commands:[{...command,environments:['cli','mcp','cli']}]},['cliExtensions','commands',0,'environments']);
+ assertPluginOversize({description:'test',entryPoint:'index.js',commands:[{...command,parameters:new Array(101).fill(null)}]},['cliExtensions','commands',0,'parameters']);
+ const output=schemas.DevToolsPluginOutputSchema.safeParse(new Array(1001).fill(null));
+ expect(output.success).toBe(false);
+ if(!output.success){expect(output.error.issues).toHaveLength(1);expect(output.error.issues[0].code).toBe('too_big');}
 });
