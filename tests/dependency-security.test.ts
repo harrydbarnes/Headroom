@@ -1,7 +1,7 @@
 import {createRequire} from 'node:module';
 import {generateKeyPairSync} from 'node:crypto';
 import {it,expect} from 'vitest';
-const require=createRequire(import.meta.url),braces=require('braces'),forge=require('node-forge');
+const require=createRequire(import.meta.url),braces=require('braces'),forge=require('node-forge'),deepmerge=require('deepmerge');
 it('rejects excessive brace/parenthesis depth at parsing and public AST entry points',()=>{
  for(const [open,close] of [['{','}'],['(',')']])for(const action of [braces.parse,braces.compile,braces.expand])expect(()=>action(open.repeat(4000)+'a,b'+close.repeat(4000))).toThrow(/nesting limit/);
  let ast:any={type:'text',value:'a'};for(let i=0;i<5000;i++)ast={type:'root',nodes:[ast]};
@@ -28,4 +28,30 @@ it('preserves Expo code-signing certificate and signature verification',()=>{
  const keyPair=expo.generateKeyPair(),certificate=expo.generateSelfSignedCodeSigningCertificate({keyPair,validityNotBefore:new Date(Date.now()-60000),validityNotAfter:new Date(Date.now()+86400000),commonName:'Headroom test'});
  expect(()=>expo.validateSelfSignedCertificate(certificate,keyPair)).not.toThrow();
  expect(typeof expo.signBufferRSASHA256AndVerify(keyPair.privateKey,certificate,Buffer.from('Headroom test manifest'))).toBe('string');
+});
+it('ignores __proto__ at both deepmerge copy boundaries and preserves ordinary keys',()=>{
+ const poisoned=()=>JSON.parse('{"__proto__":{"isAdmin":true},"safe":{"value":1}}');
+ const expectClean=(result:any)=>{
+  expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
+  expect(result.isAdmin).toBeUndefined();
+  expect(Object.prototype.hasOwnProperty.call(result,'__proto__')).toBe(false);
+ };
+
+ const nullPrototypeTarget=Object.create(null);
+ const nullPrototypeResult=deepmerge(nullPrototypeTarget,poisoned());
+ expectClean(nullPrototypeResult);
+ expect(nullPrototypeResult.safe).toEqual({value:1});
+
+ const nestedResult=deepmerge({session:null},JSON.parse('{"session":{"__proto__":{"isAdmin":true},"safe":true}}'));
+ expectClean(nestedResult.session);
+ expect(nestedResult.session.safe).toBe(true);
+
+ const ownProtoTarget=poisoned();
+ const ownProtoResult=deepmerge(ownProtoTarget,{safe:{other:2}});
+ expectClean(ownProtoResult);
+ expect(ownProtoResult.safe).toEqual({value:1,other:2});
+
+ const arrayResult=deepmerge([],JSON.parse('[{"__proto__":{"isAdmin":true},"safe":true}]'));
+ expectClean(arrayResult[0]);
+ expect(arrayResult[0].safe).toBe(true);
 });

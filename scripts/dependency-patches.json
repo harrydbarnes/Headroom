@@ -84,6 +84,77 @@
     ]
   },
   {
+    "package": "node-forge",
+    "version": "1.4.1",
+    "file": "lib/rsa.js",
+    "before": "6632e195295ce76f6bb9131ee770dcd6cc1ee4ffac7906302208b00faf95a87f",
+    "after": "7fccd3e1e7005aff3af8ec67309479e01abed16e092bcbe9c098284e1a7f571b",
+    "replacements": [
+      [
+        "            obj.value.length !== 2) {",
+        "            obj.value.length !== 2 ||\n            obj.value[0].value.length < 1 || obj.value[0].value.length > 2 ||\n            (obj.value[0].value.length === 2 &&\n              (obj.value[0].value[1].tagClass !== asn1.Class.UNIVERSAL ||\n               obj.value[0].value[1].type !== asn1.Type.NULL ||\n               obj.value[0].value[1].constructed !== false ||\n               obj.value[0].value[1].value !== ''))) {",
+        1
+      ]
+    ]
+  },
+  {
+    "package": "deepmerge",
+    "version": "4.3.1",
+    "file": "index.js",
+    "before": "12440c84957c1990ea2d5e33dc0091722dc1dc1585c6d20e0c780e568ffa9d30",
+    "after": "281deda15dc48e3f932e7e36310d6bcb5cbc7c851280fd0ee59fd2bf6f56bba1",
+    "replacements": [
+      [
+        "destination[key] = cloneUnlessOtherwiseSpecified(target[key], options)",
+        "if (key === '__proto__') {\n\t\t\t\treturn\n\t\t\t}\n\t\t\tdestination[key] = cloneUnlessOtherwiseSpecified(target[key], options)",
+        1
+      ],
+      [
+        "if (propertyIsUnsafe(target, key)) {",
+        "if (key === '__proto__' || propertyIsUnsafe(target, key)) {",
+        1
+      ]
+    ]
+  },
+  {
+    "package": "deepmerge",
+    "version": "4.3.1",
+    "file": "dist/cjs.js",
+    "before": "2e5160f84a1141bd927264afe4d15766f1e6cf07daef182b37ff53fea121de7d",
+    "after": "976c91f003a1fc609ebe2017babda35eb15dcb972c4bc868637626d3850c2756",
+    "replacements": [
+      [
+        "destination[key] = cloneUnlessOtherwiseSpecified(target[key], options)",
+        "if (key === '__proto__') {\n\t\t\t\treturn\n\t\t\t}\n\t\t\tdestination[key] = cloneUnlessOtherwiseSpecified(target[key], options)",
+        1
+      ],
+      [
+        "if (propertyIsUnsafe(target, key)) {",
+        "if (key === '__proto__' || propertyIsUnsafe(target, key)) {",
+        1
+      ]
+    ]
+  },
+  {
+    "package": "deepmerge",
+    "version": "4.3.1",
+    "file": "dist/umd.js",
+    "before": "f33e6596482d1fb5c7c427f8ef92f2aa849eea9223acd974176b2fb27ddbf73a",
+    "after": "88e2fb95a180eaa6d0e739d051a2faf9e2d9c7a1111022a4709d56d7da53dfe0",
+    "replacements": [
+      [
+        "destination[key] = cloneUnlessOtherwiseSpecified(target[key], options)",
+        "if (key === '__proto__') {\n\t\t\t\t\treturn\n\t\t\t\t}\n\t\t\t\tdestination[key] = cloneUnlessOtherwiseSpecified(target[key], options)",
+        1
+      ],
+      [
+        "if (propertyIsUnsafe(target, key)) {",
+        "if (key === '__proto__' || propertyIsUnsafe(target, key)) {",
+        1
+      ]
+    ]
+  },
+  {
     "package": "@expo/metro-file-map",
     "version": "57.0.4",
     "file": "build/lib/RootPathUtils.js",
