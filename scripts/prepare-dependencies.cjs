@@ -18,8 +18,9 @@ for(const patch of patches){
  const root=resolveRoot(patch),metadata=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8'));
  if(metadata.name!==patch.package)throw Error('Security patch package identity changed: '+patch.package);
  const version=metadata.version;
- if(patch.package==='node-forge'&&version!==patch.version&&['1.4.0','1.4.1'].includes(version))continue;
- if(version!==patch.version)throw Error('Review security patch for upgraded '+patch.package);
+ const supportedVersions=patch.versions||[patch.version];
+ if(patch.package==='node-forge'&&!supportedVersions.includes(version)&&['1.4.0','1.4.1'].includes(version))continue;
+ if(!supportedVersions.includes(version))throw Error('Review security patch for upgraded '+patch.package);
  const file=path.join(root,patch.file),source=fs.existsSync(file)?fs.readFileSync(file,'utf8'):'';
  if(hash(source)===patch.after)continue;
  if(process.argv.includes('--check')||hash(source)!==patch.before)throw Error('Security patch missing or source changed: '+patch.package+'/'+patch.file);

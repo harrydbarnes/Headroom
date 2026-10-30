@@ -208,7 +208,7 @@
   },
   {
     "package": "@expo/cli",
-    "version": "57.0.31",
+    "versions": ["57.0.31", "57.0.32"],
     "from": "expo",
     "file": "build/src/start/server/DevToolsPlugin.schema.js",
     "before": "4da5edad8daa6eda49fecc646934d372008952004b2c19abc03e27bcffc904a5",
