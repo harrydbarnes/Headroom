@@ -100,10 +100,18 @@ export async function api(path: string, method = 'GET', body?: unknown) {
   if (!r.ok) throw Error(data.error || 'The finance API could not complete this request.');
   return data;
 }
+export type ProviderBalance = {
+  accountHash: string;
+  account: string;
+  current: number;
+  available?: number;
+  asOf: string;
+};
 export async function sync(id?: string) {
   const d = await api('/api/banking/sync', 'POST', id ? { id } : undefined);
   return {
     rows: (d.rows || []).map(fromProvider).filter((r: any) => r !== null),
+    balances: (Array.isArray(d.balances) ? d.balances : []) as ProviderBalance[],
     warnings: (d.warnings || []) as string[],
     outcomes: (d.outcomes || []) as SyncOutcome[],
   };

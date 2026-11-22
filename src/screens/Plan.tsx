@@ -125,7 +125,7 @@ export function Plan() {
         </HelpNote>
       </Card>
       <BudgetTools />
-      <PensionTools />
+      {store.data.preferences.pensionsEnabled !== false && <PensionTools />}
       <BillTools />
       <SectionRow
         title={planCopy.monthlyBaseline}

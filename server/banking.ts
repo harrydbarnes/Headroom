@@ -12,12 +12,21 @@ const json = (v: any, status = 200) =>
     status,
     headers: { 'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer' },
   });
+const cipherCache = new Map<string, Promise<CryptoKey>>();
 async function cipher(env: any) {
   if (!env.BANKING_ENCRYPTION_KEY || !env.BUCKET) throw Error('Banking storage is not configured.');
-  return crypto.subtle.importKey('raw', unb64(env.BANKING_ENCRYPTION_KEY), 'AES-GCM', false, [
-    'encrypt',
-    'decrypt',
-  ]);
+  const rawKey = String(env.BANKING_ENCRYPTION_KEY);
+  let cached = cipherCache.get(rawKey);
+  if (!cached) {
+    cached = crypto.subtle
+      .importKey('raw', unb64(rawKey), 'AES-GCM', false, ['encrypt', 'decrypt'])
+      .catch((err) => {
+        cipherCache.delete(rawKey);
+        throw err;
+      });
+    cipherCache.set(rawKey, cached);
+  }
+  return cached;
 }
 async function seal(env: any, value: any, aad: string) {
   const iv = crypto.getRandomValues(new Uint8Array(12));
@@ -45,14 +54,25 @@ async function load(env: any, key: string) {
 async function save(env: any, key: string, v: any) {
   await env.BUCKET.put(key, await seal(env, v, key));
 }
+const rsaCache = new Map<string, Promise<CryptoKey>>();
 async function rsa(pem: string) {
-  return crypto.subtle.importKey(
-    'pkcs8',
-    unb64(pem.replace(/-----[^-]+-----/g, '').replace(/\s/g, '')),
-    { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
-    false,
-    ['sign'],
-  );
+  let cached = rsaCache.get(pem);
+  if (!cached) {
+    cached = crypto.subtle
+      .importKey(
+        'pkcs8',
+        unb64(pem.replace(/-----[^-]+-----/g, '').replace(/\s/g, '')),
+        { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
+        false,
+        ['sign'],
+      )
+      .catch((err) => {
+        rsaCache.delete(pem);
+        throw err;
+      });
+    rsaCache.set(pem, cached);
+  }
+  return cached;
 }
 class ExpiredConsentError extends Error {}
 async function api(config: any, path: string, method = 'GET', body?: any): Promise<any> {
@@ -372,8 +392,60 @@ export async function handle(request: Request, env: any) {
       }
       const sessions = target ? allSessions.filter((s) => s.id === target) : allSessions,
         rows: any[] = [],
+        balances: any[] = [],
         warnings: string[] = [],
         outcomes: any[] = [];
+      const mapConcurrent = async <T, R>(
+        items: T[],
+        limit: number,
+        fn: (item: T) => Promise<R>,
+      ): Promise<R[]> => {
+        const out = new Array<R>(items.length);
+        let next = 0;
+        const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+          while (next < items.length) {
+            const idx = next++;
+            out[idx] = await fn(items[idx]);
+          }
+        });
+        await Promise.all(workers);
+        return out;
+      };
+      const accountLabel = (account: any, provider: string) =>
+        provider +
+        ' · ' +
+        (account.details || account.product || account.cash_account_type || 'Account') +
+        ' · ' +
+        String(account.identification_hash || account.uid).slice(-6);
+      const parseBalance = (data: any, account: any, provider: string) => {
+        const list = Array.isArray(data?.balances) ? data.balances : [];
+        const gbp = list.filter(
+          (b: any) =>
+            b?.balance_amount?.currency === 'GBP' &&
+            Number.isFinite(Number(b?.balance_amount?.amount)),
+        );
+        if (!gbp.length) return null;
+        const pick = (types: string[]) => gbp.find((b: any) => types.includes(b.balance_type));
+        const booked = pick(['CLBD', 'ITBD', 'OPBD', 'XPCD']) ?? gbp[0];
+        const avail = pick(['CLAV', 'ITAV', 'OPAV']);
+        const toPence = (b: any) => Math.round(Number(b.balance_amount.amount) * 100);
+        const current = toPence(booked);
+        if (!Number.isSafeInteger(current)) return null;
+        const available = avail ? toPence(avail) : undefined;
+        const asOf =
+          booked.reference_date && /^\d{4}-\d{2}-\d{2}/.test(booked.reference_date)
+            ? booked.reference_date.includes('T')
+              ? booked.reference_date
+              : booked.reference_date + 'T00:00:00Z'
+            : new Date().toISOString();
+        return {
+          accountHash: account.identification_hash || account.uid,
+          account: accountLabel(account, provider),
+          current,
+          ...(available !== undefined && Number.isSafeInteger(available) ? { available } : {}),
+          asOf,
+        };
+      };
       for (const session of sessions) {
         const outcome = (status: string, count = 0) =>
           outcomes.push({
@@ -392,6 +464,7 @@ export async function handle(request: Request, env: any) {
           const cached = await load(env, prefix + 'cache/' + session.id);
           if (cached) {
             rows.push(...cached.rows);
+            if (Array.isArray(cached.balances)) balances.push(...cached.balances);
             if (cached.partial)
               warnings.push(
                 ...(cached.warnings?.length
@@ -406,50 +479,75 @@ export async function handle(request: Request, env: any) {
           }
         }
         try {
-          const warningStart = warnings.length,
-            found: any[] = [];
-          let partial = false;
-          for (const account of session.accounts) {
-            if (account.currency !== 'GBP') {
-              warnings.push(session.provider + ': non-GBP account omitted.');
-              partial = true;
-              continue;
-            }
-            let continuation,
-              pages = 0;
-            const since = new Date(Date.now() - 180 * 86400000).toISOString().slice(0, 10);
-            do {
-              const query = new URLSearchParams({ date_from: since });
-              if (continuation) query.set('continuation_key', continuation);
-              const data = await api(
-                config,
-                '/accounts/' + encodeURIComponent(account.uid) + '/transactions?' + query,
-              );
-              for (const t of data.transactions || []) {
-                if (t.status && t.status !== 'BOOK') continue;
-                const row = normalise(t, account, session.provider);
-                if (row) found.push(row);
-                else {
-                  partial = true;
-                  warnings.push(
-                    session.provider +
-                      ': a transaction was omitted because its reference, date or currency was unavailable.',
-                  );
-                }
+          const warningStart = warnings.length;
+          const since = new Date(Date.now() - 180 * 86400000).toISOString().slice(0, 10);
+          const accountResults = await mapConcurrent(
+            session.accounts || [],
+            4,
+            async (account: any) => {
+              const localRows: any[] = [];
+              const localWarnings: string[] = [];
+              let localPartial = false;
+              if (account.currency !== 'GBP') {
+                localWarnings.push(session.provider + ': non-GBP account omitted.');
+                return { rows: localRows, warnings: localWarnings, partial: true, balance: null };
               }
-              continuation = data.continuation_key;
-              pages++;
-              if (pages >= 30 && continuation)
-                throw Error(
-                  'Transaction history exceeded the import limit. No partial import was saved.',
+              let continuation: string | undefined;
+              let pages = 0;
+              do {
+                const query = new URLSearchParams({ date_from: since });
+                if (continuation) query.set('continuation_key', continuation);
+                const data = await api(
+                  config,
+                  '/accounts/' + encodeURIComponent(account.uid) + '/transactions?' + query,
                 );
-            } while (continuation);
+                for (const t of data.transactions || []) {
+                  if (t.status && t.status !== 'BOOK') continue;
+                  const row = normalise(t, account, session.provider);
+                  if (row) localRows.push(row);
+                  else {
+                    localPartial = true;
+                    localWarnings.push(
+                      session.provider +
+                        ': a transaction was omitted because its reference, date or currency was unavailable.',
+                    );
+                  }
+                }
+                continuation = data.continuation_key;
+                pages++;
+                if (pages >= 30 && continuation)
+                  throw Error(
+                    'Transaction history exceeded the import limit. No partial import was saved.',
+                  );
+              } while (continuation);
+              let balance = null;
+              try {
+                const balData = await api(
+                  config,
+                  '/accounts/' + encodeURIComponent(account.uid) + '/balances',
+                );
+                balance = parseBalance(balData, account, session.provider);
+              } catch {
+                // Optional: some banks/consents do not expose balances; never fail transaction sync.
+              }
+              return { rows: localRows, warnings: localWarnings, partial: localPartial, balance };
+            },
+          );
+          const found: any[] = [];
+          const foundBalances: any[] = [];
+          let partial = false;
+          for (const res of accountResults) {
+            found.push(...res.rows);
+            warnings.push(...res.warnings);
+            if (res.partial) partial = true;
+            if (res.balance) foundBalances.push(res.balance);
           }
           const unique = [
             ...new Map(found.map((r: any) => [r.accountHash + ':' + r.providerId, r])).values(),
           ];
           await save(env, prefix + 'cache/' + session.id, {
             rows: unique,
+            balances: foundBalances,
             partial,
             warnings: [...new Set(warnings.slice(warningStart))],
           });
@@ -457,6 +555,7 @@ export async function handle(request: Request, env: any) {
           const { key, ...stored } = session;
           await save(env, key, stored);
           rows.push(...unique);
+          balances.push(...foundBalances);
           outcome(partial ? 'partial' : 'success', unique.length);
         } catch (e: any) {
           if (e instanceof ExpiredConsentError) {
@@ -473,6 +572,7 @@ export async function handle(request: Request, env: any) {
       }
       return json({
         rows,
+        balances,
         warnings: [...new Set(warnings)],
         outcomes,
         attemptedAt: new Date().toISOString(),

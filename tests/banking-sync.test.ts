@@ -152,11 +152,25 @@ it('retries only a known requested bank and rejects unknown connections', async 
   const f = await fixture();
   await f.putRecord('session/one', f.session('one'));
   await f.putRecord('session/two', f.session('two'));
-  const fetch = vi.fn(async () => Response.json({ transactions: [] }));
+  const fetch = vi.fn(async (url: string) =>
+    url.includes('/balances')
+      ? Response.json({
+          balances: [
+            {
+              balance_type: 'CLBD',
+              balance_amount: { currency: 'GBP', amount: '1234.56' },
+              reference_date: '2026-11-22',
+            },
+          ],
+        })
+      : Response.json({ transactions: [] }),
+  );
   vi.stubGlobal('fetch', fetch);
   const result = await (await f.request('one')).json();
   expect(result.outcomes.map((o: any) => o.id)).toEqual(['one']);
-  expect(fetch).toHaveBeenCalledTimes(1);
+  expect(fetch.mock.calls.every(([url]) => String(url).includes('/accounts/one/'))).toBe(true);
+  expect(result.balances).toHaveLength(1);
+  expect(result.balances[0].current).toBe(123456);
   expect((await f.request('missing')).status).toBe(404);
 });
 

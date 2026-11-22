@@ -70,7 +70,7 @@ export function Activity({
     [account, setAccount] = useState('All'),
     [categoryFilter, setCategoryFilter] = useState('All'),
     [direction, setDirection] = useState<'all' | 'in' | 'out'>('all'),
-    [onlyReview, setOnlyReview] = useState(false),
+    [onlyReview, setOnlyReview] = useState(!!store.data.preferences.defaultActivityUnreviewed),
     [allDates, setAllDates] = useState(false),
     [minAmount, setMinAmount] = useState(''),
     [maxAmount, setMaxAmount] = useState(''),

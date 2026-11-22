@@ -12,6 +12,7 @@ import { useWorkspace } from '../state/hooks';
 import { dayKey, id } from '../lib/workspace';
 import {
   accountKinds,
+  detectCsvMapping,
   emptyLedger,
   latestBalance,
   pounds,
@@ -22,7 +23,18 @@ import {
   type CsvMapping,
 } from '../lib/ledger';
 import { chooseCsv, saveCsv } from '../services/csv';
-import { DateField, Button, Card, Copy, Input, Money, Notice, Sheet, Toggle } from './components';
+import {
+  DateField,
+  Button,
+  Card,
+  Choice,
+  Copy,
+  Input,
+  Money,
+  Notice,
+  Sheet,
+  Toggle,
+} from './components';
 
 export function AccountLedger() {
   const store = useWorkspace(),
@@ -72,6 +84,10 @@ export function AccountLedger() {
       if (text !== null) {
         setRaw(text);
         setPreview(null);
+        const detected = detectCsvMapping(text);
+        if (Object.keys(detected.mapping).length > 0) {
+          setMapping((current) => ({ ...current, ...detected.mapping }));
+        }
       }
     } catch (e) {
       setError(toUserMessage(e));
@@ -477,43 +493,60 @@ export function AccountLedger() {
           onChangeText={setInstitution}
         />
         <Copy>{toolsCopy.accountTypeStatus(optionLabel(kind))}</Copy>
-        {accountKinds.map((k) => (
-          <Button key={k} secondary title={optionLabel(k)} onPress={() => setKind(k)} />
-        ))}
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+          {accountKinds.map((k) => (
+            <Choice
+              key={k}
+              title={optionLabel(k)}
+              selected={kind === k}
+              onPress={() => setKind(k)}
+            />
+          ))}
+        </View>
         <Copy>{toolsCopy.accountOwnershipStatus(optionLabel(group))}</Copy>
-        {(['personal', 'joint', 'business'] as const).map((g) => (
-          <Button key={g} secondary title={optionLabel(g)} onPress={() => setGroup(g)} />
-        ))}
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+          {(['personal', 'joint', 'business'] as const).map((g) => (
+            <Choice
+              key={g}
+              title={optionLabel(g)}
+              selected={group === g}
+              onPress={() => setGroup(g)}
+            />
+          ))}
+        </View>
         <Button
           title={toolsCopy.saveAccount}
           onPress={() =>
             attempt(() => {
               if (
-                store.change((x) => ({
-                  ...x,
-                  ledger: {
-                    ...l,
-                    accounts: editing
-                      ? l.accounts.map((a) =>
-                          a.id === editing
-                            ? { ...a, kind, group, institution: institution.trim() }
-                            : a,
-                        )
-                      : [
-                          ...l.accounts,
-                          {
-                            id: id(),
-                            name: name.trim(),
-                            kind,
-                            currency: 'GBP',
-                            group,
-                            institution: institution.trim(),
-                            included: true,
-                            archived: false,
-                          },
-                        ],
-                  },
-                }))
+                store.change((x) => {
+                  const cur = x.ledger ?? emptyLedger();
+                  return {
+                    ...x,
+                    ledger: {
+                      ...cur,
+                      accounts: editing
+                        ? cur.accounts.map((a) =>
+                            a.id === editing
+                              ? { ...a, kind, group, institution: institution.trim() }
+                              : a,
+                          )
+                        : [
+                            ...cur.accounts,
+                            {
+                              id: id(),
+                              name: name.trim(),
+                              kind,
+                              currency: 'GBP',
+                              group,
+                              institution: institution.trim(),
+                              included: true,
+                              archived: false,
+                            },
+                          ],
+                    },
+                  };
+                })
               ) {
                 setName('');
                 setOpen(false);

@@ -1,10 +1,12 @@
 import { settingsUI as copy } from '../strings/settingsRework';
-export type SettingsRoute = 'home' | 'backup' | 'rules' | 'examples' | 'link' | 'about';
+export type SettingsRoute =
+  'home' | 'planning' | 'backup' | 'rules' | 'examples' | 'link' | 'about';
 export type SettingsAnchor = 'appearance' | 'privacy';
 export type SettingsTarget = { route: SettingsRoute; anchor?: SettingsAnchor };
 const sections: Record<string, SettingsTarget> = {
   Appearance: { route: 'home', anchor: 'appearance' },
   Privacy: { route: 'home', anchor: 'privacy' },
+  Planning: { route: 'planning' },
   'Pair bank access': { route: 'link' },
   'Your workspace': { route: 'examples' },
   'Merchant rules': { route: 'rules' },
@@ -16,6 +18,11 @@ export function settingsTarget(section?: string): SettingsTarget {
     ? sections[section]
     : { route: 'home' };
 }
+export const planningSummary = (mode: 'custom' | 'guided', paydayDay = 25) =>
+  copy.planningSummary(
+    mode === 'custom' ? copy.allocationCustom : copy.allocationGuided,
+    paydayDay,
+  );
 export const ruleSummary = (n: number) => (n === 0 ? copy.noRules : copy.ruleCount(n));
 export const exampleSummary = (on: boolean) => (on ? 'On' : copy.off);
 export const linkSummary = (linked: boolean) => (linked ? copy.linked : copy.notLinked);

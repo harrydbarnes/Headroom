@@ -171,6 +171,48 @@ export function useBanking() {
               useFinance.getState().mutationError ||
                 'Imported data or receipt failed validation. Previous figures retained.',
             );
+          if (d.balances?.length) {
+            useFinance.getState().change((w) => {
+              const cur = w.ledger ?? {
+                version: 1 as const,
+                accounts: [],
+                balances: [],
+                annotations: [],
+                imports: [],
+              };
+              const accounts = [...cur.accounts];
+              const snapshots = [...cur.balances];
+              for (const b of d.balances) {
+                let acc = accounts.find((a) => a.name === b.account);
+                if (!acc) {
+                  acc = {
+                    id: 'local:' + encodeURIComponent(b.account),
+                    name: b.account,
+                    kind: 'current',
+                    currency: 'GBP',
+                    group: 'personal',
+                    institution: b.account.split(' · ')[0] || '',
+                    included: true,
+                    archived: false,
+                  };
+                  accounts.push(acc);
+                }
+                const snapId = `provider:${b.accountHash}:${b.asOf}`;
+                const nextSnap = {
+                  id: snapId,
+                  accountId: acc.id,
+                  current: b.current,
+                  ...(b.available !== undefined ? { available: b.available } : {}),
+                  asOf: b.asOf,
+                  source: 'provider' as const,
+                };
+                const existingIdx = snapshots.findIndex((s) => s.id === snapId);
+                if (existingIdx >= 0) snapshots[existingIdx] = nextSnap;
+                else snapshots.push(nextSnap);
+              }
+              return { ...w, ledger: { ...cur, accounts, balances: snapshots } };
+            });
+          }
           setOutcomes(d.outcomes);
           setMessage(
             bankingCopy.counts(

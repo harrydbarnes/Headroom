@@ -315,10 +315,39 @@ export function exportCsv(rows: Transaction[]) {
       .join('\r\n')
   );
 }
+export function detectCsvMapping(raw: string): { headers: string[]; mapping: Partial<CsvMapping> } {
+  try {
+    const table = parseCSV(raw.replace(/^\uFEFF/, ''));
+    const headers = (table[0] ?? []).map((h) => h.trim()).filter(Boolean);
+    const find = (names: string[]) => headers.find((h) => names.includes(h.toLowerCase()));
+    const date = find(['date', 'transaction date', 'posted date', 'booking date', 'value date']);
+    const merchant = find([
+      'merchant',
+      'description',
+      'payee',
+      'name',
+      'counterparty',
+      'transaction description',
+    ]);
+    const amount = find(['amount', 'transaction amount', 'debit', 'money out', 'paid out']);
+    const credit = find(['credit', 'money in', 'paid in']);
+    return {
+      headers,
+      mapping: {
+        ...(date ? { date } : {}),
+        ...(merchant ? { merchant } : {}),
+        ...(amount ? { amount } : {}),
+        ...(credit ? { credit } : {}),
+      },
+    };
+  } catch {
+    return { headers: [], mapping: {} };
+  }
+}
 export const providerCapabilities = {
   bookedGBP: true,
   pending: false,
-  balances: false,
+  balances: true,
   scheduledRefresh: false,
   historyDays: 180,
   notes:

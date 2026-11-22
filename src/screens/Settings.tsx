@@ -9,7 +9,7 @@ import { redeemPairingLink } from '../services/pairing';
 import { useScreenProtection } from '../ui/ScreenProtection';
 import { useWorkspace } from '../state/hooks';
 import { useFinance } from '../state/store';
-import { Button, Copy, Input, Notice } from '../ui/components';
+import { Button, Copy, Field, Input, Notice } from '../ui/components';
 import {
   ActionRow,
   DetailScreen,
@@ -22,9 +22,11 @@ import {
 import { RuleManager } from '../ui/RuleManager';
 import { CoverWorkspace } from '../ui/privacy';
 import { deviceColorSupported } from '../ui/theme';
+import { defaultCustomSplit } from '../lib/finance';
 import {
   deleteWithReceipt,
   settingsTarget,
+  planningSummary,
   ruleSummary,
   exampleSummary,
   linkSummary,
@@ -238,7 +240,20 @@ export function Settings({
         },
       ],
     );
+  const plan = store.workspace.plan;
+  const activeSplit = plan.customSplit ?? defaultCustomSplit;
+  const [splitSave, setSplitSave] = useState(activeSplit.save);
+  const [splitInvest, setSplitInvest] = useState(activeSplit.invest);
+  const [splitSpend, setSplitSpend] = useState(activeSplit.spend);
+  useEffect(() => {
+    const cs = store.workspace.plan.customSplit ?? defaultCustomSplit;
+    setSplitSave(cs.save);
+    setSplitInvest(cs.invest);
+    setSplitSpend(cs.spend);
+  }, [store.workspace.plan.customSplit]);
+  const splitTotal = splitSave + splitInvest + splitSpend;
   const titles = {
+    planning: copy.planning,
     backup: copy.backup,
     rules: copy.rules,
     examples: copy.examples,
@@ -321,8 +336,30 @@ export function Settings({
                 value={p.moveEnabled}
                 onChange={(moveEnabled) => store.preferences({ moveEnabled })}
               />
+              <ToggleRow
+                title={copy.pensions}
+                subtitle={copy.pensionsHint}
+                value={p.pensionsEnabled !== false}
+                onChange={(pensionsEnabled) => store.preferences({ pensionsEnabled })}
+              />
+              <ToggleRow
+                title={copy.activityUnreviewed}
+                subtitle={copy.activityUnreviewedHint}
+                value={!!p.defaultActivityUnreviewed}
+                onChange={(defaultActivityUnreviewed) =>
+                  store.preferences({ defaultActivityUnreviewed })
+                }
+              />
             </SettingsGroup>
           </View>
+          <SettingsGroup title={copy.planningGroup}>
+            <NavRow
+              icon="calendar-clock-outline"
+              title={copy.planning}
+              value={planningSummary(plan.allocationMode ?? 'guided', p.paydayDay ?? 25)}
+              onPress={(focus) => go('planning', focus)}
+            />
+          </SettingsGroup>
           <View
             onLayout={(e) => {
               if (e.nativeEvent.layout.height > 0) {
@@ -346,6 +383,28 @@ export function Settings({
                 disabled={busy}
                 onChange={lock}
               />
+              {p.appLock && (
+                <SegmentedControl
+                  label={copy.lockDelay}
+                  options={[
+                    { value: 'immediate' as const, label: copy.lockDelayLabels.immediate },
+                    { value: 'oneMin' as const, label: copy.lockDelayLabels.oneMin },
+                    { value: 'fiveMin' as const, label: copy.lockDelayLabels.fiveMin },
+                  ]}
+                  value={
+                    p.autoLockGraceSeconds === 60
+                      ? 'oneMin'
+                      : p.autoLockGraceSeconds === 300
+                        ? 'fiveMin'
+                        : 'immediate'
+                  }
+                  onChange={(value) =>
+                    store.preferences({
+                      autoLockGraceSeconds: value === 'oneMin' ? 60 : value === 'fiveMin' ? 300 : 0,
+                    })
+                  }
+                />
+              )}
               <ToggleRow
                 title={copy.protection}
                 subtitle={protectionSummary(protection.state.status)}
@@ -419,6 +478,93 @@ export function Settings({
       {route !== 'home' && (
         <DetailScreen key={route} title={titles[route]} onBack={back}>
           {notice(route)}
+          {route === 'planning' && (
+            <>
+              <Field
+                money={false}
+                integer
+                min={1}
+                max={31}
+                label={copy.paydayLabel}
+                value={p.paydayDay ?? 25}
+                onChange={(paydayDay) => store.preferences({ paydayDay })}
+              />
+              <SegmentedControl
+                label={copy.allocationStyle}
+                options={[
+                  { value: 'custom' as const, label: copy.allocationCustom },
+                  { value: 'guided' as const, label: copy.allocationGuided },
+                ]}
+                value={plan.allocationMode ?? 'guided'}
+                onChange={(allocationMode) =>
+                  store.patch({
+                    allocationMode,
+                    ...(allocationMode === 'custom' && !plan.customSplit
+                      ? { customSplit: defaultCustomSplit }
+                      : {}),
+                  })
+                }
+              />
+              {(plan.allocationMode ?? 'guided') === 'custom' && (
+                <>
+                  <Field
+                    money={false}
+                    integer
+                    min={0}
+                    max={100}
+                    label={copy.saveShare}
+                    value={splitSave}
+                    onChange={setSplitSave}
+                  />
+                  <Field
+                    money={false}
+                    integer
+                    min={0}
+                    max={100}
+                    label={copy.investShare}
+                    value={splitInvest}
+                    onChange={setSplitInvest}
+                  />
+                  <Field
+                    money={false}
+                    integer
+                    min={0}
+                    max={100}
+                    label={copy.spendShare}
+                    value={splitSpend}
+                    onChange={setSplitSpend}
+                  />
+                  {splitTotal !== 100 ? (
+                    <Notice error>{copy.splitHint(splitTotal)}</Notice>
+                  ) : (
+                    <Copy small>{copy.splitHint(splitTotal)}</Copy>
+                  )}
+                  <Button
+                    title={copy.saveAllocation}
+                    disabled={splitTotal !== 100}
+                    onPress={() => {
+                      if (
+                        store.patch({
+                          allocationMode: 'custom',
+                          customSplit: { save: splitSave, invest: splitInvest, spend: splitSpend },
+                        })
+                      ) {
+                        receipt('planning', copy.savedPlanning);
+                      }
+                    }}
+                  />
+                </>
+              )}
+              <Field
+                money={false}
+                min={0}
+                max={100}
+                label={copy.debtThreshold}
+                value={plan.debtAprThreshold ?? 8}
+                onChange={(debtAprThreshold) => store.patch({ debtAprThreshold })}
+              />
+            </>
+          )}
           {route === 'backup' && (
             <>
               <HelpNote summary={copy.backupIntro}>

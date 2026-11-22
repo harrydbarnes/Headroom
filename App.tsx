@@ -100,7 +100,8 @@ function PrivacyGate({ children }: { children: React.ReactNode }) {
     captureBlocked = protectionBlocksContent(preferences.blockCapture, protection.state);
   const authenticating = useRef(false),
     opened = useRef(!preferences.appLock && !captureBlocked),
-    previousLock = useRef(preferences.appLock);
+    previousLock = useRef(preferences.appLock),
+    backgroundedAt = useRef<number | null>(null);
   useEffect(() => {
     if (preferences.appLock && !previousLock.current) setLocked(false);
     previousLock.current = preferences.appLock;
@@ -109,9 +110,15 @@ function PrivacyGate({ children }: { children: React.ReactNode }) {
     const sub = AppState.addEventListener('change', (state) => {
       if (authenticating.current) return;
       setBackground(state !== 'active');
+      const prefs = useFinance.getState().data.preferences;
+      const graceMs = (prefs.autoLockGraceSeconds ?? 0) * 1000;
       if (state !== 'active') {
         void useFinance.getState().flushSave();
-        if (useFinance.getState().data.preferences.appLock) setLocked(true);
+        backgroundedAt.current = Date.now();
+        if (prefs.appLock && graceMs === 0) setLocked(true);
+      } else if (prefs.appLock && backgroundedAt.current !== null) {
+        if (Date.now() - backgroundedAt.current >= graceMs) setLocked(true);
+        backgroundedAt.current = null;
       }
     });
     return () => sub.remove();
