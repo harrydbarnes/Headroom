@@ -19,7 +19,7 @@ for(const patch of patches){
  if(metadata.name!==patch.package)throw Error('Security patch package identity changed: '+patch.package);
  const version=metadata.version;
  const supportedVersions=patch.versions||[patch.version];
- if(patch.package==='node-forge'&&!supportedVersions.includes(version)&&['1.4.0','1.4.1'].includes(version))continue;
+ if(patch.package==='node-forge'&&!supportedVersions.includes(version)&&['1.4.0','1.4.1','1.4.3'].includes(version))continue;
  if(!supportedVersions.includes(version))throw Error('Review security patch for upgraded '+patch.package);
  const file=path.join(root,patch.file),source=fs.existsSync(file)?fs.readFileSync(file,'utf8'):'';
  if(hash(source)===patch.after)continue;
