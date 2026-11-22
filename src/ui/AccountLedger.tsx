@@ -1,16 +1,15 @@
 import { TextButton } from './TextButton';
-import { counts } from '../strings/format';
+import { counts, formatCount } from '../strings/format';
 import { displayMessage } from '../strings/messages';
 import { HelpNote } from './components';
 import { toolsCopy } from '../strings/tools';
-import { formatDate, formatDateTime, formatTaxYear, formatRange } from '../lib/dates';
-import { counted, formatCount } from '../strings/format';
+import { formatDate, formatDateTime } from '../lib/dates';
 import { optionLabel } from '../strings/glossary';
 import { toUserMessage } from '../strings/errors';
 import React, { useState } from 'react';
 import { Alert, View } from 'react-native';
 import { useWorkspace } from '../state/hooks';
-import { id } from '../lib/workspace';
+import { dayKey, id } from '../lib/workspace';
 import {
   accountKinds,
   emptyLedger,
@@ -38,7 +37,7 @@ export function AccountLedger() {
   const [selected, setSelected] = useState(''),
     [balance, setBalance] = useState(''),
     [available, setAvailable] = useState(''),
-    [balanceDate, setBalanceDate] = useState(new Date().toISOString().slice(0, 10)),
+    [balanceDate, setBalanceDate] = useState(dayKey()),
     [message, setMessage] = useState(''),
     [error, setError] = useState(''),
     [busy, setBusy] = useState(false);
@@ -95,13 +94,16 @@ export function AccountLedger() {
           (!to || t.date <= to) &&
           (!category || t.category === category),
       );
-      setMessage(
-        toolsCopy.cSV +
-          (await saveCsv(exportCsv(rows))) +
-          ' · ' +
-          counts.transaction(rows.length) +
-          toolsCopy.csvRecoveryHelp,
-      );
+      const outcome = await saveCsv(exportCsv(rows));
+      if (outcome !== 'cancelled') {
+        setMessage(
+          toolsCopy.cSV +
+            outcome +
+            ' · ' +
+            counts.transaction(rows.length) +
+            toolsCopy.csvRecoveryHelp,
+        );
+      }
     } catch (e) {
       setError(toUserMessage(e));
     } finally {

@@ -77,16 +77,19 @@ export function TransactionDetails({ transaction: t }: { transaction: Transactio
               splits: parts,
             };
             setSaved(
-              store.change((w) => ({
-                ...w,
-                ledger: {
-                  ...l,
-                  annotations: [
-                    ...l.annotations.filter((a) => a.transactionId !== t.id),
-                    annotation,
-                  ],
-                },
-              })),
+              store.change((w) => {
+                const current = w.ledger ?? emptyLedger();
+                return {
+                  ...w,
+                  ledger: {
+                    ...current,
+                    annotations: [
+                      ...current.annotations.filter((a) => a.transactionId !== t.id),
+                      annotation,
+                    ],
+                  },
+                };
+              }),
             );
           } catch (e) {
             setError(toUserMessage(e));

@@ -70,7 +70,7 @@ export function Activity({
     [account, setAccount] = useState('All'),
     [categoryFilter, setCategoryFilter] = useState('All'),
     [direction, setDirection] = useState<'all' | 'in' | 'out'>('all'),
-    [onlyReview, setOnlyReview] = useState(true),
+    [onlyReview, setOnlyReview] = useState(false),
     [allDates, setAllDates] = useState(false),
     [minAmount, setMinAmount] = useState(''),
     [maxAmount, setMaxAmount] = useState(''),
@@ -121,8 +121,39 @@ export function Activity({
   useEffect(() => {
     setOpen(false);
   }, [month, store.demo]);
-  const monthRows = w.transactions.filter((t) => allDates || t.date.startsWith(month)),
-    totals = monthTotals(w.transactions, month);
+  const monthRows = useMemo(
+    () => w.transactions.filter((t) => allDates || t.date.startsWith(month)),
+    [w.transactions, allDates, month],
+  );
+  const totals = useMemo(
+    () =>
+      allDates
+        ? {
+            spending: monthRows
+              .filter((t) => t.movement === 'purchase' || t.movement === 'refund')
+              .reduce((sum, t) => sum + t.amount, 0),
+            income:
+              0 -
+              monthRows
+                .filter((t) => t.movement === 'income')
+                .reduce((sum, t) => sum + t.amount, 0),
+            unreviewed: monthRows.filter((t) => t.movement === 'review').length,
+          }
+        : monthTotals(w.transactions, month),
+    [allDates, monthRows, w.transactions, month],
+  );
+  const annotationsById = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const a of w.ledger?.annotations ?? []) {
+      map.set(a.transactionId, [a.note, a.alias, ...a.tags].join(' ').toLowerCase());
+    }
+    return map;
+  }, [w.ledger]);
+  const parsedMin = minAmount.trim() ? Number(minAmount) : null;
+  const parsedMax = maxAmount.trim() ? Number(maxAmount) : null;
+  const minPence = parsedMin !== null && Number.isFinite(parsedMin) ? parsedMin * 100 : null;
+  const maxPence = parsedMax !== null && Number.isFinite(parsedMax) ? parsedMax * 100 : null;
+  const normalizedQuery = query.trim().toLowerCase();
   const rows = useMemo(
     () =>
       monthRows.filter(
@@ -132,32 +163,31 @@ export function Activity({
           (categoryFilter === 'All' || categoryFilter === t.category) &&
           (treatmentFilter === 'All' || treatmentFilter === t.movement) &&
           (direction === 'all' || (direction === 'in' ? t.amount < 0 : t.amount >= 0)) &&
-          (!minAmount || Math.abs(t.amount) >= Number(minAmount) * 100) &&
-          (!maxAmount || Math.abs(t.amount) <= Number(maxAmount) * 100) &&
-          [
-            t.merchant,
-            t.account,
-            t.category,
-            ...(w.ledger?.annotations
-              .filter((a) => a.transactionId === t.id)
-              .flatMap((a) => [a.note, a.alias, ...a.tags]) ?? []),
-          ]
-            .join(' ')
-            .toLowerCase()
-            .includes(query.toLowerCase()),
+          (minPence === null || Math.abs(t.amount) >= minPence) &&
+          (maxPence === null || Math.abs(t.amount) <= maxPence) &&
+          (!normalizedQuery ||
+            (
+              t.merchant +
+              ' ' +
+              t.account +
+              ' ' +
+              t.category +
+              ' ' +
+              (annotationsById.get(t.id) ?? '')
+            )
+              .toLowerCase()
+              .includes(normalizedQuery)),
       ),
     [
-      w.transactions,
-      w.ledger,
-      month,
-      allDates,
-      minAmount,
-      maxAmount,
+      monthRows,
+      annotationsById,
+      minPence,
+      maxPence,
       onlyReview,
       account,
       categoryFilter,
       direction,
-      query,
+      normalizedQuery,
       treatmentFilter,
     ],
   );

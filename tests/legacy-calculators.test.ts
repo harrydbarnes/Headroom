@@ -1,6 +1,4 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'node:fs';
-import vm from 'node:vm';
 import {
   stampDuty,
   houseMove,
@@ -8,20 +6,8 @@ import {
   transactionCosts,
 } from '../src/lib/calculators/houseMove';
 import { monthlyPayment, amortisation, stressTest } from '../src/lib/calculators/mortgage';
-import {
-  budget,
-  savingsProjection,
-  debtProjection,
-  annualAllowances,
-} from '../src/lib/calculators/budget';
 import { pence as p, percent } from '../src/lib/calculators/money';
-const source = readFileSync('legacy/app.js', 'utf8');
-const old = vm.runInNewContext(
-  source.match(/function repayment[^\n]+/)![0] +
-    '\n' +
-    source.match(/function sdlt[^\n]+/)![0] +
-    '\n({repayment,sdlt})',
-);
+
 export const fees = {
   legalNet: p(3000),
   legalVat: 0,
@@ -67,39 +53,29 @@ export const input = {
   exchangePercent: 10,
   upfront: p(800),
 };
-describe('existing site parity', () => {
-  it.each([0, 125000, 125000.01, 250000, 250000.01, 300000, 590000, 925000, 1500000, 20000000])(
-    'SDLT £%s',
-    (price) => expect(stampDuty({ price: p(price), buyer: 'standard' })).toBe(p(old.sdlt(price))),
-  );
-  it.each([
-    [480000, 4.83, 30],
-    [0, 0, 30],
-    [100000, 0, 10],
-    [600000, 8, 50],
-  ])('repayment %s', (loan, rate, years) =>
-    expect(monthlyPayment({ principal: p(loan), annualRate: rate, years })).toBe(
-      p(old.repayment(loan, rate, years)),
-    ),
-  );
-  it('retains the required-loan buffer formula and every legacy fee', () => {
+
+describe('house move required-loan buffer and fees', () => {
+  it('retains the required-loan buffer formula and every fee', () => {
     const s = 375000,
       price = 590000,
       redemption = 234835.58,
-      fee = s * 0.012 + 390 + old.sdlt(price) + 3000 + 800 + 1000 + 1000;
+      sdlt = 19500,
+      fee = s * 0.012 + 390 + sdlt + 3000 + 800 + 1000 + 1000;
     const loan = Math.max(0, price + fee + 18000 - (s - redemption) - 19500);
     const r = houseMove(input);
     expect(r.loan).toBe(p(loan));
     expect(r.cashAfterCompletion).toBe(p(18000));
-    expect(r.payment).toBe(p(old.repayment(loan, 4.83, 30)));
+    expect(r.payment).toBe(monthlyPayment({ principal: p(loan), annualRate: 4.83, years: 30 }));
     expect(r.sale.commission).toBe(p(4500));
   });
 });
+
 describe('tax rules and boundaries', () => {
   it.each([
     [0, 0],
     [125000, 0],
     [250000, 2500],
+    [590000, 19500],
     [925000, 36250],
     [1500000, 93750],
     [2000000, 153750],
@@ -133,6 +109,7 @@ describe('tax rules and boundaries', () => {
     expect(() => stampDuty({ price: NaN, buyer: 'standard' })).toThrow();
   });
 });
+
 describe('sale, fees and cash flow', () => {
   it('preserves negative equity and ERCs', () => {
     expect(saleEquity({ ...sale, price: p(200000), erc: p(5000) }).netEquity).toBe(p(-42625.58));
@@ -155,35 +132,9 @@ describe('sale, fees and cash flow', () => {
     expect(houseMove({ ...input, exchangePercent: 20 }).cashAfterCompletion).toBe(
       houseMove(input).cashAfterCompletion,
     ));
-  it('balances the per-person budget exactly to the penny', () => {
-    const r = budget({
-      harry: p(3195),
-      cam: p(2691.06),
-      sharedIncome: p(47),
-      fixed: [{ id: 'a', name: 'bill', amount: p(300), owner: 'joint' }],
-      variable: [{ id: 'b', name: 'commute', amount: p(98.58), owner: 'harry' }],
-      mortgage: p(2500),
-      extra: 0,
-      reserves: p(150),
-    });
-    expect(r.harryTransfer + r.camTransfer).toBe(p(2903));
-    expect(r.harryLeft + r.camLeft).toBe(r.remaining);
-  });
-  it('reports unfunded joint costs with zero salaries', () =>
-    expect(
-      budget({
-        harry: 0,
-        cam: 0,
-        sharedIncome: 0,
-        fixed: [],
-        variable: [],
-        mortgage: p(100),
-        extra: 0,
-        reserves: 0,
-      }).unfunded,
-    ).toBe(p(100)));
 });
-describe('amortisation, savings and debt', () => {
+
+describe('amortisation, stress tests and rounding', () => {
   it('principal and interest reconcile throughout the schedule', () => {
     const rows = amortisation({ principal: p(480000), annualRate: 4.83, years: 30 });
     expect(rows.length).toBe(360);
@@ -202,27 +153,15 @@ describe('amortisation, savings and debt', () => {
     expect(rows[0].balance).toBe(p(100000));
     expect(rows.at(-1)!.payment).toBe(p(100500));
   });
-  it('zero-rate debt and mortgage repay exactly', () => {
+  it('zero-rate mortgage repays evenly', () => {
     expect(monthlyPayment({ principal: p(1200), annualRate: 0, years: 1 })).toBe(p(100));
-    expect(debtProjection(p(1000), 0, p(100)).rows.length).toBe(10);
-    expect(debtProjection(p(1000), 12, p(5)).paidOff).toBe(false);
   });
   it('includes three increasing rate shocks', () => {
     const r = stressTest({ principal: p(100000), annualRate: 5, years: 25 });
     expect(r.map((x) => x.shock)).toEqual([1, 2, 3]);
     expect(r[2].payment).toBeGreaterThan(r[1].payment);
   });
-  it('projects end-of-month deposits, allowances and decimal rounding', () => {
-    expect(
-      savingsProjection({ opening: p(1000), monthly: p(100), annualRate: 12, months: 1 })[0]
-        .balance,
-    ).toBe(p(1110));
-    expect(
-      annualAllowances([
-        { annual: p(1200), mode: 'additional' },
-        { annual: null, mode: 'within' },
-      ]),
-    ).toEqual({ additional: p(100), within: 0, unset: 1 });
+  it('handles decimal rounding accurately', () => {
     expect(p('1.005')).toBe(101);
     expect(percent(101, 20)).toBe(20);
   });

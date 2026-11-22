@@ -198,18 +198,21 @@ export function validateLedger(raw: unknown, transactions: Transaction[]): Ledge
   return l;
 }
 export function latestBalance(l: Ledger, id: string, now = Date.now()) {
-  const b = l.balances
+  const all = l.balances
     .filter((b) => b.accountId === id)
-    .sort((a, b) => Date.parse(b.asOf) - Date.parse(a.asOf))[0];
+    .sort((a, b) => Date.parse(b.asOf) - Date.parse(a.asOf));
+  const atOrBefore = all.find((b) => Date.parse(b.asOf) <= now);
+  if (atOrBefore) {
+    return {
+      snapshot: atOrBefore,
+      status:
+        now - Date.parse(atOrBefore.asOf) > 86400000 ? ('stale' as const) : ('current' as const),
+    };
+  }
+  const earliest = all.at(-1);
   return {
-    snapshot: b,
-    status: !b
-      ? 'unknown'
-      : Date.parse(b.asOf) > now
-        ? 'future'
-        : now - Date.parse(b.asOf) > 86400000
-          ? 'stale'
-          : 'current',
+    snapshot: earliest,
+    status: earliest ? ('future' as const) : ('unknown' as const),
   };
 }
 export function pounds(raw: string) {

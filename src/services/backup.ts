@@ -23,14 +23,18 @@ export async function savePrivateText(contents: string, prefix = 'headroom-recov
   if (!(await Sharing.isAvailableAsync()))
     throw Error('File sharing is unavailable on this device.');
   const file = new File(Paths.cache, prefix + '-' + Date.now() + '.json');
-  file.create();
-  file.write(contents);
-  await Sharing.shareAsync(file.uri, {
-    mimeType: 'application/json',
-    dialogTitle: bankingCopy.shareTitle,
-    UTI: 'public.json',
-  });
-  return 'shared';
+  try {
+    file.create();
+    file.write(contents);
+    await Sharing.shareAsync(file.uri, {
+      mimeType: 'application/json',
+      dialogTitle: bankingCopy.shareTitle,
+      UTI: 'public.json',
+    });
+    return 'shared';
+  } finally {
+    if (file.exists) file.delete();
+  }
 }
 export async function chooseBackup() {
   const result = await DocumentPicker.getDocumentAsync({

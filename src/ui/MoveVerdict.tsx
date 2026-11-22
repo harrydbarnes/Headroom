@@ -78,8 +78,8 @@ export function MoveVerdict({ workspace }: { workspace: Workspace }) {
             key={item.label}
             label={item.label}
             value={
-              item.percent && !hideAmounts ? (
-                <Copy>{moveCopy.percentValue(item.value.toFixed(1))}</Copy>
+              item.percent ? (
+                <Copy>{hideAmounts ? '•••%' : moveCopy.percentValue(item.value.toFixed(1))}</Copy>
               ) : (
                 <Money value={item.value} />
               )

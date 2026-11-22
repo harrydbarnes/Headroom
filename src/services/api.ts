@@ -20,9 +20,31 @@ export type SyncOutcome = {
   lastSync: string | null;
   count: number;
 };
+export async function fetchWithTimeout(
+  url: string,
+  init: RequestInit,
+  timeoutMs: number,
+): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
 async function credentials() {
   const saved = await SecureStore.getItemAsync('headroomConnection');
-  if (saved) return JSON.parse(saved) as { origin: string; token: string };
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      if (parsed && typeof parsed.origin === 'string' && typeof parsed.token === 'string') {
+        return parsed as { origin: string; token: string };
+      }
+    } catch {
+      // Fall through to legacy keys if stored JSON is corrupted.
+    }
+  }
   return {
     origin: await SecureStore.getItemAsync('apiOrigin'),
     token: await SecureStore.getItemAsync('deviceToken'),
@@ -58,12 +80,15 @@ export async function forgetConnection() {
 export async function api(path: string, method = 'GET', body?: unknown) {
   const { origin, token } = await credentials();
   if (!origin || !token) throw Error('Pair your finance server in Settings first.');
-  const r = await fetch(origin + path, {
-    method,
-    headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
-    body: body ? JSON.stringify(body) : undefined,
-    signal: AbortSignal.timeout(120000),
-  });
+  const r = await fetchWithTimeout(
+    origin + path,
+    {
+      method,
+      headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: body ? JSON.stringify(body) : undefined,
+    },
+    120000,
+  );
   let data;
   try {
     data = await r.json();
