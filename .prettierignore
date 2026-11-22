@@ -1,0 +1,10 @@
+node_modules
+android
+ios
+dist
+build
+.expo
+package-lock.json
+docs
+scripts/dependency-patches.json
+tests/fixtures

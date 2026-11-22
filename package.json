@@ -17,7 +17,10 @@
     "prestart": "node scripts/prepare-dependencies.cjs",
     "preexport:android": "node scripts/prepare-dependencies.cjs",
     "security:check": "node scripts/prepare-dependencies.cjs --check",
-    "audit:verified": "node scripts/check-audit.cjs"
+    "audit:verified": "node scripts/check-audit.cjs",
+    "format": "prettier --write \"App.tsx\" \"src/**/*.{ts,tsx}\" \"server/**/*.ts\" \"tests/**/*.ts\"",
+    "format:check": "prettier --check \"App.tsx\" \"src/**/*.{ts,tsx}\" \"server/**/*.ts\" \"tests/**/*.ts\"",
+    "lint": "eslint App.tsx src server tests"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
@@ -41,10 +44,15 @@
     "zustand": "^5.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^24.0.0",
     "@types/react": "~19.2.0",
+    "eslint": "^10.15.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "prettier": "^3.10.1",
     "tsx": "^4.20.0",
     "typescript": "~5.9.3",
+    "typescript-eslint": "^8.73.0",
     "vitest": "^5.0.4"
   },
   "type": "module",

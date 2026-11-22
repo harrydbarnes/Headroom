@@ -1,94 +1,803 @@
-import {TextButton} from '../ui/TextButton';
-import {counts} from '../strings/format';
-import {activityCopy} from '../strings/activity';
-import {formatDate,formatDateLong,formatMonth,formatRange} from '../lib/dates';
-import {movementLabel} from '../strings/glossary';
-import {counted,formatCount} from '../strings/format';
-import {toUserMessage} from '../strings/errors';
-import {BillTools} from '../ui/BillTools';
-import {categoryGroup} from '../lib/planning';
-import {TransactionDetails} from '../ui/TransactionDetails';
-import React,{useEffect,useMemo,useRef,useState} from 'react';
-import {Alert,FlatList,Pressable,ScrollView,Text,View} from 'react-native';
+import { TextButton } from '../ui/TextButton';
+import { counts } from '../strings/format';
+import { activityCopy } from '../strings/activity';
+import { formatDate, formatDateLong, formatMonth, formatRange } from '../lib/dates';
+import { movementLabel } from '../strings/glossary';
+import { counted, formatCount } from '../strings/format';
+import { toUserMessage } from '../strings/errors';
+import { BillTools } from '../ui/BillTools';
+import { categoryGroup } from '../lib/planning';
+import { TransactionDetails } from '../ui/TransactionDetails';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Alert, FlatList, Pressable, ScrollView, Text, View } from 'react-native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import {useWorkspace} from '../state/hooks';
-import {monthTotals,type Movement,type Transaction} from '../lib/finance';
-import {dayKey,manualTransaction,monthKey,shiftMonth,treatmentFits} from '../lib/workspace';
-import {duplicateManual,type ManualDraft} from '../lib/reconciliation';
-import type {Banking} from '../services/useBanking';
-import {DateField,Button,Card,Choice,Copy,Field,focusNative,Heading,Input,Line,Money,Notice,Sheet,Toggle} from '../ui/components';
-import {MonthChooser} from '../ui/MonthChooser';
-import {CoverageEditor} from '../ui/CoverageEditor';
-import {styles as s,useTheme} from '../ui/theme';
-const treatments:Movement[]=['purchase','income','transfer','repayment','refund','review'];
-const baseCategories=['Uncategorised','Essentials','Flexible','Annual bills','Income','Transfers','Debt repayment','Other'];
-export function Activity({banking,request}:{banking:Banking;request?:{month:string;key:number}}){
- const store=useWorkspace(),w=store.workspace,{colors:c,hideAmounts}=useTheme(),categories=[...baseCategories,...(w.planning?.categories.filter(c=>!c.archived).map(c=>c.name)??[])];
- const [actionsOpen,setActionsOpen]=useState(false),[monthsOpen,setMonthsOpen]=useState(false),[filtersOpen,setFiltersOpen]=useState(false),[coverageOpen,setCoverageOpen]=useState(false),[treatmentFilter,setTreatmentFilter]=useState('All');
- const [month,setMonth]=useState(monthKey()),[query,setQuery]=useState(''),[account,setAccount]=useState('All'),[categoryFilter,setCategoryFilter]=useState('All'),[direction,setDirection]=useState<'all'|'in'|'out'>('all'),[onlyReview,setOnlyReview]=useState(true),[allDates,setAllDates]=useState(false),[minAmount,setMinAmount]=useState(''),[maxAmount,setMaxAmount]=useState(''),[checked,setChecked]=useState<string[]>([]),[selected,setSelected]=useState<string[]>([]),[open,setOpen]=useState(false),[movement,setMovement]=useState<Movement>('review'),[category,setCategory]=useState('Uncategorised'),[remember,setRemember]=useState(false);
- const [manualOpen,setManualOpen]=useState(false),[editingId,setEditingId]=useState<string|null>(null),[merchant,setMerchant]=useState(''),[manualAccount,setManualAccount]=useState('Cash'),[date,setDate]=useState(dayKey()),[amount,setAmount]=useState(0),[incoming,setIncoming]=useState(false),[manualError,setManualError]=useState('');
- useEffect(()=>{if(request){setMonth(request.month);setQuery('');setAccount('All');setCategoryFilter('All');setDirection('all');setOnlyReview(true);setTreatmentFilter('All');}},[request?.key]);
- const titleRef=useRef<Text>(null),list=useRef<FlatList<Transaction>>(null),rowNodes=useRef(new Map<string,View>()),returnId=useRef<string|null>(null),sheetsShowing=useRef(false);sheetsShowing.current=open||manualOpen;
- const returnFocus=()=>{if(sheetsShowing.current)return;const node=returnId.current?rowNodes.current.get(returnId.current):null;if(node){focusNative(node);return;}list.current?.scrollToOffset({offset:0,animated:false});setTimeout(()=>focusNative(titleRef.current),50);};
- useEffect(()=>{setChecked([]);},[month,query,account,categoryFilter,direction,onlyReview,treatmentFilter,store.demo]);
- useEffect(()=>{setOpen(false);},[month,store.demo]);
- const monthRows=w.transactions.filter(t=>allDates||t.date.startsWith(month)),totals=monthTotals(w.transactions,month);
- const rows=useMemo(()=>monthRows.filter(t=>(!onlyReview||t.movement==='review')&&(account==='All'||account===t.account)&&(categoryFilter==='All'||categoryFilter===t.category)&&(treatmentFilter==='All'||treatmentFilter===t.movement)&&(direction==='all'||(direction==='in'?t.amount<0:t.amount>=0))&&(!minAmount||Math.abs(t.amount)>=Number(minAmount)*100)&&(!maxAmount||Math.abs(t.amount)<=Number(maxAmount)*100)&&[t.merchant,t.account,t.category,...(w.ledger?.annotations.filter(a=>a.transactionId===t.id).flatMap(a=>[a.note,a.alias,...a.tags])??[])].join(' ').toLowerCase().includes(query.toLowerCase())),[w.transactions,w.ledger,month,allDates,minAmount,maxAmount,onlyReview,account,categoryFilter,direction,query,treatmentFilter]);
- const validBound=(v:string)=>!v||/^\d+(?:\.\d{1,2})?$/.test(v);
- const boundsError=!validBound(minAmount)||!validBound(maxAmount)||(!!minAmount&&!!maxAmount&&Number(minAmount)>Number(maxAmount));
- const rowIds=new Set(rows.map(t=>t.id)),checkedSet=new Set(checked);
- const selectedSet=new Set(selected),selectedRows=w.transactions.filter(t=>selectedSet.has(t.id));
- const single=selectedRows.length===1?selectedRows[0]:undefined;
- const conflict=(movement==='purchase'||movement==='refund')&&['Income','Transfers','Debt repayment'].includes(category)||movement==='income'&&['Essentials','Flexible','Annual bills'].includes(categoryGroup(w.planning?.categories??[],category))||movement==='transfer'&&category!=='Transfers'||movement==='repayment'&&category!=='Debt repayment';
- const mixed=selectedRows.some(t=>t.amount<0)&&selectedRows.some(t=>t.amount>=0);
- const pairs=single?w.transactions.filter(t=>t.id!==single.id&&t.account!==single.account&&t.amount===-single.amount&&Math.abs(Date.parse(t.date)-Date.parse(single.date))<=3*86400000):[];const pair=pairs.length===1?pairs[0]:undefined;
- const choose=(ids:string[])=>{returnId.current=ids.length===1?ids[0]:null;setSelected(ids);const first=w.transactions.find(t=>t.id===ids[0]);setMovement(first?.movement||'review');setCategory(first?.category||'Uncategorised');setRemember(false);store.dismissMutationError();setOpen(true);};
- const beginManual=(t?:Transaction)=>{returnId.current=t?.id||null;setOpen(false);setEditingId(t?.id||null);setMerchant(t?.merchant||'');setManualAccount(t?.account||'Cash');setDate(t?.date||dayKey());setAmount(t?Math.abs(t.amount):0);setIncoming(t? t.amount<0:false);setManualError("");store.dismissMutationError();setManualOpen(true);};
- const saveManual=()=>{
-  const draft:ManualDraft={merchant,account:manualAccount,date,amount,incoming};
-  const apply=()=>{try{let okay=false;if(editingId)okay=store.editManual(editingId,draft);else{const t=manualTransaction(merchant,manualAccount,date,amount,incoming);okay=store.change(x=>({...x,transactions:[t,...x.transactions].sort((a,b)=>b.date.localeCompare(a.date)),coverage:x.coverage.filter(v=>v.month!==date.slice(0,7))}));}if(okay){setMonth(date.slice(0,7));setChecked([]);setManualOpen(false);}}catch(e){setManualError(toUserMessage(e));}};
-  if(duplicateManual(w.transactions,draft,editingId||undefined))Alert.alert(activityCopy.possibleDuplicate,activityCopy.duplicateConfirmBody,[{text:activityCopy.cancel,style:'cancel'},{text:activityCopy.saveSeparateTransaction,onPress:apply}]);else apply();
- };
- return <View style={{flex:1}}><FlatList ref={list} data={rows} keyExtractor={t=>t.id} contentContainerStyle={s.page} keyboardShouldPersistTaps="handled" ListHeaderComponent={<View style={{gap:16,marginBottom:16}}><BillTools/>
-  <View style={[s.row,{gap:8}]}><Pressable accessibilityRole="button" accessibilityLabel={activityCopy.previousMonth} onPress={()=>setMonth(shiftMonth(month,-1))} style={{minWidth:48,minHeight:48,alignItems:'center',justifyContent:'center'}}><MaterialCommunityIcons name="chevron-left" size={24} color={c.text}/></Pressable><Pressable accessibilityRole="button" accessibilityLabel={formatMonth(month)+activityCopy.chooseMonth} onPress={()=>setMonthsOpen(true)} style={{flex:1,minHeight:48,justifyContent:'center',alignItems:'center'}}><Text ref={titleRef} style={[s.heading,{color:c.text,textAlign:'center'}]}>{formatMonth(month)}</Text></Pressable><Pressable accessibilityRole="button" accessibilityLabel={activityCopy.nextMonth} accessibilityState={{disabled:month>=monthKey()}} disabled={month>=monthKey()} onPress={()=>setMonth(shiftMonth(month,1))} style={{minWidth:48,minHeight:48,alignItems:'center',justifyContent:'center',opacity:month>=monthKey()?.4:1}}><MaterialCommunityIcons name="chevron-right" size={24} color={c.text}/></Pressable></View>
-  <Copy small>{allDates?activityCopy.allDatesSummary : ""}{totals.unreviewed?counts.transaction(totals.unreviewed)+activityCopy.toReview:activityCopy.noTransactionsNeedReview}{" · "}{formatCount(rows.length)}{" of "}{counts.transaction(monthRows.length)}{onlyReview?activityCopy.needsReview:""}</Copy>
-  <View style={s.wrap}><Button secondary title={activityCopy.filterTransactions} onPress={()=>setFiltersOpen(true)}/><TextButton title={activityCopy.showSummary} onPress={()=>setActionsOpen(true)}/></View>
-  {checked.length>0&&<View style={s.wrap}><Button title={activityCopy.reviewSelection} onPress={()=>choose(checked.filter(id=>rowIds.has(id)))}/><TextButton title={activityCopy.clearSelection} onPress={()=>setChecked([])}/></View>}
- </View>} renderItem={({item:t})=>{
-  const amountLabel=activityCopy.amountLabel(hideAmounts,t.amount);
-  return <View style={[s.row,{padding:12,borderRadius:18,backgroundColor:c.card,marginBottom:8}]}><Pressable accessibilityRole="checkbox" accessibilityLabel={activityCopy.select+t.merchant} accessibilityState={{checked:checkedSet.has(t.id)}} onPress={()=>setChecked(ids=>ids.includes(t.id)?ids.filter(id=>id!==t.id):[...ids,t.id])} style={{minHeight:48,minWidth:48,alignItems:'center',justifyContent:'center',backgroundColor:checkedSet.has(t.id)?c.primaryContainer:c.container,borderRadius:16}}><MaterialCommunityIcons name={checkedSet.has(t.id)?'checkbox-marked':'checkbox-blank-outline'} size={24} color={c.text}/></Pressable><Pressable ref={node=>{if(node)rowNodes.current.set(t.id,node);else rowNodes.current.delete(t.id);}} accessibilityRole="button" accessibilityLabel={activityCopy.transactionDetailsLabel(t.merchant,amountLabel,formatDateLong(t.date),t.account,movementLabel(t.movement),t.category)} onPress={()=>choose([t.id])} style={({pressed})=>({flex:1,paddingVertical:4,opacity:pressed?.7:1,gap:6})}><View style={s.row}><View style={{flex:1}}><Copy strong>{t.merchant}</Copy></View><View style={{flexDirection:'row',alignItems:'center',gap:4}}><Copy strong>{t.amount<0?activityCopy.moneyIn:activityCopy.moneyOut}</Copy><Money textStyle={[s.body,{color:c.text,fontWeight:'600'}]} precise value={Math.abs(t.amount)}/></View></View><Copy small>{formatDate(t.date)}{" · "}{t.account}</Copy><Copy small>{t.movement==='review'?activityCopy.reviewStatus:activityCopy.transactionCaption(movementLabel(t.movement),t.category)}</Copy></Pressable></View>;
- }} ListEmptyComponent={<Card title={activityCopy.noMatchingTransactions}><Copy>{monthRows.length?activityCopy.emptyFilterHint:activityCopy.emptyMonth(formatMonth(month))}</Copy></Card>}
- />
- <Sheet visible={actionsOpen} onClose={()=>setActionsOpen(false)} title={activityCopy.activitySummary} returnFocus={returnFocus}>
-  <Line label={activityCopy.reviewedSpending} value={<Money precise value={totals.spending}/>}/><Line label={activityCopy.reviewedIncome} value={<Money precise value={totals.income}/>}/><Copy>{totals.unreviewed?counts.transaction(totals.unreviewed)+activityCopy.toReview:activityCopy.noTransactionsNeedReview}{" · "}{counts.transaction(monthRows.length)}</Copy><Copy small>{activityCopy.totalsExclusionsHelp}</Copy>
-  <Button title={banking.busy?activityCopy.working:activityCopy.refreshTransactions} disabled={banking.busy||store.demo||banking.statusState!=='verified'||!banking.configured} onPress={()=>void banking.refresh()}/>
-  <Button secondary title={activityCopy.addATransaction} onPress={()=>{setActionsOpen(false);beginManual();}}/>
-  <Button secondary title={activityCopy.checkMonthCompleteness} onPress={()=>{setActionsOpen(false);setCoverageOpen(true);}}/>
-  {rows.length>0&&<TextButton title={checked.length===rows.length?activityCopy.clearSelection:activityCopy.selectTransactionLabel(counts.transaction(rows.length))} onPress={()=>{setChecked(checked.length===rows.length?[]:rows.map(t=>t.id));setActionsOpen(false);}}/>}
-  <Copy small>{activityCopy.selectionHelp}</Copy>
- </Sheet>
- <MonthChooser visible={monthsOpen} onClose={()=>setMonthsOpen(false)} rows={w.transactions} onChoose={setMonth}/>
- <Sheet visible={filtersOpen} onClose={()=>setFiltersOpen(false)} title={activityCopy.activityFilters}>  <Input label={activityCopy.searchMerchantsNotesAndTags} value={query} onChangeText={setQuery}/><Toggle label={activityCopy.searchAcrossAllDates} value={allDates} onChange={setAllDates}/><Input label={activityCopy.minimumAbsoluteAmount} value={minAmount} onChangeText={setMinAmount} keyboardType="decimal-pad"/><Input label={activityCopy.maximumAbsoluteAmount} value={maxAmount} onChangeText={setMaxAmount} keyboardType="decimal-pad"/><Toggle label={activityCopy.reviewFilterLabel} value={onlyReview} onChange={setOnlyReview}/>
-  <Copy small>{activityCopy.moneyFlow}</Copy><View style={s.wrap}>{(['all','out','in'] as const).map(value=><Choice key={value} title={{all:activityCopy.allMoney,out:activityCopy.moneyOut,in:activityCopy.moneyIn}[value]} selected={direction===value} onPress={()=>setDirection(value)}/>)}</View>
-  <Copy small>{activityCopy.filterByAccount}</Copy><ScrollView horizontal contentContainerStyle={{gap:8}}><Choice title={activityCopy.all} selected={account==='All'} onPress={()=>setAccount('All')}/>{[...new Set(w.transactions.map(t=>t.account))].map(a=><Choice key={a} title={a} selected={account===a} onPress={()=>setAccount(a)}/>)}</ScrollView>
-  <Copy small>{activityCopy.filterByCategory}</Copy><ScrollView horizontal contentContainerStyle={{gap:8}}>{['All',...categories].map(value=><Choice key={value} title={value} selected={categoryFilter===value} onPress={()=>setCategoryFilter(value)}/>)}</ScrollView>
-<Copy strong>{activityCopy.type}</Copy><View style={s.wrap}>{['All',...treatments].map(value=><Choice key={value} title={value==='All'?activityCopy.allTypes:movementLabel(value as Movement)} selected={treatmentFilter===value} onPress={()=>setTreatmentFilter(value)}/>)}</View><TextButton title={activityCopy.clearAllFilters} onPress={()=>{setQuery('');setAllDates(false);setMinAmount('');setMaxAmount('');setAccount('All');setCategoryFilter('All');setDirection('all');setOnlyReview(false);setTreatmentFilter('All');}}/><>{boundsError&&<Notice error>{activityCopy.usePositivePoundsWithAtMostTwo}</Notice>}<Button title={activityCopy.showMatchingTransactions} disabled={boundsError} onPress={()=>setFiltersOpen(false)}/></></Sheet>
- <Sheet visible={coverageOpen} onClose={()=>setCoverageOpen(false)} title={activityCopy.check+formatMonth(month)}>{coverageOpen&&<CoverageEditor key={month} month={month}/>}<Card title={activityCopy.transactionDateRanges}>{[...new Set(w.transactions.map(t=>t.account))].map(a=>{const tx=w.transactions.filter(t=>t.account===a).sort((x,y)=>x.date.localeCompare(y.date));return <View key={a}><Copy strong>{a}</Copy><Copy small>{activityCopy.reviewCounts(formatRange(tx[0].date,tx[tx.length-1].date),formatCount(tx.filter(t=>t.movement==='review').length))}</Copy></View>;})}<Copy small>{activityCopy.completenessHelp}</Copy></Card></Sheet>
- <Sheet visible={open} onClose={()=>setOpen(false)} returnFocus={returnFocus} title={single?single.merchant:activityCopy.reviewSelectionTitle(counts.transaction(selected.length))}>
-  {single&&<><Line label={activityCopy.transactionCaption(formatDate(single.date),single.amount<0?'Money in':'Money out')} value={<Money precise value={Math.abs(single.amount)}/>}/><Copy small>{single.account}</Copy><TransactionDetails key={single.id} transaction={single}/></>}
-  {selected.length>1&&<Notice>{activityCopy.appliesOneTypeText}{counts.selectedTransaction(selected.length)}{activityCopy.totallingNet}<Money precise value={selectedRows.reduce((sum,t)=>sum+t.amount,0)}/>{"."}</Notice>}
-  {mixed&&<Notice>{activityCopy.selectionIncludesMoneyDetail}</Notice>}
-  <Copy strong>{activityCopy.type}</Copy><View style={s.wrap}>{treatments.map(m=><Choice key={m} title={movementLabel(m)} selected={movement===m} disabled={selectedRows.some(t=>!treatmentFits(m,t.amount))} onPress={()=>{setMovement(m);setCategory(({purchase:'Essentials',income:'Income',transfer:'Transfers',repayment:'Debt repayment',refund:'Flexible',review:'Uncategorised'} as const)[m]);}}/>)}</View>
-  <Copy strong>{activityCopy.category}</Copy><View style={s.wrap}>{categories.map(value=><Choice key={value} title={value} selected={category===value} onPress={()=>setCategory(value)}/>)}</View>
-  {conflict&&<Notice>{activityCopy.checkTypeCategoryDetail}</Notice>}<Toggle label={activityCopy.rememberForNewTransactions} value={remember} onChange={setRemember}/><Copy small>{activityCopy.rulesApplyNewDetail}</Copy>
-  {pairs.length>1&&<Notice>{activityCopy.severalPossibleCounterpDetail}</Notice>}{pair&&<Notice>{activityCopy.possibleTransferCounterpart}{pair.merchant}{", "}{formatDate(pair.date)}{", "}{pair.account}{activityCopy.checkBothSidesText}</Notice>}{pair&&single&&<Button secondary title={activityCopy.confirmTransferPair} onPress={()=>Alert.alert(activityCopy.markBothAsATransfer,activityCopy.transferConfirmBody(single.account,single.date,pair.account,formatDate(pair.date)),[{style:'cancel',text:activityCopy.cancel},{text:activityCopy.confirmTransfer,onPress:()=>{if(store.confirmTransfer([single.id,pair.id]))setOpen(false);}}])}/>}
-  {store.mutationError&&<Notice error>{toUserMessage(store.mutationError)}</Notice>}
-  <Button title={activityCopy.applyTransactionChanges} disabled={!selectedRows.length||selectedRows.some(t=>!treatmentFits(movement,t.amount))} onPress={()=>{if(store.review(selected,movement,category,remember)){setOpen(false);setChecked([]);}}}/>
-  {single?.id.startsWith('manual:')&&<><Button secondary title={activityCopy.editTransaction} onPress={()=>beginManual(single)}/><TextButton danger title={activityCopy.deleteTransaction} onPress={()=>Alert.alert(activityCopy.deleteManualTransaction,activityCopy.monthWillNeedText,[{text:activityCopy.cancel,style:'cancel'},{text:activityCopy.delete,style:'destructive',onPress:()=>{if(store.deleteManual(single.id))setOpen(false);}}])}/></>}
-  {single&&!single.id.startsWith('manual:')&&<Copy small>{activityCopy.downloadedAmountsDatesDetail}</Copy>}
- </Sheet>
- <Sheet visible={manualOpen} onClose={()=>setManualOpen(false)} returnFocus={returnFocus} title={editingId?activityCopy.editManualTransaction:activityCopy.addManualTransaction}>
-  <Copy small>{activityCopy.changesStartReviewDetail}</Copy>{!!manualError&&<Notice error>{manualError}</Notice>}{store.mutationError&&<Notice error>{toUserMessage(store.mutationError)}</Notice>}
-  <Input label={activityCopy.merchantOrDescription} value={merchant} maxLength={500} onChangeText={setMerchant}/><Input label={activityCopy.accountName} value={manualAccount} maxLength={500} onChangeText={setManualAccount}/><DateField label={activityCopy.bookingDate} value={date} onChange={setDate}/><Field label={activityCopy.amount} value={amount} onChange={setAmount}/><Toggle label={activityCopy.moneyIn} value={incoming} onChange={setIncoming}/><Button title={editingId?activityCopy.applyManualCorrection:activityCopy.addToReview} disabled={amount<=0||!merchant.trim()||!manualAccount.trim()} onPress={saveManual}/>
- </Sheet></View>;
+import { useWorkspace } from '../state/hooks';
+import { monthTotals, type Movement, type Transaction } from '../lib/finance';
+import { dayKey, manualTransaction, monthKey, shiftMonth, treatmentFits } from '../lib/workspace';
+import { duplicateManual, type ManualDraft } from '../lib/reconciliation';
+import type { Banking } from '../services/useBanking';
+import {
+  DateField,
+  Button,
+  Card,
+  Choice,
+  Copy,
+  Field,
+  focusNative,
+  Heading,
+  Input,
+  Line,
+  Money,
+  Notice,
+  Sheet,
+  Toggle,
+} from '../ui/components';
+import { MonthChooser } from '../ui/MonthChooser';
+import { CoverageEditor } from '../ui/CoverageEditor';
+import { styles as s, useTheme } from '../ui/theme';
+const treatments: Movement[] = ['purchase', 'income', 'transfer', 'repayment', 'refund', 'review'];
+const baseCategories = [
+  'Uncategorised',
+  'Essentials',
+  'Flexible',
+  'Annual bills',
+  'Income',
+  'Transfers',
+  'Debt repayment',
+  'Other',
+];
+export function Activity({
+  banking,
+  request,
+}: {
+  banking: Banking;
+  request?: { month: string; key: number };
+}) {
+  const store = useWorkspace(),
+    w = store.workspace,
+    { colors: c, hideAmounts } = useTheme(),
+    categories = [
+      ...baseCategories,
+      ...(w.planning?.categories.filter((c) => !c.archived).map((c) => c.name) ?? []),
+    ];
+  const [actionsOpen, setActionsOpen] = useState(false),
+    [monthsOpen, setMonthsOpen] = useState(false),
+    [filtersOpen, setFiltersOpen] = useState(false),
+    [coverageOpen, setCoverageOpen] = useState(false),
+    [treatmentFilter, setTreatmentFilter] = useState('All');
+  const [month, setMonth] = useState(monthKey()),
+    [query, setQuery] = useState(''),
+    [account, setAccount] = useState('All'),
+    [categoryFilter, setCategoryFilter] = useState('All'),
+    [direction, setDirection] = useState<'all' | 'in' | 'out'>('all'),
+    [onlyReview, setOnlyReview] = useState(true),
+    [allDates, setAllDates] = useState(false),
+    [minAmount, setMinAmount] = useState(''),
+    [maxAmount, setMaxAmount] = useState(''),
+    [checked, setChecked] = useState<string[]>([]),
+    [selected, setSelected] = useState<string[]>([]),
+    [open, setOpen] = useState(false),
+    [movement, setMovement] = useState<Movement>('review'),
+    [category, setCategory] = useState('Uncategorised'),
+    [remember, setRemember] = useState(false);
+  const [manualOpen, setManualOpen] = useState(false),
+    [editingId, setEditingId] = useState<string | null>(null),
+    [merchant, setMerchant] = useState(''),
+    [manualAccount, setManualAccount] = useState('Cash'),
+    [date, setDate] = useState(dayKey()),
+    [amount, setAmount] = useState(0),
+    [incoming, setIncoming] = useState(false),
+    [manualError, setManualError] = useState('');
+  useEffect(() => {
+    if (request) {
+      setMonth(request.month);
+      setQuery('');
+      setAccount('All');
+      setCategoryFilter('All');
+      setDirection('all');
+      setOnlyReview(true);
+      setTreatmentFilter('All');
+    }
+  }, [request?.key]);
+  const titleRef = useRef<Text>(null),
+    list = useRef<FlatList<Transaction>>(null),
+    rowNodes = useRef(new Map<string, View>()),
+    returnId = useRef<string | null>(null),
+    sheetsShowing = useRef(false);
+  sheetsShowing.current = open || manualOpen;
+  const returnFocus = () => {
+    if (sheetsShowing.current) return;
+    const node = returnId.current ? rowNodes.current.get(returnId.current) : null;
+    if (node) {
+      focusNative(node);
+      return;
+    }
+    list.current?.scrollToOffset({ offset: 0, animated: false });
+    setTimeout(() => focusNative(titleRef.current), 50);
+  };
+  useEffect(() => {
+    setChecked([]);
+  }, [month, query, account, categoryFilter, direction, onlyReview, treatmentFilter, store.demo]);
+  useEffect(() => {
+    setOpen(false);
+  }, [month, store.demo]);
+  const monthRows = w.transactions.filter((t) => allDates || t.date.startsWith(month)),
+    totals = monthTotals(w.transactions, month);
+  const rows = useMemo(
+    () =>
+      monthRows.filter(
+        (t) =>
+          (!onlyReview || t.movement === 'review') &&
+          (account === 'All' || account === t.account) &&
+          (categoryFilter === 'All' || categoryFilter === t.category) &&
+          (treatmentFilter === 'All' || treatmentFilter === t.movement) &&
+          (direction === 'all' || (direction === 'in' ? t.amount < 0 : t.amount >= 0)) &&
+          (!minAmount || Math.abs(t.amount) >= Number(minAmount) * 100) &&
+          (!maxAmount || Math.abs(t.amount) <= Number(maxAmount) * 100) &&
+          [
+            t.merchant,
+            t.account,
+            t.category,
+            ...(w.ledger?.annotations
+              .filter((a) => a.transactionId === t.id)
+              .flatMap((a) => [a.note, a.alias, ...a.tags]) ?? []),
+          ]
+            .join(' ')
+            .toLowerCase()
+            .includes(query.toLowerCase()),
+      ),
+    [
+      w.transactions,
+      w.ledger,
+      month,
+      allDates,
+      minAmount,
+      maxAmount,
+      onlyReview,
+      account,
+      categoryFilter,
+      direction,
+      query,
+      treatmentFilter,
+    ],
+  );
+  const validBound = (v: string) => !v || /^\d+(?:\.\d{1,2})?$/.test(v);
+  const boundsError =
+    !validBound(minAmount) ||
+    !validBound(maxAmount) ||
+    (!!minAmount && !!maxAmount && Number(minAmount) > Number(maxAmount));
+  const rowIds = new Set(rows.map((t) => t.id)),
+    checkedSet = new Set(checked);
+  const selectedSet = new Set(selected),
+    selectedRows = w.transactions.filter((t) => selectedSet.has(t.id));
+  const single = selectedRows.length === 1 ? selectedRows[0] : undefined;
+  const conflict =
+    ((movement === 'purchase' || movement === 'refund') &&
+      ['Income', 'Transfers', 'Debt repayment'].includes(category)) ||
+    (movement === 'income' &&
+      ['Essentials', 'Flexible', 'Annual bills'].includes(
+        categoryGroup(w.planning?.categories ?? [], category),
+      )) ||
+    (movement === 'transfer' && category !== 'Transfers') ||
+    (movement === 'repayment' && category !== 'Debt repayment');
+  const mixed = selectedRows.some((t) => t.amount < 0) && selectedRows.some((t) => t.amount >= 0);
+  const pairs = single
+    ? w.transactions.filter(
+        (t) =>
+          t.id !== single.id &&
+          t.account !== single.account &&
+          t.amount === -single.amount &&
+          Math.abs(Date.parse(t.date) - Date.parse(single.date)) <= 3 * 86400000,
+      )
+    : [];
+  const pair = pairs.length === 1 ? pairs[0] : undefined;
+  const choose = (ids: string[]) => {
+    returnId.current = ids.length === 1 ? ids[0] : null;
+    setSelected(ids);
+    const first = w.transactions.find((t) => t.id === ids[0]);
+    setMovement(first?.movement || 'review');
+    setCategory(first?.category || 'Uncategorised');
+    setRemember(false);
+    store.dismissMutationError();
+    setOpen(true);
+  };
+  const beginManual = (t?: Transaction) => {
+    returnId.current = t?.id || null;
+    setOpen(false);
+    setEditingId(t?.id || null);
+    setMerchant(t?.merchant || '');
+    setManualAccount(t?.account || 'Cash');
+    setDate(t?.date || dayKey());
+    setAmount(t ? Math.abs(t.amount) : 0);
+    setIncoming(t ? t.amount < 0 : false);
+    setManualError('');
+    store.dismissMutationError();
+    setManualOpen(true);
+  };
+  const saveManual = () => {
+    const draft: ManualDraft = { merchant, account: manualAccount, date, amount, incoming };
+    const apply = () => {
+      try {
+        let okay = false;
+        if (editingId) okay = store.editManual(editingId, draft);
+        else {
+          const t = manualTransaction(merchant, manualAccount, date, amount, incoming);
+          okay = store.change((x) => ({
+            ...x,
+            transactions: [t, ...x.transactions].sort((a, b) => b.date.localeCompare(a.date)),
+            coverage: x.coverage.filter((v) => v.month !== date.slice(0, 7)),
+          }));
+        }
+        if (okay) {
+          setMonth(date.slice(0, 7));
+          setChecked([]);
+          setManualOpen(false);
+        }
+      } catch (e) {
+        setManualError(toUserMessage(e));
+      }
+    };
+    if (duplicateManual(w.transactions, draft, editingId || undefined))
+      Alert.alert(activityCopy.possibleDuplicate, activityCopy.duplicateConfirmBody, [
+        { text: activityCopy.cancel, style: 'cancel' },
+        { text: activityCopy.saveSeparateTransaction, onPress: apply },
+      ]);
+    else apply();
+  };
+  return (
+    <View style={{ flex: 1 }}>
+      <FlatList
+        ref={list}
+        data={rows}
+        keyExtractor={(t) => t.id}
+        contentContainerStyle={s.page}
+        keyboardShouldPersistTaps="handled"
+        ListHeaderComponent={
+          <View style={{ gap: 16, marginBottom: 16 }}>
+            <BillTools />
+            <View style={[s.row, { gap: 8 }]}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={activityCopy.previousMonth}
+                onPress={() => setMonth(shiftMonth(month, -1))}
+                style={{
+                  minWidth: 48,
+                  minHeight: 48,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <MaterialCommunityIcons name="chevron-left" size={24} color={c.text} />
+              </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={formatMonth(month) + activityCopy.chooseMonth}
+                onPress={() => setMonthsOpen(true)}
+                style={{ flex: 1, minHeight: 48, justifyContent: 'center', alignItems: 'center' }}
+              >
+                <Text ref={titleRef} style={[s.heading, { color: c.text, textAlign: 'center' }]}>
+                  {formatMonth(month)}
+                </Text>
+              </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={activityCopy.nextMonth}
+                accessibilityState={{ disabled: month >= monthKey() }}
+                disabled={month >= monthKey()}
+                onPress={() => setMonth(shiftMonth(month, 1))}
+                style={{
+                  minWidth: 48,
+                  minHeight: 48,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  opacity: month >= monthKey() ? 0.4 : 1,
+                }}
+              >
+                <MaterialCommunityIcons name="chevron-right" size={24} color={c.text} />
+              </Pressable>
+            </View>
+            <Copy small>
+              {allDates ? activityCopy.allDatesSummary : ''}
+              {totals.unreviewed
+                ? counts.transaction(totals.unreviewed) + activityCopy.toReview
+                : activityCopy.noTransactionsNeedReview}
+              {' · '}
+              {formatCount(rows.length)}
+              {' of '}
+              {counts.transaction(monthRows.length)}
+              {onlyReview ? activityCopy.needsReview : ''}
+            </Copy>
+            <View style={s.wrap}>
+              <Button
+                secondary
+                title={activityCopy.filterTransactions}
+                onPress={() => setFiltersOpen(true)}
+              />
+              <TextButton title={activityCopy.showSummary} onPress={() => setActionsOpen(true)} />
+            </View>
+            {checked.length > 0 && (
+              <View style={s.wrap}>
+                <Button
+                  title={activityCopy.reviewSelection}
+                  onPress={() => choose(checked.filter((id) => rowIds.has(id)))}
+                />
+                <TextButton title={activityCopy.clearSelection} onPress={() => setChecked([])} />
+              </View>
+            )}
+          </View>
+        }
+        renderItem={({ item: t }) => {
+          const amountLabel = activityCopy.amountLabel(hideAmounts, t.amount);
+          return (
+            <View
+              style={[
+                s.row,
+                { padding: 12, borderRadius: 18, backgroundColor: c.card, marginBottom: 8 },
+              ]}
+            >
+              <Pressable
+                accessibilityRole="checkbox"
+                accessibilityLabel={activityCopy.select + t.merchant}
+                accessibilityState={{ checked: checkedSet.has(t.id) }}
+                onPress={() =>
+                  setChecked((ids) =>
+                    ids.includes(t.id) ? ids.filter((id) => id !== t.id) : [...ids, t.id],
+                  )
+                }
+                style={{
+                  minHeight: 48,
+                  minWidth: 48,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: checkedSet.has(t.id) ? c.primaryContainer : c.container,
+                  borderRadius: 16,
+                }}
+              >
+                <MaterialCommunityIcons
+                  name={checkedSet.has(t.id) ? 'checkbox-marked' : 'checkbox-blank-outline'}
+                  size={24}
+                  color={c.text}
+                />
+              </Pressable>
+              <Pressable
+                ref={(node) => {
+                  if (node) rowNodes.current.set(t.id, node);
+                  else rowNodes.current.delete(t.id);
+                }}
+                accessibilityRole="button"
+                accessibilityLabel={activityCopy.transactionDetailsLabel(
+                  t.merchant,
+                  amountLabel,
+                  formatDateLong(t.date),
+                  t.account,
+                  movementLabel(t.movement),
+                  t.category,
+                )}
+                onPress={() => choose([t.id])}
+                style={({ pressed }) => ({
+                  flex: 1,
+                  paddingVertical: 4,
+                  opacity: pressed ? 0.7 : 1,
+                  gap: 6,
+                })}
+              >
+                <View style={s.row}>
+                  <View style={{ flex: 1 }}>
+                    <Copy strong>{t.merchant}</Copy>
+                  </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <Copy strong>
+                      {t.amount < 0 ? activityCopy.moneyIn : activityCopy.moneyOut}
+                    </Copy>
+                    <Money
+                      textStyle={[s.body, { color: c.text, fontWeight: '600' }]}
+                      precise
+                      value={Math.abs(t.amount)}
+                    />
+                  </View>
+                </View>
+                <Copy small>
+                  {formatDate(t.date)}
+                  {' · '}
+                  {t.account}
+                </Copy>
+                <Copy small>
+                  {t.movement === 'review'
+                    ? activityCopy.reviewStatus
+                    : activityCopy.transactionCaption(movementLabel(t.movement), t.category)}
+                </Copy>
+              </Pressable>
+            </View>
+          );
+        }}
+        ListEmptyComponent={
+          <Card title={activityCopy.noMatchingTransactions}>
+            <Copy>
+              {monthRows.length
+                ? activityCopy.emptyFilterHint
+                : activityCopy.emptyMonth(formatMonth(month))}
+            </Copy>
+          </Card>
+        }
+      />
+      <Sheet
+        visible={actionsOpen}
+        onClose={() => setActionsOpen(false)}
+        title={activityCopy.activitySummary}
+        returnFocus={returnFocus}
+      >
+        <Line
+          label={activityCopy.reviewedSpending}
+          value={<Money precise value={totals.spending} />}
+        />
+        <Line label={activityCopy.reviewedIncome} value={<Money precise value={totals.income} />} />
+        <Copy>
+          {totals.unreviewed
+            ? counts.transaction(totals.unreviewed) + activityCopy.toReview
+            : activityCopy.noTransactionsNeedReview}
+          {' · '}
+          {counts.transaction(monthRows.length)}
+        </Copy>
+        <Copy small>{activityCopy.totalsExclusionsHelp}</Copy>
+        <Button
+          title={banking.busy ? activityCopy.working : activityCopy.refreshTransactions}
+          disabled={
+            banking.busy || store.demo || banking.statusState !== 'verified' || !banking.configured
+          }
+          onPress={() => void banking.refresh()}
+        />
+        <Button
+          secondary
+          title={activityCopy.addATransaction}
+          onPress={() => {
+            setActionsOpen(false);
+            beginManual();
+          }}
+        />
+        <Button
+          secondary
+          title={activityCopy.checkMonthCompleteness}
+          onPress={() => {
+            setActionsOpen(false);
+            setCoverageOpen(true);
+          }}
+        />
+        {rows.length > 0 && (
+          <TextButton
+            title={
+              checked.length === rows.length
+                ? activityCopy.clearSelection
+                : activityCopy.selectTransactionLabel(counts.transaction(rows.length))
+            }
+            onPress={() => {
+              setChecked(checked.length === rows.length ? [] : rows.map((t) => t.id));
+              setActionsOpen(false);
+            }}
+          />
+        )}
+        <Copy small>{activityCopy.selectionHelp}</Copy>
+      </Sheet>
+      <MonthChooser
+        visible={monthsOpen}
+        onClose={() => setMonthsOpen(false)}
+        rows={w.transactions}
+        onChoose={setMonth}
+      />
+      <Sheet
+        visible={filtersOpen}
+        onClose={() => setFiltersOpen(false)}
+        title={activityCopy.activityFilters}
+      >
+        {' '}
+        <Input
+          label={activityCopy.searchMerchantsNotesAndTags}
+          value={query}
+          onChangeText={setQuery}
+        />
+        <Toggle label={activityCopy.searchAcrossAllDates} value={allDates} onChange={setAllDates} />
+        <Input
+          label={activityCopy.minimumAbsoluteAmount}
+          value={minAmount}
+          onChangeText={setMinAmount}
+          keyboardType="decimal-pad"
+        />
+        <Input
+          label={activityCopy.maximumAbsoluteAmount}
+          value={maxAmount}
+          onChangeText={setMaxAmount}
+          keyboardType="decimal-pad"
+        />
+        <Toggle
+          label={activityCopy.reviewFilterLabel}
+          value={onlyReview}
+          onChange={setOnlyReview}
+        />
+        <Copy small>{activityCopy.moneyFlow}</Copy>
+        <View style={s.wrap}>
+          {(['all', 'out', 'in'] as const).map((value) => (
+            <Choice
+              key={value}
+              title={
+                {
+                  all: activityCopy.allMoney,
+                  out: activityCopy.moneyOut,
+                  in: activityCopy.moneyIn,
+                }[value]
+              }
+              selected={direction === value}
+              onPress={() => setDirection(value)}
+            />
+          ))}
+        </View>
+        <Copy small>{activityCopy.filterByAccount}</Copy>
+        <ScrollView horizontal contentContainerStyle={{ gap: 8 }}>
+          <Choice
+            title={activityCopy.all}
+            selected={account === 'All'}
+            onPress={() => setAccount('All')}
+          />
+          {[...new Set(w.transactions.map((t) => t.account))].map((a) => (
+            <Choice key={a} title={a} selected={account === a} onPress={() => setAccount(a)} />
+          ))}
+        </ScrollView>
+        <Copy small>{activityCopy.filterByCategory}</Copy>
+        <ScrollView horizontal contentContainerStyle={{ gap: 8 }}>
+          {['All', ...categories].map((value) => (
+            <Choice
+              key={value}
+              title={value}
+              selected={categoryFilter === value}
+              onPress={() => setCategoryFilter(value)}
+            />
+          ))}
+        </ScrollView>
+        <Copy strong>{activityCopy.type}</Copy>
+        <View style={s.wrap}>
+          {['All', ...treatments].map((value) => (
+            <Choice
+              key={value}
+              title={value === 'All' ? activityCopy.allTypes : movementLabel(value as Movement)}
+              selected={treatmentFilter === value}
+              onPress={() => setTreatmentFilter(value)}
+            />
+          ))}
+        </View>
+        <TextButton
+          title={activityCopy.clearAllFilters}
+          onPress={() => {
+            setQuery('');
+            setAllDates(false);
+            setMinAmount('');
+            setMaxAmount('');
+            setAccount('All');
+            setCategoryFilter('All');
+            setDirection('all');
+            setOnlyReview(false);
+            setTreatmentFilter('All');
+          }}
+        />
+        <>
+          {boundsError && <Notice error>{activityCopy.usePositivePoundsWithAtMostTwo}</Notice>}
+          <Button
+            title={activityCopy.showMatchingTransactions}
+            disabled={boundsError}
+            onPress={() => setFiltersOpen(false)}
+          />
+        </>
+      </Sheet>
+      <Sheet
+        visible={coverageOpen}
+        onClose={() => setCoverageOpen(false)}
+        title={activityCopy.check + formatMonth(month)}
+      >
+        {coverageOpen && <CoverageEditor key={month} month={month} />}
+        <Card title={activityCopy.transactionDateRanges}>
+          {[...new Set(w.transactions.map((t) => t.account))].map((a) => {
+            const tx = w.transactions
+              .filter((t) => t.account === a)
+              .sort((x, y) => x.date.localeCompare(y.date));
+            return (
+              <View key={a}>
+                <Copy strong>{a}</Copy>
+                <Copy small>
+                  {activityCopy.reviewCounts(
+                    formatRange(tx[0].date, tx[tx.length - 1].date),
+                    formatCount(tx.filter((t) => t.movement === 'review').length),
+                  )}
+                </Copy>
+              </View>
+            );
+          })}
+          <Copy small>{activityCopy.completenessHelp}</Copy>
+        </Card>
+      </Sheet>
+      <Sheet
+        visible={open}
+        onClose={() => setOpen(false)}
+        returnFocus={returnFocus}
+        title={
+          single
+            ? single.merchant
+            : activityCopy.reviewSelectionTitle(counts.transaction(selected.length))
+        }
+      >
+        {single && (
+          <>
+            <Line
+              label={activityCopy.transactionCaption(
+                formatDate(single.date),
+                single.amount < 0 ? 'Money in' : 'Money out',
+              )}
+              value={<Money precise value={Math.abs(single.amount)} />}
+            />
+            <Copy small>{single.account}</Copy>
+            <TransactionDetails key={single.id} transaction={single} />
+          </>
+        )}
+        {selected.length > 1 && (
+          <Notice>
+            {activityCopy.appliesOneTypeText}
+            {counts.selectedTransaction(selected.length)}
+            {activityCopy.totallingNet}
+            <Money precise value={selectedRows.reduce((sum, t) => sum + t.amount, 0)} />
+            {'.'}
+          </Notice>
+        )}
+        {mixed && <Notice>{activityCopy.selectionIncludesMoneyDetail}</Notice>}
+        <Copy strong>{activityCopy.type}</Copy>
+        <View style={s.wrap}>
+          {treatments.map((m) => (
+            <Choice
+              key={m}
+              title={movementLabel(m)}
+              selected={movement === m}
+              disabled={selectedRows.some((t) => !treatmentFits(m, t.amount))}
+              onPress={() => {
+                setMovement(m);
+                setCategory(
+                  (
+                    {
+                      purchase: 'Essentials',
+                      income: 'Income',
+                      transfer: 'Transfers',
+                      repayment: 'Debt repayment',
+                      refund: 'Flexible',
+                      review: 'Uncategorised',
+                    } as const
+                  )[m],
+                );
+              }}
+            />
+          ))}
+        </View>
+        <Copy strong>{activityCopy.category}</Copy>
+        <View style={s.wrap}>
+          {categories.map((value) => (
+            <Choice
+              key={value}
+              title={value}
+              selected={category === value}
+              onPress={() => setCategory(value)}
+            />
+          ))}
+        </View>
+        {conflict && <Notice>{activityCopy.checkTypeCategoryDetail}</Notice>}
+        <Toggle
+          label={activityCopy.rememberForNewTransactions}
+          value={remember}
+          onChange={setRemember}
+        />
+        <Copy small>{activityCopy.rulesApplyNewDetail}</Copy>
+        {pairs.length > 1 && <Notice>{activityCopy.severalPossibleCounterpDetail}</Notice>}
+        {pair && (
+          <Notice>
+            {activityCopy.possibleTransferCounterpart}
+            {pair.merchant}
+            {', '}
+            {formatDate(pair.date)}
+            {', '}
+            {pair.account}
+            {activityCopy.checkBothSidesText}
+          </Notice>
+        )}
+        {pair && single && (
+          <Button
+            secondary
+            title={activityCopy.confirmTransferPair}
+            onPress={() =>
+              Alert.alert(
+                activityCopy.markBothAsATransfer,
+                activityCopy.transferConfirmBody(
+                  single.account,
+                  single.date,
+                  pair.account,
+                  formatDate(pair.date),
+                ),
+                [
+                  { style: 'cancel', text: activityCopy.cancel },
+                  {
+                    text: activityCopy.confirmTransfer,
+                    onPress: () => {
+                      if (store.confirmTransfer([single.id, pair.id])) setOpen(false);
+                    },
+                  },
+                ],
+              )
+            }
+          />
+        )}
+        {store.mutationError && <Notice error>{toUserMessage(store.mutationError)}</Notice>}
+        <Button
+          title={activityCopy.applyTransactionChanges}
+          disabled={
+            !selectedRows.length || selectedRows.some((t) => !treatmentFits(movement, t.amount))
+          }
+          onPress={() => {
+            if (store.review(selected, movement, category, remember)) {
+              setOpen(false);
+              setChecked([]);
+            }
+          }}
+        />
+        {single?.id.startsWith('manual:') && (
+          <>
+            <Button
+              secondary
+              title={activityCopy.editTransaction}
+              onPress={() => beginManual(single)}
+            />
+            <TextButton
+              danger
+              title={activityCopy.deleteTransaction}
+              onPress={() =>
+                Alert.alert(activityCopy.deleteManualTransaction, activityCopy.monthWillNeedText, [
+                  { text: activityCopy.cancel, style: 'cancel' },
+                  {
+                    text: activityCopy.delete,
+                    style: 'destructive',
+                    onPress: () => {
+                      if (store.deleteManual(single.id)) setOpen(false);
+                    },
+                  },
+                ])
+              }
+            />
+          </>
+        )}
+        {single && !single.id.startsWith('manual:') && (
+          <Copy small>{activityCopy.downloadedAmountsDatesDetail}</Copy>
+        )}
+      </Sheet>
+      <Sheet
+        visible={manualOpen}
+        onClose={() => setManualOpen(false)}
+        returnFocus={returnFocus}
+        title={editingId ? activityCopy.editManualTransaction : activityCopy.addManualTransaction}
+      >
+        <Copy small>{activityCopy.changesStartReviewDetail}</Copy>
+        {!!manualError && <Notice error>{manualError}</Notice>}
+        {store.mutationError && <Notice error>{toUserMessage(store.mutationError)}</Notice>}
+        <Input
+          label={activityCopy.merchantOrDescription}
+          value={merchant}
+          maxLength={500}
+          onChangeText={setMerchant}
+        />
+        <Input
+          label={activityCopy.accountName}
+          value={manualAccount}
+          maxLength={500}
+          onChangeText={setManualAccount}
+        />
+        <DateField label={activityCopy.bookingDate} value={date} onChange={setDate} />
+        <Field label={activityCopy.amount} value={amount} onChange={setAmount} />
+        <Toggle label={activityCopy.moneyIn} value={incoming} onChange={setIncoming} />
+        <Button
+          title={editingId ? activityCopy.applyManualCorrection : activityCopy.addToReview}
+          disabled={amount <= 0 || !merchant.trim() || !manualAccount.trim()}
+          onPress={saveManual}
+        />
+      </Sheet>
+    </View>
+  );
 }

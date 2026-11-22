@@ -1,76 +1,694 @@
-import {SETTINGS_LINK_SECTION} from './src/lib/presentationKeys';
-import {destinations} from './src/strings/shell';
-import {common} from './src/strings/common';
-import {shellCopy} from './src/strings/shell';
-import {HelpNote} from './src/ui/components';
-import {toUserMessage} from './src/strings/errors';
-import React,{useEffect,useRef,useState} from 'react';
-import {ActivityIndicator,Alert,Animated,AppState,BackHandler,Keyboard,KeyboardAvoidingView,Platform,Pressable,ScrollView,Text,useWindowDimensions,View} from 'react-native';
-import {SafeAreaProvider,SafeAreaView,useSafeAreaInsets} from 'react-native-safe-area-context';
-import {StatusBar} from 'expo-status-bar';
+import { SETTINGS_LINK_SECTION } from './src/lib/presentationKeys';
+import { destinations } from './src/strings/shell';
+import { common } from './src/strings/common';
+import { shellCopy } from './src/strings/shell';
+import { HelpNote } from './src/ui/components';
+import { toUserMessage } from './src/strings/errors';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Animated,
+  AppState,
+  BackHandler,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as LocalAuthentication from 'expo-local-authentication';
-import {protectionBlocksContent} from './src/lib/screenProtection';
-import {ScreenProtectionProvider,useScreenProtection} from './src/ui/ScreenProtection';
-import {Recovery} from './src/screens/Recovery';
-import {useFinance} from './src/state/store';
-import {useShallow} from 'zustand/react/shallow';
-import {ThemeProvider,styles as s,useTheme} from './src/ui/theme';
-import {Button,Choice,Copy,Notice,Sheet,focusNative} from './src/ui/components';
-import {Today} from './src/screens/Today';
-import {Intro} from './src/ui/Intro';
-import {Activity} from './src/screens/Activity';
-import {Plan} from './src/screens/Plan';
-import {Move} from './src/screens/Move';
-import {Accounts} from './src/screens/Accounts';
-import {Settings} from './src/screens/Settings';
-import {useBanking} from './src/services/useBanking';
-import {layoutPolicy,motion,navigationNeedsMenu} from './src/lib/presentation';
-import {useMotionValue} from './src/ui/motion';
-import {CoverWorkspace,InterfaceVisible,useInterfaceVisible} from './src/ui/privacy';
+import { protectionBlocksContent } from './src/lib/screenProtection';
+import { ScreenProtectionProvider, useScreenProtection } from './src/ui/ScreenProtection';
+import { Recovery } from './src/screens/Recovery';
+import { useFinance } from './src/state/store';
+import { useShallow } from 'zustand/react/shallow';
+import { ThemeProvider, styles as s, useTheme } from './src/ui/theme';
+import { Button, Choice, Copy, Notice, Sheet, focusNative } from './src/ui/components';
+import { Today } from './src/screens/Today';
+import { Intro } from './src/ui/Intro';
+import { Activity } from './src/screens/Activity';
+import { Plan } from './src/screens/Plan';
+import { Move } from './src/screens/Move';
+import { Accounts } from './src/screens/Accounts';
+import { Settings } from './src/screens/Settings';
+import { useBanking } from './src/services/useBanking';
+import { layoutPolicy, motion, navigationNeedsMenu } from './src/lib/presentation';
+import { useMotionValue } from './src/ui/motion';
+import { CoverWorkspace, InterfaceVisible, useInterfaceVisible } from './src/ui/privacy';
 
-export default function App(){
- const ready=useFinance(s=>s.ready),preferences=useFinance(s=>s.data.preferences),blocked=useFinance(s=>s.storageBlocked),introNeeded=useFinance(s=>!s.data.preferences.introSeen&&!s.data.demo&&s.data.personal.onboardingStep===0&&s.data.personal.plan.income===0&&s.data.personal.transactions.length===0);useEffect(()=>{void useFinance.getState().init();},[]);
- return <SafeAreaProvider><ThemeProvider preferences={preferences}>{ready?<ScreenProtectionProvider requested={preferences.blockCapture}><PrivacyGate>{blocked?<Recovery/>:introNeeded?<Intro onStart={()=>useFinance.getState().preferences({introSeen:true})} onExample={()=>{const f=useFinance.getState();f.preferences({introSeen:true});f.setDemo(true);}}/>:<AppShell/>}</PrivacyGate></ScreenProtectionProvider>:<View style={{flex:1,justifyContent:'center'}}><ActivityIndicator accessibilityLabel={shellCopy.openingYourData}/></View>}</ThemeProvider></SafeAreaProvider>;
-
+export default function App() {
+  const ready = useFinance((s) => s.ready),
+    preferences = useFinance((s) => s.data.preferences),
+    blocked = useFinance((s) => s.storageBlocked),
+    introNeeded = useFinance(
+      (s) =>
+        !s.data.preferences.introSeen &&
+        !s.data.demo &&
+        s.data.personal.onboardingStep === 0 &&
+        s.data.personal.plan.income === 0 &&
+        s.data.personal.transactions.length === 0,
+    );
+  useEffect(() => {
+    void useFinance.getState().init();
+  }, []);
+  return (
+    <SafeAreaProvider>
+      <ThemeProvider preferences={preferences}>
+        {ready ? (
+          <ScreenProtectionProvider requested={preferences.blockCapture}>
+            <PrivacyGate>
+              {blocked ? (
+                <Recovery />
+              ) : introNeeded ? (
+                <Intro
+                  onStart={() => useFinance.getState().preferences({ introSeen: true })}
+                  onExample={() => {
+                    const f = useFinance.getState();
+                    f.preferences({ introSeen: true });
+                    f.setDemo(true);
+                  }}
+                />
+              ) : (
+                <AppShell />
+              )}
+            </PrivacyGate>
+          </ScreenProtectionProvider>
+        ) : (
+          <View style={{ flex: 1, justifyContent: 'center' }}>
+            <ActivityIndicator accessibilityLabel={shellCopy.openingYourData} />
+          </View>
+        )}
+      </ThemeProvider>
+    </SafeAreaProvider>
+  );
 }
-function PrivacyGate({children}:{children:React.ReactNode}){
- const preferences=useFinance(s=>s.data.preferences),{colors:c,dark}=useTheme(),[locked,setLocked]=useState(true),[background,setBackground]=useState(false),[authBusy,setAuthBusy]=useState(false),[error,setError]=useState('');const protection=useScreenProtection(),captureBlocked=protectionBlocksContent(preferences.blockCapture,protection.state);const authenticating=useRef(false),opened=useRef(!preferences.appLock&&!captureBlocked),previousLock=useRef(preferences.appLock);
- useEffect(()=>{if(preferences.appLock&&!previousLock.current)setLocked(false);previousLock.current=preferences.appLock;},[preferences.appLock]);
- useEffect(()=>{const sub=AppState.addEventListener('change',state=>{if(authenticating.current)return;setBackground(state!=='active');if(state!=='active'){void useFinance.getState().flushSave();if(useFinance.getState().data.preferences.appLock)setLocked(true);}});return()=>sub.remove();},[]);
+function PrivacyGate({ children }: { children: React.ReactNode }) {
+  const preferences = useFinance((s) => s.data.preferences),
+    { colors: c, dark } = useTheme(),
+    [locked, setLocked] = useState(true),
+    [background, setBackground] = useState(false),
+    [authBusy, setAuthBusy] = useState(false),
+    [error, setError] = useState('');
+  const protection = useScreenProtection(),
+    captureBlocked = protectionBlocksContent(preferences.blockCapture, protection.state);
+  const authenticating = useRef(false),
+    opened = useRef(!preferences.appLock && !captureBlocked),
+    previousLock = useRef(preferences.appLock);
+  useEffect(() => {
+    if (preferences.appLock && !previousLock.current) setLocked(false);
+    previousLock.current = preferences.appLock;
+  }, [preferences.appLock]);
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (authenticating.current) return;
+      setBackground(state !== 'active');
+      if (state !== 'active') {
+        void useFinance.getState().flushSave();
+        if (useFinance.getState().data.preferences.appLock) setLocked(true);
+      }
+    });
+    return () => sub.remove();
+  }, []);
 
- const unlock=async()=>{if(authenticating.current)return;authenticating.current=true;setAuthBusy(true);setError("");try{const result=await LocalAuthentication.authenticateAsync({promptMessage:shellCopy.unlockPrompt,cancelLabel:common.cancel,promptSubtitle:shellCopy.unlockSubtitle,disableDeviceFallback:false});if(result.success){const foreground=AppState.currentState==='active';setLocked(!foreground);setBackground(!foreground);}else setError(shellCopy.unlockWasnTCompletedTryAgainTo);}catch{setError(shellCopy.authenticationUnavailable);}finally{authenticating.current=false;setAuthBusy(false);}};
- const obscured=(preferences.appLock&&locked)||background||captureBlocked;if(!obscured)opened.current=true;
- return <InterfaceVisible.Provider value={!obscured}><View style={{flex:1,backgroundColor:c.surface}}>{opened.current&&<View accessibilityElementsHidden={obscured} importantForAccessibility={obscured?'no-hide-descendants':'auto'} style={{flex:1,display:obscured?'none':'flex'}}>{!obscured&&!!error&&<Notice error>{error}</Notice>}{children}</View>}{obscured&&<SafeAreaView style={{flex:1,backgroundColor:c.surface,justifyContent:'center',padding:24,gap:20}}><StatusBar style={dark?'light':'dark'}/><Text style={[s.title,{color:c.text}]}>{shellCopy.headroom}</Text><Copy>{shellCopy.yourDataIsPrivate}</Copy>{!!error&&<Notice error>{error}</Notice>}{!background&&preferences.appLock&&locked&&<Button title={authBusy?shellCopy.authenticating:shellCopy.unlockHeadroom} disabled={authBusy} onPress={()=>void unlock()}/>}{!background&&captureBlocked&&<><Copy>{protection.state.status==='pending'?shellCopy.protectionPending:shellCopy.screenProtectionNeedsAttention}</Copy>{protection.state.error&&<Notice error>{toUserMessage(protection.state.error)}</Notice>}<Button title={shellCopy.tryProtectionAgain} disabled={protection.state.status==='pending'} onPress={protection.retry}/><Button secondary title={shellCopy.turnProtectionOff} disabled={preferences.appLock&&locked} onPress={()=>useFinance.getState().preferences({blockCapture:false})}/></>}</SafeAreaView>}</View></InterfaceVisible.Provider>;
+  const unlock = async () => {
+    if (authenticating.current) return;
+    authenticating.current = true;
+    setAuthBusy(true);
+    setError('');
+    try {
+      const result = await LocalAuthentication.authenticateAsync({
+        promptMessage: shellCopy.unlockPrompt,
+        cancelLabel: common.cancel,
+        promptSubtitle: shellCopy.unlockSubtitle,
+        disableDeviceFallback: false,
+      });
+      if (result.success) {
+        const foreground = AppState.currentState === 'active';
+        setLocked(!foreground);
+        setBackground(!foreground);
+      } else setError(shellCopy.unlockWasnTCompletedTryAgainTo);
+    } catch {
+      setError(shellCopy.authenticationUnavailable);
+    } finally {
+      authenticating.current = false;
+      setAuthBusy(false);
+    }
+  };
+  const obscured = (preferences.appLock && locked) || background || captureBlocked;
+  if (!obscured) opened.current = true;
+  return (
+    <InterfaceVisible.Provider value={!obscured}>
+      <View style={{ flex: 1, backgroundColor: c.surface }}>
+        {opened.current && (
+          <View
+            accessibilityElementsHidden={obscured}
+            importantForAccessibility={obscured ? 'no-hide-descendants' : 'auto'}
+            style={{ flex: 1, display: obscured ? 'none' : 'flex' }}
+          >
+            {!obscured && !!error && <Notice error>{error}</Notice>}
+            {children}
+          </View>
+        )}
+        {obscured && (
+          <SafeAreaView
+            style={{
+              flex: 1,
+              backgroundColor: c.surface,
+              justifyContent: 'center',
+              padding: 24,
+              gap: 20,
+            }}
+          >
+            <StatusBar style={dark ? 'light' : 'dark'} />
+            <Text style={[s.title, { color: c.text }]}>{shellCopy.headroom}</Text>
+            <Copy>{shellCopy.yourDataIsPrivate}</Copy>
+            {!!error && <Notice error>{error}</Notice>}
+            {!background && preferences.appLock && locked && (
+              <Button
+                title={authBusy ? shellCopy.authenticating : shellCopy.unlockHeadroom}
+                disabled={authBusy}
+                onPress={() => void unlock()}
+              />
+            )}
+            {!background && captureBlocked && (
+              <>
+                <Copy>
+                  {protection.state.status === 'pending'
+                    ? shellCopy.protectionPending
+                    : shellCopy.screenProtectionNeedsAttention}
+                </Copy>
+                {protection.state.error && (
+                  <Notice error>{toUserMessage(protection.state.error)}</Notice>
+                )}
+                <Button
+                  title={shellCopy.tryProtectionAgain}
+                  disabled={protection.state.status === 'pending'}
+                  onPress={protection.retry}
+                />
+                <Button
+                  secondary
+                  title={shellCopy.turnProtectionOff}
+                  disabled={preferences.appLock && locked}
+                  onPress={() => useFinance.getState().preferences({ blockCapture: false })}
+                />
+              </>
+            )}
+          </SafeAreaView>
+        )}
+      </View>
+    </InterfaceVisible.Provider>
+  );
+}
+function NavItem({
+  name,
+  icon,
+  selected,
+  onPress,
+  rail = false,
+}: {
+  rail?: boolean;
+  name: string;
+  icon: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
+  selected: boolean;
+  onPress: () => void;
+}) {
+  const { colors: c, reducedMotion } = useTheme(),
+    visible = useInterfaceVisible(),
+    scale = useMotionValue(selected ? 1 : 0.94, { enabled: visible && !reducedMotion }),
+    { fontScale } = useWindowDimensions();
+  return (
+    <Pressable
+      accessibilityRole="tab"
+      accessibilityState={{ selected }}
+      onPress={onPress}
+      style={({ pressed }) => ({
+        minHeight: 64,
+        minWidth: rail ? 0 : Math.max(64, 64 * fontScale),
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 6,
+        opacity: pressed ? 0.7 : 1,
+        gap: 4,
+      })}
+    >
+      <Animated.View
+        style={{
+          backgroundColor: selected ? c.primaryContainer : 'transparent',
+          borderRadius: 20,
+          paddingHorizontal: 18,
+          paddingVertical: 5,
+          transform: [{ scale }],
+        }}
+      >
+        <MaterialCommunityIcons
+          name={icon}
+          size={24}
+          color={selected ? c.onPrimaryContainer : c.muted}
+        />
+      </Animated.View>
+      <Text
+        style={{
+          fontSize: 12,
+          lineHeight: 18,
+          fontWeight: selected ? '700' : '500',
+          color: c.text,
+        }}
+      >
+        {name}
+      </Text>
+    </Pressable>
+  );
+}
+function AppShell() {
+  const exampleGeneration = useFinance((s) => s.exampleGeneration),
+    demo = useFinance((s) => s.data.demo),
+    moveEnabled = useFinance((s) => s.data.preferences.moveEnabled),
+    setDemo = useFinance((s) => s.setDemo),
+    b = useBanking(),
+    { colors: c, dark, reducedMotion } = useTheme(),
+    { width, height, fontScale } = useWindowDimensions(),
+    [settingsRequest, setSettingsRequest] = useState<{ section: string; key: number }>(),
+    [navigationOpen, setNavigationOpen] = useState(false),
+    [covered, setCovered] = useState(false),
+    [tab, setTab] = useState('Today'),
+    [visited, setVisited] = useState(['Today']),
+    [activityRequest, setActivityRequest] = useState<{ month: string; key: number } | undefined>(),
+    [keyboard, setKeyboard] = useState(false),
+    opacity = useRef(new Animated.Value(1)).current,
+    lastTab = useRef('Today');
+  const layout = layoutPolicy(width, height, fontScale),
+    wide = layout.rail,
+    interfaceVisible = useInterfaceVisible();
+  const settingsBack = useRef<(() => boolean) | null>(null),
+    registerSettingsBack = React.useCallback((handler: (() => boolean) | null) => {
+      settingsBack.current = handler;
+    }, []);
+  const insets = useSafeAreaInsets(),
+    hideAmounts = useFinance((s) => s.data.preferences.hideAmounts);
+  const coverButton = useRef<View>(null),
+    coverHeading = useRef<Text>(null),
+    wasCovered = useRef(false);
+  useEffect(() => {
+    const changed = wasCovered.current !== covered;
+    wasCovered.current = covered;
+    if (!interfaceVisible || (!changed && !covered)) return;
+    const timer = setTimeout(
+      () => focusNative(covered ? coverHeading.current : coverButton.current),
+      0,
+    );
+    return () => clearTimeout(timer);
+  }, [covered, interfaceVisible]);
+  const navigate = (next: string, month?: string) => {
+    if (month) setActivityRequest({ month, key: Date.now() });
+    if (tab !== 'Settings') lastTab.current = tab;
+    setVisited((v) => (v.includes(next) ? v : [...v, next]));
+    setTab(next);
+  };
+  useEffect(() => {
+    if (tab === 'Move' && !moveEnabled) navigate('Today');
+  }, [moveEnabled]);
+  useEffect(() => {
+    opacity.stopAnimation();
+    if (reducedMotion || !interfaceVisible || covered) {
+      opacity.setValue(1);
+      return;
+    }
+    opacity.setValue(0.96);
+    const animation = Animated.timing(opacity, {
+      toValue: 1,
+      duration: motion.duration.screen,
+      useNativeDriver: true,
+    });
+    animation.start();
+    return () => animation.stop();
+  }, [tab, reducedMotion, interfaceVisible, covered]);
+  useEffect(() => {
+    const back = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (!interfaceVisible) return false;
+      if (covered) {
+        setCovered(false);
+        return true;
+      }
+      if (tab === 'Settings') {
+        if (!settingsBack.current?.()) navigate(lastTab.current);
+        return true;
+      }
+      if (tab !== 'Today') {
+        navigate('Today');
+        return true;
+      }
+      return false;
+    });
+    return () => back.remove();
+  }, [tab, covered, interfaceVisible]);
+  useEffect(() => {
+    const show = Keyboard.addListener('keyboardDidShow', () => setKeyboard(true)),
+      hide = Keyboard.addListener('keyboardDidHide', () => setKeyboard(false));
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
+  const visibleDestinations = destinations.filter(([name]) => name !== 'Move' || moveEnabled),
+    menuNavigation = !wide && navigationNeedsMenu(width, fontScale, visibleDestinations.length);
+  const nav = menuNavigation ? (
+    <View
+      style={{
+        paddingHorizontal: 20,
+        paddingTop: 8,
+        paddingBottom: 8 + insets.bottom,
+        backgroundColor: c.card,
+      }}
+    >
+      <Button
+        secondary
+        title={shellCopy.navigate + (tab === 'Settings' ? lastTab.current : tab)}
+        onPress={() => setNavigationOpen(true)}
+      />
+    </View>
+  ) : (
+    <ScrollView
+      horizontal={!wide}
+      showsHorizontalScrollIndicator={false}
+      style={{ flexGrow: 0, backgroundColor: c.card, width: wide ? layout.railWidth : undefined }}
+      contentContainerStyle={{
+        flexGrow: 1,
+        paddingTop: wide ? 16 : 4,
+        paddingBottom: wide ? 16 : 4 + insets.bottom,
+        paddingHorizontal: 4,
+      }}
+    >
+      <View
+        accessibilityRole="tablist"
+        style={{ flexDirection: wide ? 'column' : 'row', flex: 1, gap: wide ? 12 : 0 }}
+      >
+        {visibleDestinations.map(([name, icon]) => (
+          <NavItem
+            rail={wide}
+            key={name}
+            name={name}
+            icon={icon}
+            selected={tab === name}
+            onPress={() => navigate(name)}
+          />
+        ))}
+      </View>
+    </ScrollView>
+  );
+  return (
+    <CoverWorkspace.Provider
+      value={() => {
+        Keyboard.dismiss();
+        setCovered(true);
+      }}
+    >
+      <InterfaceVisible.Provider value={interfaceVisible && !covered}>
+        <SafeAreaView
+          edges={wide ? ['top', 'bottom', 'left', 'right'] : ['top', 'left', 'right']}
+          style={{ flex: 1, backgroundColor: c.surface }}
+        >
+          <View
+            accessibilityElementsHidden={covered}
+            importantForAccessibility={covered ? 'no-hide-descendants' : 'auto'}
+            style={{ flex: 1, display: covered ? 'none' : 'flex' }}
+          >
+            <StatusBar style={dark ? 'light' : 'dark'} />
+            <View style={[s.row, { paddingHorizontal: 20, paddingVertical: 12 }]}>
+              <View style={{ flex: 1, minWidth: 0 }}>
+                <Text accessibilityRole="header" style={[s.title, { color: c.text }]}>
+                  {tab}
+                </Text>
+              </View>
+              <Pressable
+                ref={coverButton}
+                accessibilityRole="button"
+                accessibilityLabel={hideAmounts ? shellCopy.showAmounts : shellCopy.hideAmounts}
+                accessibilityState={{ selected: hideAmounts }}
+                onPress={() => useFinance.getState().preferences({ hideAmounts: !hideAmounts })}
+                style={{
+                  minWidth: 48,
+                  minHeight: 48,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 24,
+                  backgroundColor: hideAmounts ? c.primaryContainer : undefined,
+                }}
+              >
+                <MaterialCommunityIcons
+                  name={hideAmounts ? 'eye-outline' : 'eye-off-outline'}
+                  size={24}
+                  color={hideAmounts ? c.primary : c.text}
+                />
+              </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={
+                  tab === 'Settings' ? shellCopy.closeSettings : shellCopy.openSettings
+                }
+                onPress={() => navigate(tab === 'Settings' ? lastTab.current : 'Settings')}
+                style={{
+                  minWidth: 48,
+                  minHeight: 48,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 24,
+                  backgroundColor: c.container,
+                }}
+              >
+                <MaterialCommunityIcons
+                  name={tab === 'Settings' ? 'close' : 'cog-outline'}
+                  size={24}
+                  color={c.text}
+                />
+              </Pressable>
+            </View>
+            {demo && (
+              <View
+                style={[
+                  s.row,
+                  {
+                    backgroundColor: c.primaryContainer,
+                    paddingHorizontal: 20,
+                    paddingVertical: 8,
+                    flexWrap: 'wrap',
+                  },
+                ]}
+              >
+                <View style={{ flex: 1 }}>
+                  <Copy small>{shellCopy.exampleModeNotice}</Copy>
+                </View>
+                <Button secondary title={shellCopy.openGuide} onPress={() => navigate('Today')} />
+                <Button secondary title={shellCopy.showYourData} onPress={() => setDemo(false)} />
+              </View>
+            )}
+            <SaveMessages />
+            {tab !== 'Settings' && (b.error || b.message) && (
+              <View style={{ paddingHorizontal: 16, paddingBottom: 8, maxHeight: 180 }}>
+                <ScrollView>
+                  <Notice error={!!b.error}>{b.error || b.message}</Notice>
+                  <Button secondary title={shellCopy.dismissMessage} onPress={b.clearMessage} />
+                </ScrollView>
+              </View>
+            )}
+            <KeyboardAvoidingView
+              style={{ flex: 1 }}
+              behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            >
+              <View style={{ flex: 1, flexDirection: wide ? 'row' : 'column' }}>
+                {wide && nav}
+                <Animated.View style={{ flex: 1, opacity }}>
+                  {visited.map((name) => (
+                    <View
+                      key={name + (demo ? '-example-' + exampleGeneration : '-personal')}
+                      accessibilityElementsHidden={tab !== name}
+                      importantForAccessibility={tab === name ? 'auto' : 'no-hide-descendants'}
+                      style={{ flex: 1, display: tab === name ? 'flex' : 'none' }}
+                    >
+                      <InterfaceVisible.Provider
+                        value={interfaceVisible && !covered && tab === name}
+                      >
+                        {name === 'Today' ? (
+                          <Today navigate={navigate} banking={b} />
+                        ) : name === 'Activity' ? (
+                          <Activity banking={b} request={activityRequest} />
+                        ) : name === 'Plan' ? (
+                          <Plan />
+                        ) : name === 'Move' ? (
+                          <Move />
+                        ) : name === 'Accounts' ? (
+                          <Accounts
+                            banking={b}
+                            openSettings={() => {
+                              setSettingsRequest({
+                                section: SETTINGS_LINK_SECTION,
+                                key: Date.now(),
+                              });
+                              navigate('Settings');
+                            }}
+                          />
+                        ) : (
+                          <Settings
+                            banking={b}
+                            request={settingsRequest}
+                            active={tab === 'Settings'}
+                            onBackHandler={registerSettingsBack}
+                            onRequestHandled={() => setSettingsRequest(undefined)}
+                          />
+                        )}
+                      </InterfaceVisible.Provider>
+                    </View>
+                  ))}
+                </Animated.View>
+                {!wide && !keyboard && tab !== 'Settings' && nav}
+              </View>
+            </KeyboardAvoidingView>
+            <Sheet
+              visible={navigationOpen}
+              onClose={() => setNavigationOpen(false)}
+              title={shellCopy.navigateTitle}
+            >
+              {visibleDestinations.map(([name]) => (
+                <Choice
+                  key={name}
+                  title={name}
+                  selected={(tab === 'Settings' ? lastTab.current : tab) === name}
+                  onPress={() => {
+                    setNavigationOpen(false);
+                    navigate(name);
+                  }}
+                />
+              ))}
+            </Sheet>
+            <UndoReceipt />
+            <SaveReceipt />
+          </View>
+          {covered && (
+            <ScrollView
+              contentContainerStyle={{
+                flexGrow: 1,
+                justifyContent: 'center',
+                padding: 24,
+                gap: 24,
+                maxWidth: 600,
+                width: '100%',
+                alignSelf: 'center',
+              }}
+            >
+              <Text
+                ref={coverHeading}
+                accessible
+                accessibilityRole="header"
+                style={[s.title, { color: c.text }]}
+              >
+                {shellCopy.screenHidden}
+              </Text>
+              <HelpNote summary={shellCopy.tapBelowWhenYouAreReadyTo}>
+                <Copy>{shellCopy.screenCoverDetail}</Copy>
+              </HelpNote>
+              <Button title={shellCopy.showScreen} onPress={() => setCovered(false)} />
+            </ScrollView>
+          )}
+        </SafeAreaView>
+      </InterfaceVisible.Provider>
+    </CoverWorkspace.Provider>
+  );
+}
 
+function SaveMessages() {
+  const state = useFinance(
+    useShallow((s) => ({
+      error: s.error,
+      mutationError: s.mutationError,
+      storageBlocked: s.storageBlocked,
+      retrySave: s.retrySave,
+      dismiss: s.dismissMutationError,
+    })),
+  );
+  return (
+    <>
+      {state.mutationError && (
+        <View style={{ padding: 12 }}>
+          <Notice error>{toUserMessage(state.mutationError)}</Notice>
+          <Button secondary title={shellCopy.dismissEditMessage} onPress={state.dismiss} />
+        </View>
+      )}
+      {state.error && (
+        <View style={{ padding: 12, gap: 6 }}>
+          <Notice error>{toUserMessage(state.error)}</Notice>
+          {!state.storageBlocked && (
+            <Button secondary title={shellCopy.trySavingAgain} onPress={state.retrySave} />
+          )}
+        </View>
+      )}
+    </>
+  );
 }
-function NavItem({name,icon,selected,onPress,rail=false}:{rail?:boolean;name:string;icon:React.ComponentProps<typeof MaterialCommunityIcons>['name'];selected:boolean;onPress:()=>void}){
- const {colors:c,reducedMotion}=useTheme(),visible=useInterfaceVisible(),scale=useMotionValue(selected?1:.94,{enabled:visible&&!reducedMotion}),{fontScale}=useWindowDimensions();
- return <Pressable accessibilityRole="tab" accessibilityState={{selected}} onPress={onPress} style={({pressed})=>({minHeight:64,minWidth:rail?0:Math.max(64,64*fontScale),flex:1,alignItems:'center',justifyContent:'center',paddingVertical:6,opacity:pressed?.7:1,gap:4})}><Animated.View style={{backgroundColor:selected?c.primaryContainer:'transparent',borderRadius:20,paddingHorizontal:18,paddingVertical:5,transform:[{scale}]}}><MaterialCommunityIcons name={icon} size={24} color={selected?c.onPrimaryContainer:c.muted}/></Animated.View><Text style={{fontSize:12,lineHeight:18,fontWeight:selected?'700':'500',color:c.text}}>{name}</Text></Pressable>;
+function UndoReceipt() {
+  const { colors: c } = useTheme(),
+    state = useFinance(
+      useShallow((s) => ({
+        undo: s.undo,
+        durable: s.durableRevision,
+        error: s.error,
+        undoReview: s.undoReview,
+      })),
+    );
+  if (!state.undo) return null;
+  return (
+    <View
+      accessibilityLiveRegion="polite"
+      style={[s.row, { paddingHorizontal: 20, paddingVertical: 8, backgroundColor: c.container }]}
+    >
+      <View style={{ flex: 1, minWidth: 0 }}>
+        <Copy>
+          {state.durable >= state.undo.revision
+            ? state.undo.label + shellCopy.saved
+            : state.error
+              ? state.undo.label + shellCopy.needsSaving
+              : state.undo.label + shellCopy.saving}
+        </Copy>
+      </View>
+      <Button secondary title={shellCopy.undo} onPress={state.undoReview} />
+    </View>
+  );
 }
-function AppShell(){
- const exampleGeneration=useFinance(s=>s.exampleGeneration),demo=useFinance(s=>s.data.demo),moveEnabled=useFinance(s=>s.data.preferences.moveEnabled),setDemo=useFinance(s=>s.setDemo),b=useBanking(),{colors:c,dark,reducedMotion}=useTheme(),{width,height,fontScale}=useWindowDimensions(),[settingsRequest,setSettingsRequest]=useState<{section:string;key:number}>(),[navigationOpen,setNavigationOpen]=useState(false),[covered,setCovered]=useState(false),[tab,setTab]=useState('Today'),[visited,setVisited]=useState(['Today']),[activityRequest,setActivityRequest]=useState<{month:string;key:number}|undefined>(),[keyboard,setKeyboard]=useState(false),opacity=useRef(new Animated.Value(1)).current,lastTab=useRef('Today');const layout=layoutPolicy(width,height,fontScale),wide=layout.rail,interfaceVisible=useInterfaceVisible();
- const settingsBack=useRef<(()=>boolean)|null>(null),registerSettingsBack=React.useCallback((handler:(()=>boolean)|null)=>{settingsBack.current=handler;},[]);
- const insets=useSafeAreaInsets(),hideAmounts=useFinance(s=>s.data.preferences.hideAmounts);
- const coverButton=useRef<View>(null),coverHeading=useRef<Text>(null),wasCovered=useRef(false);
- useEffect(()=>{const changed=wasCovered.current!==covered;wasCovered.current=covered;if(!interfaceVisible||(!changed&&!covered))return;const timer=setTimeout(()=>focusNative(covered?coverHeading.current:coverButton.current),0);return()=>clearTimeout(timer);},[covered,interfaceVisible]);
- const navigate=(next:string,month?:string)=>{if(month)setActivityRequest({month,key:Date.now()});if(tab!=='Settings')lastTab.current=tab;setVisited(v=>v.includes(next)?v:[...v,next]);setTab(next);};
- useEffect(()=>{if(tab==='Move'&&!moveEnabled)navigate('Today');},[moveEnabled]);
- useEffect(()=>{opacity.stopAnimation();if(reducedMotion||!interfaceVisible||covered){opacity.setValue(1);return;}opacity.setValue(.96);const animation=Animated.timing(opacity,{toValue:1,duration:motion.duration.screen,useNativeDriver:true});animation.start();return()=>animation.stop();},[tab,reducedMotion,interfaceVisible,covered]);
- useEffect(()=>{const back=BackHandler.addEventListener('hardwareBackPress',()=>{if(!interfaceVisible)return false;if(covered){setCovered(false);return true;}if(tab==='Settings'){if(!settingsBack.current?.())navigate(lastTab.current);return true;}if(tab!=='Today'){navigate('Today');return true;}return false;});return()=>back.remove();},[tab,covered,interfaceVisible]);
- useEffect(()=>{const show=Keyboard.addListener('keyboardDidShow',()=>setKeyboard(true)),hide=Keyboard.addListener('keyboardDidHide',()=>setKeyboard(false));return()=>{show.remove();hide.remove();};},[]);
- const visibleDestinations=destinations.filter(([name])=>name!=='Move'||moveEnabled),menuNavigation=!wide&&navigationNeedsMenu(width,fontScale,visibleDestinations.length);
- const nav=menuNavigation?<View style={{paddingHorizontal:20,paddingTop:8,paddingBottom:8+insets.bottom,backgroundColor:c.card}}><Button secondary title={shellCopy.navigate+(tab==='Settings'?lastTab.current:tab)} onPress={()=>setNavigationOpen(true)}/></View>:<ScrollView horizontal={!wide} showsHorizontalScrollIndicator={false} style={{flexGrow:0,backgroundColor:c.card,width:wide?layout.railWidth:undefined}} contentContainerStyle={{flexGrow:1,paddingTop:wide?16:4,paddingBottom:wide?16:4+insets.bottom,paddingHorizontal:4}}><View accessibilityRole="tablist" style={{flexDirection:wide?'column':'row',flex:1,gap:wide?12:0}}>{visibleDestinations.map(([name,icon])=><NavItem rail={wide} key={name} name={name} icon={icon} selected={tab===name} onPress={()=>navigate(name)}/>)}</View></ScrollView>;
- return <CoverWorkspace.Provider value={()=>{Keyboard.dismiss();setCovered(true);}}><InterfaceVisible.Provider value={interfaceVisible&&!covered}><SafeAreaView edges={wide?['top','bottom','left','right']:['top','left','right']} style={{flex:1,backgroundColor:c.surface}}><View accessibilityElementsHidden={covered} importantForAccessibility={covered?'no-hide-descendants':'auto'} style={{flex:1,display:covered?'none':'flex'}}><StatusBar style={dark?'light':'dark'}/><View style={[s.row,{paddingHorizontal:20,paddingVertical:12}]}><View style={{flex:1,minWidth:0}}><Text accessibilityRole="header" style={[s.title,{color:c.text}]}>{tab}</Text></View><Pressable ref={coverButton} accessibilityRole="button" accessibilityLabel={hideAmounts?shellCopy.showAmounts:shellCopy.hideAmounts} accessibilityState={{selected:hideAmounts}} onPress={()=>useFinance.getState().preferences({hideAmounts:!hideAmounts})} style={{minWidth:48,minHeight:48,alignItems:'center',justifyContent:'center',borderRadius:24,backgroundColor:hideAmounts?c.primaryContainer:undefined}}><MaterialCommunityIcons name={hideAmounts?'eye-outline':'eye-off-outline'} size={24} color={hideAmounts?c.primary:c.text}/></Pressable><Pressable accessibilityRole="button" accessibilityLabel={tab==='Settings'?shellCopy.closeSettings:shellCopy.openSettings} onPress={()=>navigate(tab==='Settings'?lastTab.current:'Settings')} style={{minWidth:48,minHeight:48,justifyContent:'center',alignItems:'center',borderRadius:24,backgroundColor:c.container}}><MaterialCommunityIcons name={tab==='Settings'?'close':'cog-outline'} size={24} color={c.text}/></Pressable></View>
- {demo&&<View style={[s.row,{backgroundColor:c.primaryContainer,paddingHorizontal:20,paddingVertical:8,flexWrap:'wrap'}]}><View style={{flex:1}}><Copy small>{shellCopy.exampleModeNotice}</Copy></View><Button secondary title={shellCopy.openGuide} onPress={()=>navigate('Today')}/><Button secondary title={shellCopy.showYourData} onPress={()=>setDemo(false)}/></View>}
- <SaveMessages/>
- {tab!=='Settings'&&(b.error||b.message)&&<View style={{paddingHorizontal:16,paddingBottom:8,maxHeight:180}}><ScrollView><Notice error={!!b.error}>{b.error||b.message}</Notice><Button secondary title={shellCopy.dismissMessage} onPress={b.clearMessage}/></ScrollView></View>}
- <KeyboardAvoidingView style={{flex:1}} behavior={Platform.OS==='ios'?'padding':undefined}><View style={{flex:1,flexDirection:wide?'row':'column'}}>{wide&&nav}<Animated.View style={{flex:1,opacity}}>{visited.map(name=><View key={name+(demo?'-example-'+exampleGeneration:'-personal')} accessibilityElementsHidden={tab!==name} importantForAccessibility={tab===name?'auto':'no-hide-descendants'} style={{flex:1,display:tab===name?'flex':'none'}}><InterfaceVisible.Provider value={interfaceVisible&&!covered&&tab===name}>{name==='Today'?<Today navigate={navigate} banking={b}/>:name==='Activity'?<Activity banking={b} request={activityRequest}/>:name==='Plan'?<Plan/>:name==='Move'?<Move/>:name==='Accounts'?<Accounts banking={b} openSettings={()=>{setSettingsRequest({section:SETTINGS_LINK_SECTION,key:Date.now()});navigate('Settings');}}/>:<Settings banking={b} request={settingsRequest} active={tab==='Settings'} onBackHandler={registerSettingsBack} onRequestHandled={()=>setSettingsRequest(undefined)}/>}</InterfaceVisible.Provider></View>)}</Animated.View>{!wide&&!keyboard&&tab!=='Settings'&&nav}</View></KeyboardAvoidingView>
- <Sheet visible={navigationOpen} onClose={()=>setNavigationOpen(false)} title={shellCopy.navigateTitle}>{visibleDestinations.map(([name])=><Choice key={name} title={name} selected={(tab==='Settings'?lastTab.current:tab)===name} onPress={()=>{setNavigationOpen(false);navigate(name);}}/>)}</Sheet>
- <UndoReceipt/><SaveReceipt/></View>{covered&&<ScrollView contentContainerStyle={{flexGrow:1,justifyContent:'center',padding:24,gap:24,maxWidth:600,width:'100%',alignSelf:'center'}}><Text ref={coverHeading} accessible accessibilityRole="header" style={[s.title,{color:c.text}]}>{shellCopy.screenHidden}</Text><HelpNote summary={shellCopy.tapBelowWhenYouAreReadyTo}><Copy>{shellCopy.screenCoverDetail}</Copy></HelpNote><Button title={shellCopy.showScreen} onPress={()=>setCovered(false)}/></ScrollView>}
- </SafeAreaView></InterfaceVisible.Provider></CoverWorkspace.Provider>;
+function SaveReceipt() {
+  const { colors: c } = useTheme(),
+    insets = useSafeAreaInsets(),
+    state = useFinance(
+      useShallow((s) => ({ saving: s.saving, error: s.error, lastSaved: s.lastSaved })),
+    ),
+    [recent, setRecent] = useState(false);
+  useEffect(() => {
+    if (!state.lastSaved) return;
+    setRecent(true);
+    const timer = setTimeout(() => setRecent(false), 1400);
+    return () => clearTimeout(timer);
+  }, [state.lastSaved]);
+  if (state.error || (!state.saving && !recent)) return null;
+  return (
+    <View
+      pointerEvents="none"
+      accessibilityLiveRegion="polite"
+      style={{
+        position: 'absolute',
+        bottom: insets.bottom + 88,
+        left: 20,
+        right: 20,
+        padding: 10,
+        borderRadius: 16,
+        backgroundColor: c.container,
+      }}
+    >
+      <Copy small>{state.saving ? shellCopy.savingStatus : shellCopy.savedStatus}</Copy>
+    </View>
+  );
 }
-
-function SaveMessages(){const state=useFinance(useShallow(s=>({error:s.error,mutationError:s.mutationError,storageBlocked:s.storageBlocked,retrySave:s.retrySave,dismiss:s.dismissMutationError})));return <>{state.mutationError&&<View style={{padding:12}}><Notice error>{toUserMessage(state.mutationError)}</Notice><Button secondary title={shellCopy.dismissEditMessage} onPress={state.dismiss}/></View>}{state.error&&<View style={{padding:12,gap:6}}><Notice error>{toUserMessage(state.error)}</Notice>{!state.storageBlocked&&<Button secondary title={shellCopy.trySavingAgain} onPress={state.retrySave}/>}</View>}</>;}
-function UndoReceipt(){const {colors:c}=useTheme(),state=useFinance(useShallow(s=>({undo:s.undo,durable:s.durableRevision,error:s.error,undoReview:s.undoReview})));if(!state.undo)return null;return <View accessibilityLiveRegion="polite" style={[s.row,{paddingHorizontal:20,paddingVertical:8,backgroundColor:c.container}]}><View style={{flex:1,minWidth:0}}><Copy>{state.durable>=state.undo.revision?state.undo.label+shellCopy.saved:state.error?state.undo.label+shellCopy.needsSaving:state.undo.label+shellCopy.saving}</Copy></View><Button secondary title={shellCopy.undo} onPress={state.undoReview}/></View>;}
-function SaveReceipt(){const {colors:c}=useTheme(),insets=useSafeAreaInsets(),state=useFinance(useShallow(s=>({saving:s.saving,error:s.error,lastSaved:s.lastSaved}))),[recent,setRecent]=useState(false);useEffect(()=>{if(!state.lastSaved)return;setRecent(true);const timer=setTimeout(()=>setRecent(false),1400);return()=>clearTimeout(timer);},[state.lastSaved]);if(state.error||(!state.saving&&!recent))return null;return <View pointerEvents="none" accessibilityLiveRegion="polite" style={{position:'absolute',bottom:insets.bottom+88,left:20,right:20,padding:10,borderRadius:16,backgroundColor:c.container}}><Copy small>{state.saving?shellCopy.savingStatus:shellCopy.savedStatus}</Copy></View>;}

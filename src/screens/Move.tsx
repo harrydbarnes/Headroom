@@ -1,35 +1,141 @@
-import {Disclosure} from '../ui/Disclosure';
-import {MoveVerdict} from '../ui/MoveVerdict';
-import {saleCostFields,purchaseCostFields} from '../strings/move';
-import {counts} from '../strings/format';
-import {displayMessage} from '../strings/messages';
-import {moveCopy} from '../strings/move';
-import {HelpNote} from '../ui/components';
-import {formatDate} from '../lib/dates';
-import {counted} from '../strings/format';
-import {toUserMessage} from '../strings/errors';
-import React,{useState,useRef} from 'react';
-import {Alert,View} from 'react-native';
-import {houseMove,type FeeInput,type HouseMoveInput} from '../lib/calculators/houseMove';
-import {clone,initialHouse,moveBudget} from '../lib/workspace';
-import {useWorkspace} from '../state/hooks';
-import {Button,Card,Choice,Copy,Field,Input,Line,Money,Notice,Page,Toggle,SectionRow,Sheet} from '../ui/components';
-import {ScenarioManager} from '../ui/ScenarioManager';
-import {styles as s} from '../ui/theme';
-export function Move(){
- const store=useWorkspace(),w=store.workspace,m=w.move,h=m.input,result=houseMove(h),budget=moveBudget(w),[section,setSection]=useState('');
- const returnFocus=useRef<()=>void>(()=>{});
- return <Page><MoveVerdict workspace={w}/><Notice>{moveCopy.englandNorthernIrelandDetail}</Notice>
-  {!store.demo&&<Card title={moveCopy.yourMoveInputs}><HelpNote summary={moveCopy.newPlanSummary}><Copy small>{moveCopy.newPlanDetail}</Copy></HelpNote><Button secondary title={moveCopy.useExampleTemplate} onPress={()=>Alert.alert(moveCopy.useExampleMoveTemplate,moveCopy.replacesMoveAssumptionsText,[{style:'cancel',text:moveCopy.cancel},{text:moveCopy.useExampleTemplate,onPress:()=>store.change(x=>({...x,move:{...x.move,input:clone(initialHouse),provenance:'example-template',confirmed:false}}))}])}/></Card>}
+import { Disclosure } from '../ui/Disclosure';
+import { MoveVerdict } from '../ui/MoveVerdict';
+import { saleCostFields, purchaseCostFields } from '../strings/move';
+import { counts } from '../strings/format';
+import { displayMessage } from '../strings/messages';
+import { moveCopy } from '../strings/move';
+import { HelpNote } from '../ui/components';
+import { formatDate } from '../lib/dates';
+import { counted } from '../strings/format';
+import { toUserMessage } from '../strings/errors';
+import React, { useState, useRef } from 'react';
+import { Alert, View } from 'react-native';
+import { houseMove, type FeeInput, type HouseMoveInput } from '../lib/calculators/houseMove';
+import { clone, initialHouse, moveBudget } from '../lib/workspace';
+import { useWorkspace } from '../state/hooks';
+import {
+  Button,
+  Card,
+  Choice,
+  Copy,
+  Field,
+  Input,
+  Line,
+  Money,
+  Notice,
+  Page,
+  Toggle,
+  SectionRow,
+  Sheet,
+} from '../ui/components';
+import { ScenarioManager } from '../ui/ScenarioManager';
+import { styles as s } from '../ui/theme';
+export function Move() {
+  const store = useWorkspace(),
+    w = store.workspace,
+    m = w.move,
+    h = m.input,
+    result = houseMove(h),
+    budget = moveBudget(w),
+    [section, setSection] = useState('');
+  const returnFocus = useRef<() => void>(() => {});
+  return (
+    <Page>
+      <MoveVerdict workspace={w} />
+      <Notice>{moveCopy.englandNorthernIrelandDetail}</Notice>
+      {!store.demo && (
+        <Card title={moveCopy.yourMoveInputs}>
+          <HelpNote summary={moveCopy.newPlanSummary}>
+            <Copy small>{moveCopy.newPlanDetail}</Copy>
+          </HelpNote>
+          <Button
+            secondary
+            title={moveCopy.useExampleTemplate}
+            onPress={() =>
+              Alert.alert(moveCopy.useExampleMoveTemplate, moveCopy.replacesMoveAssumptionsText, [
+                { style: 'cancel', text: moveCopy.cancel },
+                {
+                  text: moveCopy.useExampleTemplate,
+                  onPress: () =>
+                    store.change((x) => ({
+                      ...x,
+                      move: {
+                        ...x.move,
+                        input: clone(initialHouse),
+                        provenance: 'example-template',
+                        confirmed: false,
+                      },
+                    })),
+                },
+              ])
+            }
+          />
+        </Card>
+      )}
 
-  <MoveAssumptions/>
+      <MoveAssumptions />
 
-  <SectionRow title={moveCopy.moveCostBreakdown} summary={moveCopy.mortgageCostsAndExchangeCash} onPress={focus=>{returnFocus.current=focus;setSection('Costs');}}/><Sheet returnFocus={()=>returnFocus.current()} visible={section==='Costs'} onClose={()=>setSection('')} title={moveCopy.moveCostBreakdown}>  <Card title={moveCopy.completionAndBorrowing}><Copy small>{m.confirmed?moveCopy.confirmedAssumptions:moveCopy.provisionalConfirmAssumText}</Copy><Line label={moveCopy.stampDuty} value={<Money value={result.sdlt}/>}/><Line label={moveCopy.purchaseFees} value={<Money value={result.fees.total}/>}/><Line label={moveCopy.mortgage} value={<Money value={result.loan}/>}/><Line label={moveCopy.lTV} value={result.ltv===null?moveCopy.unavailable:result.ltv.toFixed(1)+'%'}/><Line label={moveCopy.monthlyMortgage} value={<Money value={result.payment}/>}/><Line label={moveCopy.rateStressLabel} value={<Money value={result.stress[1].payment}/>}/><Line label={moveCopy.cashAfterCompletion} value={<Money value={result.cashAfterCompletion}/>}/>{result.warnings.map(warning=><Notice key={warning}>{displayMessage(warning)}</Notice>)}</Card>
-  <Card title={moveCopy.cashNeededBeforeCompletion}><Line label={moveCopy.exchangeDepositLabel} value={<Money value={result.exchange.deposit}/>}/><Line label={moveCopy.savingsAfterEarlyCosts} value={<Money value={result.exchange.savingsRemaining}/>}/><Line label={moveCopy.exchangeCashGapLabel} value={<Money value={result.exchange.gap}/>}/><HelpNote summary={moveCopy.saleEquityMayArriveTooLateTo}><Copy small>{moveCopy.exchangeTimingDetail}</Copy></HelpNote></Card>
-</Sheet>
-  <MoveHousing/>
-  <ScenarioManager/>
- </Page>;
+      <SectionRow
+        title={moveCopy.moveCostBreakdown}
+        summary={moveCopy.mortgageCostsAndExchangeCash}
+        onPress={(focus) => {
+          returnFocus.current = focus;
+          setSection('Costs');
+        }}
+      />
+      <Sheet
+        returnFocus={() => returnFocus.current()}
+        visible={section === 'Costs'}
+        onClose={() => setSection('')}
+        title={moveCopy.moveCostBreakdown}
+      >
+        {' '}
+        <Card title={moveCopy.completionAndBorrowing}>
+          <Copy small>
+            {m.confirmed ? moveCopy.confirmedAssumptions : moveCopy.provisionalConfirmAssumText}
+          </Copy>
+          <Line label={moveCopy.stampDuty} value={<Money value={result.sdlt} />} />
+          <Line label={moveCopy.purchaseFees} value={<Money value={result.fees.total} />} />
+          <Line label={moveCopy.mortgage} value={<Money value={result.loan} />} />
+          <Line
+            label={moveCopy.lTV}
+            value={result.ltv === null ? moveCopy.unavailable : result.ltv.toFixed(1) + '%'}
+          />
+          <Line label={moveCopy.monthlyMortgage} value={<Money value={result.payment} />} />
+          <Line
+            label={moveCopy.rateStressLabel}
+            value={<Money value={result.stress[1].payment} />}
+          />
+          <Line
+            label={moveCopy.cashAfterCompletion}
+            value={<Money value={result.cashAfterCompletion} />}
+          />
+          {result.warnings.map((warning) => (
+            <Notice key={warning}>{displayMessage(warning)}</Notice>
+          ))}
+        </Card>
+        <Card title={moveCopy.cashNeededBeforeCompletion}>
+          <Line
+            label={moveCopy.exchangeDepositLabel}
+            value={<Money value={result.exchange.deposit} />}
+          />
+          <Line
+            label={moveCopy.savingsAfterEarlyCosts}
+            value={<Money value={result.exchange.savingsRemaining} />}
+          />
+          <Line
+            label={moveCopy.exchangeCashGapLabel}
+            value={<Money value={result.exchange.gap} />}
+          />
+          <HelpNote summary={moveCopy.saleEquityMayArriveTooLateTo}>
+            <Copy small>{moveCopy.exchangeTimingDetail}</Copy>
+          </HelpNote>
+        </Card>
+      </Sheet>
+      <MoveHousing />
+      <ScenarioManager />
+    </Page>
+  );
 }
 
 function MoveInputSummary({

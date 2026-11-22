@@ -1,96 +1,144 @@
 // Presentation copy only. Stored values and contracts remain in the domain modules.
 export const accountsCopy = {
- browserUnsupported:"No supported way to connect in the browser",
- setupProgress:(part0:string|number,part1:string|number)=>`Step ${part0} of 5 · ${part1}`,
- connectionStatus:(part0:string|number,part1:string|number,part2:string|number)=>`Connection: ${part0}${part1} · ${part2}.`,
- verificationStatus:(part0:string|number)=>`Last verified: ${part0}`,
- refreshReceipt:(part0:string|number,part1:string|number,part2:string|number,part3:string|number)=>`Finished: ${part0} · ${part1} new / ${part2} updated / ${part3} unchanged. Each bank shows when its data was downloaded.`,
- downloadStatus:(part0:string|number)=>`Last downloaded: ${part0}. Some data may be unsupported or missing. Check the refresh result.`,
- retrievalStatus:(part0:string|number,part1:string|number)=>`${part0} returned · last retrieval ${part1}`,
- connectABank: "Connect a bank",
- bankConnections: "Bank connections",
- checkingConnectionStatus: "Checking connection status…",
- thisPhoneIsnTLinkedToYour: "This phone isn’t linked to your Headroom server yet.",
- couldnTCheckConnectionText: "Couldn’t check your connection. Details below are from the last successful check.",
- connectionError: (value0:unknown)=>`${value0}`,
- phoneLinkedAskTheServerOwnerTo: "Phone linked. Ask the person managing your Headroom server to finish the bank setup.",
- youCanPlanManuallyWithoutABank: "You can plan manually without a bank. Link this phone in Settings when your server is ready.",
- linkThisPhone: "Link this phone",
- checkingConnection: "Checking connection…",
- checkConnectionAgain: "Check connection again",
- lastRefreshAttempt: "Last refresh attempt",
- resultsCoverBanksText: "Results cover only the banks refreshed this time. Refreshing one bank doesn’t update the others.",
- refreshComplete: "Refresh complete",
- someTransactionsMayBeMissing: "Some transactions may be missing",
+  browserUnsupported: 'No supported way to connect in the browser',
+  setupProgress: (part0: string | number, part1: string | number) =>
+    `Step ${part0} of 5 · ${part1}`,
+  connectionStatus: (part0: string | number, part1: string | number, part2: string | number) =>
+    `Connection: ${part0}${part1} · ${part2}.`,
+  verificationStatus: (part0: string | number) => `Last verified: ${part0}`,
+  refreshReceipt: (
+    part0: string | number,
+    part1: string | number,
+    part2: string | number,
+    part3: string | number,
+  ) =>
+    `Finished: ${part0} · ${part1} new / ${part2} updated / ${part3} unchanged. Each bank shows when its data was downloaded.`,
+  downloadStatus: (part0: string | number) =>
+    `Last downloaded: ${part0}. Some data may be unsupported or missing. Check the refresh result.`,
+  retrievalStatus: (part0: string | number, part1: string | number) =>
+    `${part0} returned · last retrieval ${part1}`,
+  connectABank: 'Connect a bank',
+  bankConnections: 'Bank connections',
+  checkingConnectionStatus: 'Checking connection status…',
+  thisPhoneIsnTLinkedToYour: 'This phone isn’t linked to your Headroom server yet.',
+  couldnTCheckConnectionText:
+    'Couldn’t check your connection. Details below are from the last successful check.',
+  connectionError: (value0: unknown) => `${value0}`,
+  phoneLinkedAskTheServerOwnerTo:
+    'Phone linked. Ask the person managing your Headroom server to finish the bank setup.',
+  youCanPlanManuallyWithoutABank:
+    'You can plan manually without a bank. Link this phone in Settings when your server is ready.',
+  linkThisPhone: 'Link this phone',
+  checkingConnection: 'Checking connection…',
+  checkConnectionAgain: 'Check connection again',
+  lastRefreshAttempt: 'Last refresh attempt',
+  resultsCoverBanksText:
+    'Results cover only the banks refreshed this time. Refreshing one bank doesn’t update the others.',
+  refreshComplete: 'Refresh complete',
+  someTransactionsMayBeMissing: 'Some transactions may be missing',
 
+  refreshTransactions: 'Refresh transactions',
+  permissionExpiredReconnText: 'Permission expired. Reconnect this bank.',
+  permissionEnds: 'Permission ends ',
+  notRefreshedYet: 'Not refreshed yet',
+  reconnect: 'Reconnect ',
+  connectAgainCheckText:
+    'Connect again and check the new connection first. Then disconnect the old expired connection below.',
+  disconnectThisBank: 'Disconnect this bank',
+  disconnect: 'Disconnect ',
+  disconnectConfirmBody:
+    'This removes bank permission and deletes downloaded data for this connection from the server. Transactions already on this phone remain. Reconnect to restore access.',
+  cancel: 'Cancel',
+  disconnectAction: 'Disconnect',
+  working: 'Working…',
+  transactionsDownloaded: 'Transactions downloaded',
+  showingRecentlyDownloadedData: 'Showing recently downloaded data',
+  someTransactionsMayText: 'Some transactions may be missing. See warnings below.',
+  refreshFailedEarlierText: 'The refresh did not finish. Check your transactions, then try again.',
+  permissionExpiredConnectAgain: 'Permission expired. Connect again.',
+  retry: 'Retry ',
+  notRecorded: 'not recorded',
+  addABank: 'Add a bank',
+  supportDependsExactText:
+    'Support depends on your exact account or card and bank permission. Only completed GBP transactions with a consistent bank reference are added. Refresh transactions manually.',
+  findSupportedBanks: 'Find supported banks',
+  searchBanks: 'Search banks',
+  noMatchingBankTryAnotherName: 'No matching bank. Try another name.',
+  connect: 'Connect ',
+  theBrowserCouldNotOpenTryAgain:
+    'The browser could not open. Try again or use the address in the setup instructions.',
+  setUpBanking: 'Set up banking',
+  connectYourBank: 'Connect your bank',
 
- refreshTransactions: "Refresh transactions",
- permissionExpiredReconnText: "Permission expired. Reconnect this bank.",
- permissionEnds: "Permission ends ",
- notRefreshedYet: "Not refreshed yet",
- reconnect: "Reconnect ",
- connectAgainCheckText: "Connect again and check the new connection first. Then disconnect the old expired connection below.",
- disconnectThisBank: "Disconnect this bank",
- disconnect: "Disconnect ",
- disconnectConfirmBody: "This removes bank permission and deletes downloaded data for this connection from the server. Transactions already on this phone remain. Reconnect to restore access.",
- cancel: "Cancel",
- disconnectAction: "Disconnect",
- working: "Working…",
- transactionsDownloaded: "Transactions downloaded",
- showingRecentlyDownloadedData: "Showing recently downloaded data",
- someTransactionsMayText: "Some transactions may be missing. See warnings below.",
- refreshFailedEarlierText: "The refresh did not finish. Check your transactions, then try again.",
- permissionExpiredConnectAgain: "Permission expired. Connect again.",
- retry: "Retry ",
- notRecorded: "not recorded",
- addABank: "Add a bank",
- supportDependsExactText: "Support depends on your exact account or card and bank permission. Only completed GBP transactions with a consistent bank reference are added. Refresh transactions manually.",
- findSupportedBanks: "Find supported banks",
- searchBanks: "Search banks",
- noMatchingBankTryAnotherName: "No matching bank. Try another name.",
- connect: "Connect ",
- theBrowserCouldNotOpenTryAgain: "The browser could not open. Try again or use the address in the setup instructions.",
- setUpBanking: "Set up banking",
- connectYourBank: "Connect your bank",
-
- enableBankingGivesDetail: "Enable Banking lets Headroom request transactions after you approve access with your bank. You sign in through your bank; Headroom never sees your password.",
- youReViewingExampleDataReadThe: "You’re viewing example data. Read the guide here, then show your data before linking this phone or connecting a real bank.",
- createEnableBankingDetail: "If you set up Headroom yourself, create an Enable Banking account and register an application in its Control Panel. Add the application ID and private signing key to your Headroom server. The key identifies the application to Enable Banking, so keep it on the server and never enter it on your phone. If someone else manages the server, ask them to finish these steps and send you a one-use pairing link.",
- realAccountsActivateSummary: "Use Production to connect your own bank. Sandbox is for testing with simulated data.",
- realAccountsActivateDetail: "To connect your own bank, the Enable Banking application on your Headroom server must be set to Production and activated. Enable Banking will show whether you need to link your own account or complete an approval step. Access may be limited to accounts linked to the application. Sandbox uses simulated data for testing and cannot connect to your everyday bank.",
- openAccountSignIn: "Open account sign-in",
- readSetupGuide: "Read setup guide",
- useLinkingCode: "Use pairing link",
- serverOwnerSummary: "Headroom does not run a server for you. You or someone you trust must set up and run a Headroom server.",
- serverOwnerDetail: "The server sends requests to Enable Banking and receives the bank’s response after you approve access. It keeps the private signing key and an encrypted copy of downloaded bank data on the server, not on your phone.",
- ifYouOwnTheServerFollowThe: "If you run the server, follow these instructions. Otherwise, ask the person who runs it to finish setup and send you a pairing link.",
- serverSetupDetail: "Set up the server with your Enable Banking application ID, private signing key and encrypted storage, then keep it running. Never put the signing key on your phone or share it in a message. If someone else manages the server, ask them to send you a one-use pairing link.",
- readServerInstructions: "Read server instructions",
- serverHTTPSAddressCallbLabel: "Server address (preview only)",
- httpsYourServerExample: "https://your-server.example",
- registerExactAllowedDetail: "Add this exact address to the Enable Banking application. It sends you back to Headroom after sign-in. This preview does not set up your server.",
- allowedRedirectURL: "Bank return address",
- applicationCheckSummary: "Your server checks that the application is active and set to Production before connecting your own bank.",
- applicationCheckDetail: "Your server checks that the Enable Banking application is active, set to Production for your own bank, and using the return address saved in its Control Panel. Keep the signing key and one-use phone link private.",
- onTheServerItsOwnerRunsThe: "The person running your Headroom server must create a one-use pairing link. It expires after two minutes.",
- pairingLinkDetail: "On the Headroom server, run npm run pair-device to create a one-use pairing link. In Headroom, open Settings → Link this phone, paste the link and tap Link this phone. The link expires after two minutes.",
- linkingThisPhoneDoesnTGiveBank: "Linking this phone connects it to your Headroom server, not your bank. You still need to choose a bank and approve access through your bank.",
- checkPhoneLink: "Check phone link",
- findExactBankSummary: "Find your exact bank and account product in the live provider list.",
- findExactBankDetail: "Find your exact bank and account product in the live provider list. Choose Connect and complete sign-in and permission checks in the bank’s browser flow. Return to Headroom afterwards.",
- bankPermissionHasDetail: "Bank permission has expired. Connect the bank again, check the new connection, then remove the old one.",
- firstShowYourDataLinkThisPhone: "Switch from example data to your own data, link this phone to your Headroom server and finish setup before searching for banks.",
- bankCreditCardSummary: "Bank, credit-card and history coverage depends on the provider and your permissions.",
- bankCreditCardDetail: "Bank, credit-card and history coverage depends on the provider and your permissions. A listed bank does not guarantee support for every product. No bank connection is added until permission is checked.",
- afterBankPermissionDetail: "After bank permission is checked, refresh transactions and review their type in Activity. Check each month is complete. Transaction dates alone can’t prove this.",
- refreshNeedsAReachableDetail: "Refresh needs a reachable, configured server and at least one current bank permission. Return to Connect a bank if permission is missing or expired.",
- bankImportSummary: "The current connection imports booked GBP transactions and requests up to 180 days of history.",
- bankImportDetail: "The current connection imports booked GBP transactions and requests up to 180 days of history. Refresh is manual. Automatic balances and pending payments are not supported. Record balances manually in Accounts. Imports do not replace your confirmed monthly plan.",
- serverConfigured: " · server ready",
- serverNeedsEnableBankingSetup: " · bank setup not finished",
- previousSetupStep: "Previous setup step",
- nextSetupStep: "Next setup step",
-ownerSetup:"Headroom server",
-ownerAccountSummary:"Headroom does not run a server for you. You need a Headroom server run by you or someone you trust.",
+  enableBankingGivesDetail:
+    'Enable Banking lets Headroom request transactions after you approve access with your bank. You sign in through your bank; Headroom never sees your password.',
+  youReViewingExampleDataReadThe:
+    'You’re viewing example data. Read the guide here, then show your data before linking this phone or connecting a real bank.',
+  createEnableBankingDetail:
+    'If you set up Headroom yourself, create an Enable Banking account and register an application in its Control Panel. Add the application ID and private signing key to your Headroom server. The key identifies the application to Enable Banking, so keep it on the server and never enter it on your phone. If someone else manages the server, ask them to finish these steps and send you a one-use pairing link.',
+  realAccountsActivateSummary:
+    'Use Production to connect your own bank. Sandbox is for testing with simulated data.',
+  realAccountsActivateDetail:
+    'To connect your own bank, the Enable Banking application on your Headroom server must be set to Production and activated. Enable Banking will show whether you need to link your own account or complete an approval step. Access may be limited to accounts linked to the application. Sandbox uses simulated data for testing and cannot connect to your everyday bank.',
+  openAccountSignIn: 'Open account sign-in',
+  readSetupGuide: 'Read setup guide',
+  useLinkingCode: 'Use pairing link',
+  serverOwnerSummary:
+    'Headroom does not run a server for you. You or someone you trust must set up and run a Headroom server.',
+  serverOwnerDetail:
+    'The server sends requests to Enable Banking and receives the bank’s response after you approve access. It keeps the private signing key and an encrypted copy of downloaded bank data on the server, not on your phone.',
+  ifYouOwnTheServerFollowThe:
+    'If you run the server, follow these instructions. Otherwise, ask the person who runs it to finish setup and send you a pairing link.',
+  serverSetupDetail:
+    'Set up the server with your Enable Banking application ID, private signing key and encrypted storage, then keep it running. Never put the signing key on your phone or share it in a message. If someone else manages the server, ask them to send you a one-use pairing link.',
+  readServerInstructions: 'Read server instructions',
+  serverHTTPSAddressCallbLabel: 'Server address (preview only)',
+  httpsYourServerExample: 'https://your-server.example',
+  registerExactAllowedDetail:
+    'Add this exact address to the Enable Banking application. It sends you back to Headroom after sign-in. This preview does not set up your server.',
+  allowedRedirectURL: 'Bank return address',
+  applicationCheckSummary:
+    'Your server checks that the application is active and set to Production before connecting your own bank.',
+  applicationCheckDetail:
+    'Your server checks that the Enable Banking application is active, set to Production for your own bank, and using the return address saved in its Control Panel. Keep the signing key and one-use phone link private.',
+  onTheServerItsOwnerRunsThe:
+    'The person running your Headroom server must create a one-use pairing link. It expires after two minutes.',
+  pairingLinkDetail:
+    'On the Headroom server, run npm run pair-device to create a one-use pairing link. In Headroom, open Settings → Link this phone, paste the link and tap Link this phone. The link expires after two minutes.',
+  linkingThisPhoneDoesnTGiveBank:
+    'Linking this phone connects it to your Headroom server, not your bank. You still need to choose a bank and approve access through your bank.',
+  checkPhoneLink: 'Check phone link',
+  findExactBankSummary: 'Find your exact bank and account product in the live provider list.',
+  findExactBankDetail:
+    'Find your exact bank and account product in the live provider list. Choose Connect and complete sign-in and permission checks in the bank’s browser flow. Return to Headroom afterwards.',
+  bankPermissionHasDetail:
+    'Bank permission has expired. Connect the bank again, check the new connection, then remove the old one.',
+  firstShowYourDataLinkThisPhone:
+    'Switch from example data to your own data, link this phone to your Headroom server and finish setup before searching for banks.',
+  bankCreditCardSummary:
+    'Bank, credit-card and history coverage depends on the provider and your permissions.',
+  bankCreditCardDetail:
+    'Bank, credit-card and history coverage depends on the provider and your permissions. A listed bank does not guarantee support for every product. No bank connection is added until permission is checked.',
+  afterBankPermissionDetail:
+    'After bank permission is checked, refresh transactions and review their type in Activity. Check each month is complete. Transaction dates alone can’t prove this.',
+  refreshNeedsAReachableDetail:
+    'Refresh needs a reachable, configured server and at least one current bank permission. Return to Connect a bank if permission is missing or expired.',
+  bankImportSummary:
+    'The current connection imports booked GBP transactions and requests up to 180 days of history.',
+  bankImportDetail:
+    'The current connection imports booked GBP transactions and requests up to 180 days of history. Refresh is manual. Automatic balances and pending payments are not supported. Record balances manually in Accounts. Imports do not replace your confirmed monthly plan.',
+  serverConfigured: ' · server ready',
+  serverNeedsEnableBankingSetup: ' · bank setup not finished',
+  previousSetupStep: 'Previous setup step',
+  nextSetupStep: 'Next setup step',
+  ownerSetup: 'Headroom server',
+  ownerAccountSummary:
+    'Headroom does not run a server for you. You need a Headroom server run by you or someone you trust.',
 } as const;
-export const bankingSetupTitles=['Prepare bank access','Headroom server setup','Link this phone','Connect a bank','Refresh and review'];
+export const bankingSetupTitles = [
+  'Prepare bank access',
+  'Headroom server setup',
+  'Link this phone',
+  'Connect a bank',
+  'Refresh and review',
+];

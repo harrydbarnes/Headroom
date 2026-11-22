@@ -1,41 +1,526 @@
-import {TextButton} from './TextButton';
-import {counts} from '../strings/format';
-import {displayMessage} from '../strings/messages';
-import {HelpNote} from './components';
-import {toolsCopy} from '../strings/tools';
-import {formatDate,formatDateTime,formatTaxYear,formatRange} from '../lib/dates';
-import {counted,formatCount} from '../strings/format';
-import {optionLabel} from '../strings/glossary';
-import {toUserMessage} from '../strings/errors';
-import React,{useState} from 'react';
-import {Alert,View} from 'react-native';
-import {useWorkspace} from '../state/hooks';
-import {id} from '../lib/workspace';
-import {accountKinds,emptyLedger,latestBalance,pounds,previewCsv,exportCsv,providerCapabilities,type Account,type CsvMapping} from '../lib/ledger';
-import {chooseCsv,saveCsv} from '../services/csv';
-import {DateField,Button,Card,Copy,Input,Money,Notice,Sheet,Toggle} from './components';
+import { TextButton } from './TextButton';
+import { counts } from '../strings/format';
+import { displayMessage } from '../strings/messages';
+import { HelpNote } from './components';
+import { toolsCopy } from '../strings/tools';
+import { formatDate, formatDateTime, formatTaxYear, formatRange } from '../lib/dates';
+import { counted, formatCount } from '../strings/format';
+import { optionLabel } from '../strings/glossary';
+import { toUserMessage } from '../strings/errors';
+import React, { useState } from 'react';
+import { Alert, View } from 'react-native';
+import { useWorkspace } from '../state/hooks';
+import { id } from '../lib/workspace';
+import {
+  accountKinds,
+  emptyLedger,
+  latestBalance,
+  pounds,
+  previewCsv,
+  exportCsv,
+  providerCapabilities,
+  type Account,
+  type CsvMapping,
+} from '../lib/ledger';
+import { chooseCsv, saveCsv } from '../services/csv';
+import { DateField, Button, Card, Copy, Input, Money, Notice, Sheet, Toggle } from './components';
 
-export function AccountLedger(){
- const store=useWorkspace(),w=store.workspace,l=w.ledger??emptyLedger();
- const [editing,setEditing]=useState<string|null>(null),[open,setOpen]=useState(false),[name,setName]=useState(''),[kind,setKind]=useState<Account['kind']>('current'),[group,setGroup]=useState<Account['group']>('personal'),[institution,setInstitution]=useState('');
- const [selected,setSelected]=useState(''),[balance,setBalance]=useState(''),[available,setAvailable]=useState(''),[balanceDate,setBalanceDate]=useState(new Date().toISOString().slice(0,10)),[message,setMessage]=useState(''),[error,setError]=useState(''),[busy,setBusy]=useState(false);
- const [raw,setRaw]=useState<string|null>(null),[mapping,setMapping]=useState<CsvMapping>({date:'Date',merchant:'Merchant',amount:'Amount',negativeDebits:false}),[preview,setPreview]=useState<ReturnType<typeof previewCsv>|null>(null);
- const [dateValid,setDateValid]=useState({balance:true,from:true,to:true}),[from,setFrom]=useState(''),[to,setTo]=useState(''),[category,setCategory]=useState('');
- const validity=(key:'balance'|'from'|'to')=>(valid:boolean)=>setDateValid(prior=>prior[key]===valid?prior:{...prior,[key]:valid});
- const account=l.accounts.find(a=>a.id===selected);
- const attempt=(f:()=>void)=>{setError("");try{f();}catch(e){setError(toUserMessage(e));}};
- const choose=async()=>{setBusy(true);setError("");try{const text=await chooseCsv();if(text!==null){setRaw(text);setPreview(null);}}catch(e){setError(toUserMessage(e));}finally{setBusy(false);}};
- const exportRows=async()=>{setBusy(true);setError("");try{for(const d of [from,to])if(d&&(!/^\d{4}-\d{2}-\d{2}$/.test(d)||new Date(d).toISOString().slice(0,10)!==d))throw Error('Use a valid YYYY-MM-DD export date.');if(from&&to&&from>to)throw Error('Export end must follow start.');const rows=w.transactions.filter(t=>(!account||t.account===account.name)&&(!from||t.date>=from)&&(!to||t.date<=to)&&(!category||t.category===category));setMessage(toolsCopy.cSV+await saveCsv(exportCsv(rows))+" · "+counts.transaction(rows.length)+toolsCopy.csvRecoveryHelp);}catch(e){setError(toUserMessage(e));}finally{setBusy(false);}};
- return <View style={{gap:16}}><Card title={toolsCopy.accountsAndBalances}><Copy small>{toolsCopy.balancesShowMoneyDetail}</Copy>
- {l.accounts.length===0&&<Copy>{toolsCopy.addAnAccountToRecordABalance}</Copy>}
- {l.accounts.map(a=>{const b=latestBalance(l,a.id);return <View key={a.id} style={{gap:8}}><Copy>{a.name}{" · "}{optionLabel(a.kind)}{" · "}{optionLabel(a.group)}{a.archived?toolsCopy.archived:""}</Copy>{b.snapshot?<><Money value={b.snapshot.current} precise/><Copy small>{optionLabel(b.status)}{" · "}{optionLabel(b.snapshot.source)}{" · "}{formatDateTime(b.snapshot.asOf)}</Copy>{b.snapshot.available!==undefined&&<Copy>{toolsCopy.available}<Money value={b.snapshot.available} precise/></Copy>}</>:<Copy small>{toolsCopy.balanceUnknown}</Copy>}<Toggle label={toolsCopy.include+a.name+toolsCopy.inFutureBudgets} value={a.included} onChange={included=>store.change(x=>({...x,ledger:{...l,accounts:l.accounts.map(v=>v.id===a.id?{...v,included}:v)}}))}/><View style={{gap:8}}><Button secondary title={toolsCopy.edit+a.name} onPress={()=>{setEditing(a.id);setName(a.name);setKind(a.kind);setGroup(a.group);setInstitution(a.institution);setOpen(true);}}/><Button secondary title={toolsCopy.select+a.name} onPress={()=>{setSelected(a.id);setMapping(l.csvMappings?.find(m=>m.accountId===a.id)?.mapping??{date:'Date',merchant:'Merchant',amount:'Amount',negativeDebits:false});setPreview(null);setBalance('');setAvailable('');}}/><Button secondary title={a.archived?toolsCopy.reopenAccount:toolsCopy.archiveAccount} onPress={()=>store.change(x=>({...x,ledger:{...l,accounts:l.accounts.map(v=>v.id===a.id?{...v,archived:!v.archived}:v)}}))}/></View></View>;})}
- <Button title={toolsCopy.addAccount} onPress={()=>{setEditing(null);setName('');setKind('current');setGroup('personal');setInstitution('');setOpen(true);}}/></Card>
- <Card title={account?toolsCopy.selected+account.name:toolsCopy.statementTools}><Copy small>{toolsCopy.selectAccountAboveDetail}</Copy>{account&&<><TextButton title={toolsCopy.clearAccountSelection} onPress={()=>{setSelected('');setPreview(null);}}/><Input label={toolsCopy.currentBalanceNegativeForDebt} value={balance} onChangeText={setBalance} keyboardType="numbers-and-punctuation"/><Input label={toolsCopy.availableBalanceOptional} value={available} onChangeText={setAvailable} keyboardType="numbers-and-punctuation"/><DateField label={toolsCopy.balanceDate} value={balanceDate} onChange={setBalanceDate} onValidityChange={validity('balance')}/><TextButton title={toolsCopy.saveBalance} disabled={account.archived||!dateValid.balance} onPress={()=>attempt(()=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(balanceDate)||new Date(balanceDate).toISOString().slice(0,10)!==balanceDate||balanceDate>new Date().toISOString().slice(0,10))throw Error('Use a valid past or current balance date.');const b={id:id(),accountId:account.id,current:pounds(balance),...(available.trim()?{available:pounds(available)}:{}),asOf:balanceDate+'T00:00:00.000Z',source:'manual' as const};if(store.change(x=>({...x,ledger:{...l,balances:[...l.balances,b]}})))setMessage(toolsCopy.balanceRecordedPlanningText);})}/><Button secondary title={toolsCopy.chooseStatementCSV} disabled={busy||account.archived} onPress={()=>void choose()}/></>}
- {raw!==null&&account&&<><HelpNote summary={toolsCopy.mapExactColumnHeadings}><Copy small>{toolsCopy.csvMappingHelp}</Copy></HelpNote>{(['date','merchant','amount','credit'] as const).map(k=><Input key={k} label={toolsCopy.csvColumnLabels[k]+toolsCopy.column+(k==='credit'?toolsCopy.optional:"")} value={mapping[k]??''} onChangeText={v=>{setMapping({...mapping,[k]:v});setPreview(null);}}/>)}<Toggle label={toolsCopy.singleAmountColumnLabel} value={mapping.negativeDebits} onChange={negativeDebits=>{setMapping({...mapping,negativeDebits});setPreview(null);}}/><Button secondary title={toolsCopy.previewImport} onPress={()=>attempt(()=>setPreview(previewCsv(raw,account,w.transactions,mapping)))}/>{preview&&<><Copy>{toolsCopy.csvPreviewCounts(counts.row(preview.rows.length),counts.existingMatch(preview.duplicates),formatCount(preview.add.length))}</Copy>{preview.add.slice(0,5).map(t=><Copy key={t.id}>{formatDate(t.date)}{" · "}{t.merchant}{" · "}<Money value={t.amount} precise/></Copy>)}<Button title={toolsCopy.import+counts.transaction(preview.add.length)} disabled={!preview.add.length} onPress={()=>attempt(()=>{const checked=previewCsv(raw,account,w.transactions,mapping),receipt={id:id(),at:new Date().toISOString(),accountId:account.id,transactionIds:checked.add.map(t=>t.id)};if(store.change(x=>({...x,transactions:[...x.transactions,...checked.add].sort((a,b)=>b.date.localeCompare(a.date)),coverage:x.coverage.filter(c=>!checked.add.some(t=>t.date.startsWith(c.month))),ledger:{...l,imports:[...l.imports,receipt],csvMappings:[...(l.csvMappings??[]).filter(m=>m.accountId!==account.id),{accountId:account.id,mapping}]}}))){setRaw(null);setPreview(null);setMessage(formatCount(checked.add.length)+toolsCopy.importedReviewThemInActivity);}})}/></>}</>}
- <DateField optional label={toolsCopy.exportFromDateOptional} value={from} onChange={setFrom} onValidityChange={validity('from')}/><DateField optional label={toolsCopy.exportToDateOptional} value={to} onChange={setTo} onValidityChange={validity('to')}/><Input label={toolsCopy.exportCategoryOptionalLabel} value={category} onChangeText={setCategory}/><Button secondary title={toolsCopy.exportCSV} disabled={busy||!dateValid.from||!dateValid.to} onPress={()=>void exportRows()}/>
- {l.imports.map(r=><View key={r.id} style={{gap:8}}><Copy small>{formatDateTime(r.at)}{" · "}{counts.importedRow(r.transactionIds.length)}</Copy><Button secondary title={toolsCopy.rollBackImport} onPress={()=>Alert.alert(toolsCopy.rollbackConfirmTitle,toolsCopy.rollbackConfirmBody,[{text:toolsCopy.cancel,style:'cancel'},{text:toolsCopy.rollBack,style:'destructive',onPress:()=>attempt(()=>{const ids=new Set(r.transactionIds);if(store.change(x=>({...x,transactions:x.transactions.filter(t=>!ids.has(t.id)),coverage:x.coverage.filter(c=>!x.transactions.some(t=>ids.has(t.id)&&t.date.startsWith(c.month))),ledger:{...l,annotations:l.annotations.filter(a=>!ids.has(a.transactionId)),imports:l.imports.filter(i=>i.id!==r.id)}})))setMessage(toolsCopy.rollbackReceipt);})}])}/></View>)}
- <HelpNote summary={toolsCopy.bankLimitsSummary}><Copy small>{toolsCopy.bankImportLimits(displayMessage(providerCapabilities.notes))}</Copy></HelpNote></Card>
- {!!error&&<Notice error>{error}</Notice>}{!!store.mutationError&&<Notice error>{toUserMessage(store.mutationError)}</Notice>}{!!message&&<Notice>{message}</Notice>}
- <Sheet visible={open} title={editing?toolsCopy.editAccount:toolsCopy.addAccount} onClose={()=>setOpen(false)}><Input label={toolsCopy.accountNameUnique} editable={!editing} value={name} onChangeText={setName}/><Input label={toolsCopy.institutionOptional} value={institution} onChangeText={setInstitution}/><Copy>{toolsCopy.accountTypeStatus(optionLabel(kind))}</Copy>{accountKinds.map(k=><Button key={k} secondary title={optionLabel(k)} onPress={()=>setKind(k)}/>)}<Copy>{toolsCopy.accountOwnershipStatus(optionLabel(group))}</Copy>{(['personal','joint','business'] as const).map(g=><Button key={g} secondary title={optionLabel(g)} onPress={()=>setGroup(g)}/>)}<Button title={toolsCopy.saveAccount} onPress={()=>attempt(()=>{if(store.change(x=>({...x,ledger:{...l,accounts:editing?l.accounts.map(a=>a.id===editing?{...a,kind,group,institution:institution.trim()}:a):[...l.accounts,{id:id(),name:name.trim(),kind,currency:'GBP',group,institution:institution.trim(),included:true,archived:false}]}}))){setName('');setOpen(false);}})}/>{!!store.mutationError&&<Notice error>{toUserMessage(store.mutationError)}</Notice>}</Sheet>
- </View>;
+export function AccountLedger() {
+  const store = useWorkspace(),
+    w = store.workspace,
+    l = w.ledger ?? emptyLedger();
+  const [editing, setEditing] = useState<string | null>(null),
+    [open, setOpen] = useState(false),
+    [name, setName] = useState(''),
+    [kind, setKind] = useState<Account['kind']>('current'),
+    [group, setGroup] = useState<Account['group']>('personal'),
+    [institution, setInstitution] = useState('');
+  const [selected, setSelected] = useState(''),
+    [balance, setBalance] = useState(''),
+    [available, setAvailable] = useState(''),
+    [balanceDate, setBalanceDate] = useState(new Date().toISOString().slice(0, 10)),
+    [message, setMessage] = useState(''),
+    [error, setError] = useState(''),
+    [busy, setBusy] = useState(false);
+  const [raw, setRaw] = useState<string | null>(null),
+    [mapping, setMapping] = useState<CsvMapping>({
+      date: 'Date',
+      merchant: 'Merchant',
+      amount: 'Amount',
+      negativeDebits: false,
+    }),
+    [preview, setPreview] = useState<ReturnType<typeof previewCsv> | null>(null);
+  const [dateValid, setDateValid] = useState({ balance: true, from: true, to: true }),
+    [from, setFrom] = useState(''),
+    [to, setTo] = useState(''),
+    [category, setCategory] = useState('');
+  const validity = (key: 'balance' | 'from' | 'to') => (valid: boolean) =>
+    setDateValid((prior) => (prior[key] === valid ? prior : { ...prior, [key]: valid }));
+  const account = l.accounts.find((a) => a.id === selected);
+  const attempt = (f: () => void) => {
+    setError('');
+    try {
+      f();
+    } catch (e) {
+      setError(toUserMessage(e));
+    }
+  };
+  const choose = async () => {
+    setBusy(true);
+    setError('');
+    try {
+      const text = await chooseCsv();
+      if (text !== null) {
+        setRaw(text);
+        setPreview(null);
+      }
+    } catch (e) {
+      setError(toUserMessage(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+  const exportRows = async () => {
+    setBusy(true);
+    setError('');
+    try {
+      for (const d of [from, to])
+        if (d && (!/^\d{4}-\d{2}-\d{2}$/.test(d) || new Date(d).toISOString().slice(0, 10) !== d))
+          throw Error('Use a valid YYYY-MM-DD export date.');
+      if (from && to && from > to) throw Error('Export end must follow start.');
+      const rows = w.transactions.filter(
+        (t) =>
+          (!account || t.account === account.name) &&
+          (!from || t.date >= from) &&
+          (!to || t.date <= to) &&
+          (!category || t.category === category),
+      );
+      setMessage(
+        toolsCopy.cSV +
+          (await saveCsv(exportCsv(rows))) +
+          ' · ' +
+          counts.transaction(rows.length) +
+          toolsCopy.csvRecoveryHelp,
+      );
+    } catch (e) {
+      setError(toUserMessage(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <View style={{ gap: 16 }}>
+      <Card title={toolsCopy.accountsAndBalances}>
+        <Copy small>{toolsCopy.balancesShowMoneyDetail}</Copy>
+        {l.accounts.length === 0 && <Copy>{toolsCopy.addAnAccountToRecordABalance}</Copy>}
+        {l.accounts.map((a) => {
+          const b = latestBalance(l, a.id);
+          return (
+            <View key={a.id} style={{ gap: 8 }}>
+              <Copy>
+                {a.name}
+                {' · '}
+                {optionLabel(a.kind)}
+                {' · '}
+                {optionLabel(a.group)}
+                {a.archived ? toolsCopy.archived : ''}
+              </Copy>
+              {b.snapshot ? (
+                <>
+                  <Money value={b.snapshot.current} precise />
+                  <Copy small>
+                    {optionLabel(b.status)}
+                    {' · '}
+                    {optionLabel(b.snapshot.source)}
+                    {' · '}
+                    {formatDateTime(b.snapshot.asOf)}
+                  </Copy>
+                  {b.snapshot.available !== undefined && (
+                    <Copy>
+                      {toolsCopy.available}
+                      <Money value={b.snapshot.available} precise />
+                    </Copy>
+                  )}
+                </>
+              ) : (
+                <Copy small>{toolsCopy.balanceUnknown}</Copy>
+              )}
+              <Toggle
+                label={toolsCopy.include + a.name + toolsCopy.inFutureBudgets}
+                value={a.included}
+                onChange={(included) =>
+                  store.change((x) => ({
+                    ...x,
+                    ledger: {
+                      ...l,
+                      accounts: l.accounts.map((v) => (v.id === a.id ? { ...v, included } : v)),
+                    },
+                  }))
+                }
+              />
+              <View style={{ gap: 8 }}>
+                <Button
+                  secondary
+                  title={toolsCopy.edit + a.name}
+                  onPress={() => {
+                    setEditing(a.id);
+                    setName(a.name);
+                    setKind(a.kind);
+                    setGroup(a.group);
+                    setInstitution(a.institution);
+                    setOpen(true);
+                  }}
+                />
+                <Button
+                  secondary
+                  title={toolsCopy.select + a.name}
+                  onPress={() => {
+                    setSelected(a.id);
+                    setMapping(
+                      l.csvMappings?.find((m) => m.accountId === a.id)?.mapping ?? {
+                        date: 'Date',
+                        merchant: 'Merchant',
+                        amount: 'Amount',
+                        negativeDebits: false,
+                      },
+                    );
+                    setPreview(null);
+                    setBalance('');
+                    setAvailable('');
+                  }}
+                />
+                <Button
+                  secondary
+                  title={a.archived ? toolsCopy.reopenAccount : toolsCopy.archiveAccount}
+                  onPress={() =>
+                    store.change((x) => ({
+                      ...x,
+                      ledger: {
+                        ...l,
+                        accounts: l.accounts.map((v) =>
+                          v.id === a.id ? { ...v, archived: !v.archived } : v,
+                        ),
+                      },
+                    }))
+                  }
+                />
+              </View>
+            </View>
+          );
+        })}
+        <Button
+          title={toolsCopy.addAccount}
+          onPress={() => {
+            setEditing(null);
+            setName('');
+            setKind('current');
+            setGroup('personal');
+            setInstitution('');
+            setOpen(true);
+          }}
+        />
+      </Card>
+      <Card title={account ? toolsCopy.selected + account.name : toolsCopy.statementTools}>
+        <Copy small>{toolsCopy.selectAccountAboveDetail}</Copy>
+        {account && (
+          <>
+            <TextButton
+              title={toolsCopy.clearAccountSelection}
+              onPress={() => {
+                setSelected('');
+                setPreview(null);
+              }}
+            />
+            <Input
+              label={toolsCopy.currentBalanceNegativeForDebt}
+              value={balance}
+              onChangeText={setBalance}
+              keyboardType="numbers-and-punctuation"
+            />
+            <Input
+              label={toolsCopy.availableBalanceOptional}
+              value={available}
+              onChangeText={setAvailable}
+              keyboardType="numbers-and-punctuation"
+            />
+            <DateField
+              label={toolsCopy.balanceDate}
+              value={balanceDate}
+              onChange={setBalanceDate}
+              onValidityChange={validity('balance')}
+            />
+            <TextButton
+              title={toolsCopy.saveBalance}
+              disabled={account.archived || !dateValid.balance}
+              onPress={() =>
+                attempt(() => {
+                  if (
+                    !/^\d{4}-\d{2}-\d{2}$/.test(balanceDate) ||
+                    new Date(balanceDate).toISOString().slice(0, 10) !== balanceDate ||
+                    balanceDate > new Date().toISOString().slice(0, 10)
+                  )
+                    throw Error('Use a valid past or current balance date.');
+                  const b = {
+                    id: id(),
+                    accountId: account.id,
+                    current: pounds(balance),
+                    ...(available.trim() ? { available: pounds(available) } : {}),
+                    asOf: balanceDate + 'T00:00:00.000Z',
+                    source: 'manual' as const,
+                  };
+                  if (
+                    store.change((x) => ({ ...x, ledger: { ...l, balances: [...l.balances, b] } }))
+                  )
+                    setMessage(toolsCopy.balanceRecordedPlanningText);
+                })
+              }
+            />
+            <Button
+              secondary
+              title={toolsCopy.chooseStatementCSV}
+              disabled={busy || account.archived}
+              onPress={() => void choose()}
+            />
+          </>
+        )}
+        {raw !== null && account && (
+          <>
+            <HelpNote summary={toolsCopy.mapExactColumnHeadings}>
+              <Copy small>{toolsCopy.csvMappingHelp}</Copy>
+            </HelpNote>
+            {(['date', 'merchant', 'amount', 'credit'] as const).map((k) => (
+              <Input
+                key={k}
+                label={
+                  toolsCopy.csvColumnLabels[k] +
+                  toolsCopy.column +
+                  (k === 'credit' ? toolsCopy.optional : '')
+                }
+                value={mapping[k] ?? ''}
+                onChangeText={(v) => {
+                  setMapping({ ...mapping, [k]: v });
+                  setPreview(null);
+                }}
+              />
+            ))}
+            <Toggle
+              label={toolsCopy.singleAmountColumnLabel}
+              value={mapping.negativeDebits}
+              onChange={(negativeDebits) => {
+                setMapping({ ...mapping, negativeDebits });
+                setPreview(null);
+              }}
+            />
+            <Button
+              secondary
+              title={toolsCopy.previewImport}
+              onPress={() =>
+                attempt(() => setPreview(previewCsv(raw, account, w.transactions, mapping)))
+              }
+            />
+            {preview && (
+              <>
+                <Copy>
+                  {toolsCopy.csvPreviewCounts(
+                    counts.row(preview.rows.length),
+                    counts.existingMatch(preview.duplicates),
+                    formatCount(preview.add.length),
+                  )}
+                </Copy>
+                {preview.add.slice(0, 5).map((t) => (
+                  <Copy key={t.id}>
+                    {formatDate(t.date)}
+                    {' · '}
+                    {t.merchant}
+                    {' · '}
+                    <Money value={t.amount} precise />
+                  </Copy>
+                ))}
+                <Button
+                  title={toolsCopy.import + counts.transaction(preview.add.length)}
+                  disabled={!preview.add.length}
+                  onPress={() =>
+                    attempt(() => {
+                      const checked = previewCsv(raw, account, w.transactions, mapping),
+                        receipt = {
+                          id: id(),
+                          at: new Date().toISOString(),
+                          accountId: account.id,
+                          transactionIds: checked.add.map((t) => t.id),
+                        };
+                      if (
+                        store.change((x) => ({
+                          ...x,
+                          transactions: [...x.transactions, ...checked.add].sort((a, b) =>
+                            b.date.localeCompare(a.date),
+                          ),
+                          coverage: x.coverage.filter(
+                            (c) => !checked.add.some((t) => t.date.startsWith(c.month)),
+                          ),
+                          ledger: {
+                            ...l,
+                            imports: [...l.imports, receipt],
+                            csvMappings: [
+                              ...(l.csvMappings ?? []).filter((m) => m.accountId !== account.id),
+                              { accountId: account.id, mapping },
+                            ],
+                          },
+                        }))
+                      ) {
+                        setRaw(null);
+                        setPreview(null);
+                        setMessage(
+                          formatCount(checked.add.length) + toolsCopy.importedReviewThemInActivity,
+                        );
+                      }
+                    })
+                  }
+                />
+              </>
+            )}
+          </>
+        )}
+        <DateField
+          optional
+          label={toolsCopy.exportFromDateOptional}
+          value={from}
+          onChange={setFrom}
+          onValidityChange={validity('from')}
+        />
+        <DateField
+          optional
+          label={toolsCopy.exportToDateOptional}
+          value={to}
+          onChange={setTo}
+          onValidityChange={validity('to')}
+        />
+        <Input
+          label={toolsCopy.exportCategoryOptionalLabel}
+          value={category}
+          onChangeText={setCategory}
+        />
+        <Button
+          secondary
+          title={toolsCopy.exportCSV}
+          disabled={busy || !dateValid.from || !dateValid.to}
+          onPress={() => void exportRows()}
+        />
+        {l.imports.map((r) => (
+          <View key={r.id} style={{ gap: 8 }}>
+            <Copy small>
+              {formatDateTime(r.at)}
+              {' · '}
+              {counts.importedRow(r.transactionIds.length)}
+            </Copy>
+            <Button
+              secondary
+              title={toolsCopy.rollBackImport}
+              onPress={() =>
+                Alert.alert(toolsCopy.rollbackConfirmTitle, toolsCopy.rollbackConfirmBody, [
+                  { text: toolsCopy.cancel, style: 'cancel' },
+                  {
+                    text: toolsCopy.rollBack,
+                    style: 'destructive',
+                    onPress: () =>
+                      attempt(() => {
+                        const ids = new Set(r.transactionIds);
+                        if (
+                          store.change((x) => ({
+                            ...x,
+                            transactions: x.transactions.filter((t) => !ids.has(t.id)),
+                            coverage: x.coverage.filter(
+                              (c) =>
+                                !x.transactions.some(
+                                  (t) => ids.has(t.id) && t.date.startsWith(c.month),
+                                ),
+                            ),
+                            ledger: {
+                              ...l,
+                              annotations: l.annotations.filter((a) => !ids.has(a.transactionId)),
+                              imports: l.imports.filter((i) => i.id !== r.id),
+                            },
+                          }))
+                        )
+                          setMessage(toolsCopy.rollbackReceipt);
+                      }),
+                  },
+                ])
+              }
+            />
+          </View>
+        ))}
+        <HelpNote summary={toolsCopy.bankLimitsSummary}>
+          <Copy small>
+            {toolsCopy.bankImportLimits(displayMessage(providerCapabilities.notes))}
+          </Copy>
+        </HelpNote>
+      </Card>
+      {!!error && <Notice error>{error}</Notice>}
+      {!!store.mutationError && <Notice error>{toUserMessage(store.mutationError)}</Notice>}
+      {!!message && <Notice>{message}</Notice>}
+      <Sheet
+        visible={open}
+        title={editing ? toolsCopy.editAccount : toolsCopy.addAccount}
+        onClose={() => setOpen(false)}
+      >
+        <Input
+          label={toolsCopy.accountNameUnique}
+          editable={!editing}
+          value={name}
+          onChangeText={setName}
+        />
+        <Input
+          label={toolsCopy.institutionOptional}
+          value={institution}
+          onChangeText={setInstitution}
+        />
+        <Copy>{toolsCopy.accountTypeStatus(optionLabel(kind))}</Copy>
+        {accountKinds.map((k) => (
+          <Button key={k} secondary title={optionLabel(k)} onPress={() => setKind(k)} />
+        ))}
+        <Copy>{toolsCopy.accountOwnershipStatus(optionLabel(group))}</Copy>
+        {(['personal', 'joint', 'business'] as const).map((g) => (
+          <Button key={g} secondary title={optionLabel(g)} onPress={() => setGroup(g)} />
+        ))}
+        <Button
+          title={toolsCopy.saveAccount}
+          onPress={() =>
+            attempt(() => {
+              if (
+                store.change((x) => ({
+                  ...x,
+                  ledger: {
+                    ...l,
+                    accounts: editing
+                      ? l.accounts.map((a) =>
+                          a.id === editing
+                            ? { ...a, kind, group, institution: institution.trim() }
+                            : a,
+                        )
+                      : [
+                          ...l.accounts,
+                          {
+                            id: id(),
+                            name: name.trim(),
+                            kind,
+                            currency: 'GBP',
+                            group,
+                            institution: institution.trim(),
+                            included: true,
+                            archived: false,
+                          },
+                        ],
+                  },
+                }))
+              ) {
+                setName('');
+                setOpen(false);
+              }
+            })
+          }
+        />
+        {!!store.mutationError && <Notice error>{toUserMessage(store.mutationError)}</Notice>}
+      </Sheet>
+    </View>
+  );
 }

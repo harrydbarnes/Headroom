@@ -1,45 +1,155 @@
-import {TextButton} from '../ui/TextButton';
-import {common} from '../strings/common';
-import {counts} from '../strings/format';
-import {todayCopy} from '../strings/today';
-import {HelpNote} from '../ui/components';
-import {formatDate,formatDateTime,formatMonth,formatRange} from '../lib/dates';
-import {counted} from '../strings/format';
-import {budgetLedger} from '../lib/budgets';
-import {pensionAnalysis} from '../lib/pensions';
-import {categoryGroup,spendingParts} from '../lib/planning';
-import {dayKey} from '../lib/workspace';
+import { TextButton } from '../ui/TextButton';
+import { common } from '../strings/common';
+import { counts } from '../strings/format';
+import { todayCopy } from '../strings/today';
+import { HelpNote } from '../ui/components';
+import { formatDate, formatDateTime, formatMonth, formatRange } from '../lib/dates';
+import { counted } from '../strings/format';
+import { budgetLedger } from '../lib/budgets';
+import { pensionAnalysis } from '../lib/pensions';
+import { categoryGroup, spendingParts } from '../lib/planning';
+import { dayKey } from '../lib/workspace';
 import React from 'react';
-import {View,Text} from 'react-native';
-import type {Banking} from '../services/useBanking';
-import {useWorkspace} from '../state/hooks';
-import {assess,monthTotals} from '../lib/finance';
-import {effectivePlan,monthKey} from '../lib/workspace';
-import {Button,Card,Copy,Field,Heading,Line,Money,Notice,Page} from '../ui/components';
-import {AdaptiveColumns} from '../ui/AdaptiveColumns';
-import {ExampleGuide} from '../ui/ExampleGuide';
-import {Disclosure} from '../ui/Disclosure';
-import {TonalCard} from '../ui/components';
-import {shapeRoles} from '../lib/presentation';
-import {HeadroomBar} from '../ui/HeadroomBar';
-import type {Plan} from '../lib/finance';
-import type {Workspace} from '../lib/workspace';
-import {SetupProgress} from '../ui/SetupProgress';
-import {DebtFields} from '../ui/DebtFields';
-import {styles as s,useTheme} from '../ui/theme';
-export function Today({navigate,banking}:{banking:Banking;navigate:(tab:string,month?:string)=>void}){
- const store=useWorkspace(),w=store.workspace,p=effectivePlan(w),r=assess(p),{colors:c}=useTheme(),totals=monthTotals(w.transactions,monthKey());
- if(w.onboardingStep<4)return <Page key={w.onboardingStep}><Heading>{todayCopy.makeRoomForWhatMatters}</Heading><Copy>{todayCopy.aFewAmountsGiveYouAFirst}</Copy><Copy small>{todayCopy.setupProgress(w.onboardingStep+1)}</Copy><SetupProgress step={w.onboardingStep} total={4}/>
-  <Card title={todayCopy.setupTitles[w.onboardingStep]}>
-   {w.onboardingStep===0&&<><Field label={todayCopy.monthlyHouseholdTakeHomeIncome} value={p.income} onChange={v=>store.patch({income:v})}/><Copy small>{todayCopy.useIncomeAfterText}</Copy></>}
-   {w.onboardingStep===1&&<><Field label={todayCopy.essentialsIncludingMortLabel} value={p.essentials} onChange={v=>store.patch({essentials:v})}/><Field label={todayCopy.flexibleSpending} value={p.flexible} onChange={v=>store.patch({flexible:v})}/><Field label={todayCopy.annualBillsDividedByLabel} value={p.annualReserve} onChange={v=>store.patch({annualReserve:v,annualTotal:undefined})}/></>}
-   {w.onboardingStep===2&&<><Field label={todayCopy.emergencyCashExcludingLabel} value={p.cash} onChange={v=>store.patch({cash:v})}/><DebtFields plan={p} onChange={debts=>store.patch({debts})}/><Copy small>{todayCopy.unknownLeaveThisStepForNowAnd}</Copy></>}
-   {w.onboardingStep===3&&<><Line label={todayCopy.provisionalMonthlyHeadroom} value={<Money value={r.surplus}/>}/><Copy>{todayCopy.usesPlannedSpendingText}</Copy><TextButton title={todayCopy.reviewMonthlyBaseline} onPress={()=>navigate('Plan')}/></>}
-   {w.onboardingStep<3&&<TextButton title={todayCopy.skipThisSection} onPress={()=>store.change(x=>({...x,setupSkipped:[...new Set([...(x.setupSkipped??[]),x.onboardingStep])],onboardingStep:x.onboardingStep+1}))}/>}{w.onboardingStep===3&&<Copy small>{todayCopy.setupConfirmHelp(w.setupSkipped?.length?todayCopy.setupChecklist(w.setupSkipped.map(n=>common.setupSections[n].toLowerCase()).join(', ')):todayCopy.allSetupSectionsVisited)}</Copy>}<Button title={w.onboardingStep===3?todayCopy.openMyOverview:todayCopy.saveAndContinue} onPress={()=>store.change(x=>({...x,onboardingStep:Math.min(4,x.onboardingStep+1),setupSkipped:(x.setupSkipped??[]).filter(n=>n!==x.onboardingStep)}))}/>
-   {w.onboardingStep>0&&<TextButton title={todayCopy.previousStep} onPress={()=>store.change(x=>({...x,onboardingStep:x.onboardingStep-1}))}/>}</Card>
-  <Button secondary title={todayCopy.tryExampleData} onPress={()=>store.setDemo(true)}/><Button secondary title={todayCopy.connectAccountsInstead} onPress={()=>navigate('Accounts')}/>
- </Page>;
- return <TodayOverview navigate={navigate} banking={banking}/>;
+import { View, Text } from 'react-native';
+import type { Banking } from '../services/useBanking';
+import { useWorkspace } from '../state/hooks';
+import { assess, monthTotals } from '../lib/finance';
+import { effectivePlan, monthKey } from '../lib/workspace';
+import { Button, Card, Copy, Field, Heading, Line, Money, Notice, Page } from '../ui/components';
+import { AdaptiveColumns } from '../ui/AdaptiveColumns';
+import { ExampleGuide } from '../ui/ExampleGuide';
+import { Disclosure } from '../ui/Disclosure';
+import { TonalCard } from '../ui/components';
+import { shapeRoles } from '../lib/presentation';
+import { HeadroomBar } from '../ui/HeadroomBar';
+import type { Plan } from '../lib/finance';
+import type { Workspace } from '../lib/workspace';
+import { SetupProgress } from '../ui/SetupProgress';
+import { DebtFields } from '../ui/DebtFields';
+import { styles as s, useTheme } from '../ui/theme';
+export function Today({
+  navigate,
+  banking,
+}: {
+  banking: Banking;
+  navigate: (tab: string, month?: string) => void;
+}) {
+  const store = useWorkspace(),
+    w = store.workspace,
+    p = effectivePlan(w),
+    r = assess(p),
+    { colors: c } = useTheme(),
+    totals = monthTotals(w.transactions, monthKey());
+  if (w.onboardingStep < 4)
+    return (
+      <Page key={w.onboardingStep}>
+        <Heading>{todayCopy.makeRoomForWhatMatters}</Heading>
+        <Copy>{todayCopy.aFewAmountsGiveYouAFirst}</Copy>
+        <Copy small>{todayCopy.setupProgress(w.onboardingStep + 1)}</Copy>
+        <SetupProgress step={w.onboardingStep} total={4} />
+        <Card title={todayCopy.setupTitles[w.onboardingStep]}>
+          {w.onboardingStep === 0 && (
+            <>
+              <Field
+                label={todayCopy.monthlyHouseholdTakeHomeIncome}
+                value={p.income}
+                onChange={(v) => store.patch({ income: v })}
+              />
+              <Copy small>{todayCopy.useIncomeAfterText}</Copy>
+            </>
+          )}
+          {w.onboardingStep === 1 && (
+            <>
+              <Field
+                label={todayCopy.essentialsIncludingMortLabel}
+                value={p.essentials}
+                onChange={(v) => store.patch({ essentials: v })}
+              />
+              <Field
+                label={todayCopy.flexibleSpending}
+                value={p.flexible}
+                onChange={(v) => store.patch({ flexible: v })}
+              />
+              <Field
+                label={todayCopy.annualBillsDividedByLabel}
+                value={p.annualReserve}
+                onChange={(v) => store.patch({ annualReserve: v, annualTotal: undefined })}
+              />
+            </>
+          )}
+          {w.onboardingStep === 2 && (
+            <>
+              <Field
+                label={todayCopy.emergencyCashExcludingLabel}
+                value={p.cash}
+                onChange={(v) => store.patch({ cash: v })}
+              />
+              <DebtFields plan={p} onChange={(debts) => store.patch({ debts })} />
+              <Copy small>{todayCopy.unknownLeaveThisStepForNowAnd}</Copy>
+            </>
+          )}
+          {w.onboardingStep === 3 && (
+            <>
+              <Line
+                label={todayCopy.provisionalMonthlyHeadroom}
+                value={<Money value={r.surplus} />}
+              />
+              <Copy>{todayCopy.usesPlannedSpendingText}</Copy>
+              <TextButton
+                title={todayCopy.reviewMonthlyBaseline}
+                onPress={() => navigate('Plan')}
+              />
+            </>
+          )}
+          {w.onboardingStep < 3 && (
+            <TextButton
+              title={todayCopy.skipThisSection}
+              onPress={() =>
+                store.change((x) => ({
+                  ...x,
+                  setupSkipped: [...new Set([...(x.setupSkipped ?? []), x.onboardingStep])],
+                  onboardingStep: x.onboardingStep + 1,
+                }))
+              }
+            />
+          )}
+          {w.onboardingStep === 3 && (
+            <Copy small>
+              {todayCopy.setupConfirmHelp(
+                w.setupSkipped?.length
+                  ? todayCopy.setupChecklist(
+                      w.setupSkipped.map((n) => common.setupSections[n].toLowerCase()).join(', '),
+                    )
+                  : todayCopy.allSetupSectionsVisited,
+              )}
+            </Copy>
+          )}
+          <Button
+            title={w.onboardingStep === 3 ? todayCopy.openMyOverview : todayCopy.saveAndContinue}
+            onPress={() =>
+              store.change((x) => ({
+                ...x,
+                onboardingStep: Math.min(4, x.onboardingStep + 1),
+                setupSkipped: (x.setupSkipped ?? []).filter((n) => n !== x.onboardingStep),
+              }))
+            }
+          />
+          {w.onboardingStep > 0 && (
+            <TextButton
+              title={todayCopy.previousStep}
+              onPress={() => store.change((x) => ({ ...x, onboardingStep: x.onboardingStep - 1 }))}
+            />
+          )}
+        </Card>
+        <Button secondary title={todayCopy.tryExampleData} onPress={() => store.setDemo(true)} />
+        <Button
+          secondary
+          title={todayCopy.connectAccountsInstead}
+          onPress={() => navigate('Accounts')}
+        />
+      </Page>
+    );
+  return <TodayOverview navigate={navigate} banking={banking} />;
 }
 
 function TodayOverview({
@@ -62,10 +172,7 @@ function TodayOverview({
     banking.connections.some((connection) => Date.parse(connection.expires) <= Date.now());
   const needsAttention = backlog.length > 0 || expired || !!w.setupSkipped?.length;
   const message = backlog.length
-    ? todayCopy.reviewBacklog(
-        backlog.length,
-        oldest ? formatMonth(oldest) : todayCopy.noneRecorded,
-      )
+    ? todayCopy.reviewBacklog(backlog.length, oldest ? formatMonth(oldest) : todayCopy.noneRecorded)
     : expired
       ? todayCopy.bankPermissionExpiredText
       : !w.planConfirmedAt
