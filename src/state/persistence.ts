@@ -25,6 +25,11 @@ export class FinanceRepository {
     private cleanLegacy: () => Promise<void> = () => KV.default.removeItem('house'),
   ) {}
   async prepare() {
+    try {
+      await this.db.execAsync('PRAGMA journal_mode = WAL;');
+    } catch {
+      // Non-SQLite test doubles may ignore PRAGMA statements.
+    }
     await this.db.execAsync(
       'CREATE TABLE IF NOT EXISTS headroom_migrations (id INTEGER PRIMARY KEY, value TEXT NOT NULL); CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY, value TEXT NOT NULL); CREATE TABLE IF NOT EXISTS app_state (id INTEGER PRIMARY KEY, value TEXT NOT NULL); CREATE TABLE IF NOT EXISTS headroom_transactions (space TEXT NOT NULL, id TEXT NOT NULL, value TEXT NOT NULL, PRIMARY KEY (space,id));',
     );
@@ -40,26 +45,29 @@ export class FinanceRepository {
       const records = await this.db.getAllAsync<{ space: Space; id: string; value: string }>(
         'SELECT space,id,value FROM headroom_transactions',
       );
-      if (
-        records.some(
-          (r) => !['personal', 'example'].includes(r.space) || JSON.parse(r.value).id !== r.id,
-        )
-      )
-        throw Error('Stored transaction identities do not match their records.');
+      const personalTransactions: Workspace['transactions'] = [];
+      const exampleTransactions: Workspace['transactions'] = [];
+      for (const r of records) {
+        if (r.space !== 'personal' && r.space !== 'example') {
+          throw Error('Stored transaction identities do not match their records.');
+        }
+        const parsed = JSON.parse(r.value);
+        if (parsed.id !== r.id) {
+          throw Error('Stored transaction identities do not match their records.');
+        }
+        if (r.space === 'personal') personalTransactions.push(parsed);
+        else exampleTransactions.push(parsed);
+      }
       const data = migrateLegacy({
         ...stored,
         version: 2,
         personal: {
           ...stored.personal,
-          transactions: records
-            .filter((r) => r.space === 'personal')
-            .map((r) => JSON.parse(r.value)),
+          transactions: personalTransactions,
         },
         example: {
           ...stored.example,
-          transactions: records
-            .filter((r) => r.space === 'example')
-            .map((r) => JSON.parse(r.value)),
+          transactions: exampleTransactions,
         },
       });
       this.persisted = data;
@@ -78,13 +86,20 @@ export class FinanceRepository {
     return data;
   }
   async save(data: AppData) {
+    const prior = this.persisted;
     data = {
       ...data,
-      personal: validateWorkspace(data.personal),
-      example: validateWorkspace(data.example),
+      personal:
+        prior && data.personal === prior.personal
+          ? prior.personal
+          : validateWorkspace(data.personal, prior?.personal),
+      example:
+        prior && data.example === prior.example
+          ? prior.example
+          : validateWorkspace(data.example, prior?.example),
     };
-    const { transactions: personalTransactions, ...personal } = data.personal,
-      { transactions: exampleTransactions, ...example } = data.example;
+    const { transactions: _personalTransactions, ...personal } = data.personal,
+      { transactions: _exampleTransactions, ...example } = data.example;
     const stored: Stored = {
       version: 5,
       demo: data.demo,
@@ -92,7 +107,6 @@ export class FinanceRepository {
       personal,
       example,
     };
-    const prior = this.persisted;
     await this.db.withExclusiveTransactionAsync(async (tx) => {
       const original = await tx.getFirstAsync<{ value: string }>(
         'SELECT value FROM app_state WHERE id=1',

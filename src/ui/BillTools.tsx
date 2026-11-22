@@ -45,9 +45,12 @@ export function BillTools() {
     [priceDate, setPriceDate] = useState(''),
     [newPrice, setNewPrice] = useState(0),
     focus = useRef<() => void>(() => {});
-  const events = useMemo(() => cashEvents(w, today, plusDays(today, 60)), [w, today]),
-    result = useMemo(() => forecast(w, today), [w, today]),
-    suggestions = useMemo(() => recurringSuggestions(w, today), [w, today]),
+  const events = useMemo(
+      () => (open ? cashEvents(w, today, plusDays(today, 60)) : []),
+      [open, w, today],
+    ),
+    result = useMemo(() => (open ? forecast(w, today) : null), [open, w, today]),
+    suggestions = useMemo(() => (open ? recurringSuggestions(w, today) : []), [open, w, today]),
     accounts = w.ledger?.accounts ?? [];
   const save = (f: () => boolean) => {
       setError('');
@@ -77,30 +80,33 @@ export function BillTools() {
     };
   const reconcile = (transactionId: string) =>
     save(() =>
-      store.change((x) => ({
-        ...x,
-        planning: link?.commitmentId
-          ? {
-              ...p,
-              commitments: p.commitments.map((c) =>
-                c.id === link.commitmentId
-                  ? {
-                      ...c,
-                      settlements: [
-                        ...c.settlements.filter((s) => s.due !== link.due),
-                        { due: link.due, transactionId },
-                      ],
-                    }
-                  : c,
-              ),
-            }
-          : {
-              ...p,
-              refunds: p.refunds.map((r) =>
-                r.id === link?.refundId ? { ...r, receivedId: transactionId } : r,
-              ),
-            },
-      })),
+      store.change((x) => {
+        const cur = x.planning ?? emptyPlanning();
+        return {
+          ...x,
+          planning: link?.commitmentId
+            ? {
+                ...cur,
+                commitments: cur.commitments.map((c) =>
+                  c.id === link.commitmentId
+                    ? {
+                        ...c,
+                        settlements: [
+                          ...c.settlements.filter((s) => s.due !== link.due),
+                          { due: link.due, transactionId },
+                        ],
+                      }
+                    : c,
+                ),
+              }
+            : {
+                ...cur,
+                refunds: cur.refunds.map((r) =>
+                  r.id === link?.refundId ? { ...r, receivedId: transactionId } : r,
+                ),
+              },
+        };
+      }),
     );
   return (
     <>
@@ -113,21 +119,12 @@ export function BillTools() {
         }}
       />
       <Sheet
-        key={
-          draft
-            ? 'schedule' + draft.id
-            : refund
-              ? 'refund' + refund.id
-              : link
-                ? 'link' + link.id
-                : section
-        }
         visible={open}
         title={toolsCopy.billsAndCashFlow}
         onClose={close}
         returnFocus={() => focus.current()}
       >
-        {!draft && !refund && !link && (
+        {open && result && !draft && !refund && !link && (
           <>
             <Options
               label={toolsCopy.billsView}

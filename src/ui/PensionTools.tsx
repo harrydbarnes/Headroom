@@ -69,16 +69,19 @@ export function PensionTools() {
           : [];
         if (
           draft &&
-          store.change((x) => ({
-            ...x,
-            planning: {
-              ...p,
-              pensions: [
-                ...p.pensions.filter((s) => s.id !== draft.id),
-                { ...draft, tiers: match },
-              ],
-            },
-          }))
+          store.change((x) => {
+            const cur = x.planning ?? emptyPlanning();
+            return {
+              ...x,
+              planning: {
+                ...cur,
+                pensions: [
+                  ...cur.pensions.filter((s) => s.id !== draft.id),
+                  { ...draft, tiers: match },
+                ],
+              },
+            };
+          })
         )
           setDraft(null);
       } catch (e) {
@@ -96,13 +99,12 @@ export function PensionTools() {
         }}
       />
       <Sheet
-        key={draft ? draft.id + section : 'overview'}
         visible={open}
         title={toolsCopy.pensionContributions}
         onClose={close}
         returnFocus={() => focus.current()}
       >
-        {!draft && (
+        {open && !draft && (
           <>
             <HelpNote summary={toolsCopy.schemeEvidenceSummary}>
               <Copy>{toolsCopy.schemeEvidenceDetail}</Copy>

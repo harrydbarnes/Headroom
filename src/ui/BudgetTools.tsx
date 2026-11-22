@@ -6,7 +6,7 @@ import { formatDate, formatDateTime, formatTaxYear, formatRange } from '../lib/d
 import { counted, formatCount } from '../strings/format';
 import { optionLabel } from '../strings/glossary';
 import { toUserMessage } from '../strings/errors';
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useWorkspace } from '../state/hooks';
 import { dayKey, id } from '../lib/workspace';
@@ -59,7 +59,10 @@ export function BudgetTools() {
       setEditor(null);
       setError('');
     },
-    suggestions = budgetSuggestions(w, today);
+    suggestions = useMemo(
+      () => (open && suggest ? budgetSuggestions(w, today) : { reason: '', suggestions: [] }),
+      [open, suggest, w, today],
+    );
   const beginBudget = (category?: string, value = 0) => {
     setName(category ?? 'Period spending');
     setScope(category ? 'category' : 'overall');
@@ -81,13 +84,12 @@ export function BudgetTools() {
         }}
       />
       <Sheet
-        key={editor ?? 'overview'}
         visible={open}
         title={toolsCopy.periodBudgets}
         onClose={close}
         returnFocus={() => returnFocus.current()}
       >
-        {!editor && (
+        {open && !editor && (
           <>
             <HelpNote summary={toolsCopy.budgetSpendingSummary}>
               <Copy>{toolsCopy.budgetSpendingDetail}</Copy>

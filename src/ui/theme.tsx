@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import {
   AccessibilityInfo,
   Platform,
@@ -67,20 +67,19 @@ export function ThemeProvider({
   }, []);
   const isDark =
     preferences.theme === 'dark' || (preferences.theme === 'system' && system === 'dark');
-  const base = isDark ? dark : light;
-  return (
-    <Context.Provider
-      value={{
-        colors:
-          preferences.dynamicColor && deviceColorSupported ? devicePalette(base, isDark) : base,
-        dark: isDark,
-        reducedMotion: reduced || preferences.reduceMotion,
-        hideAmounts: preferences.hideAmounts,
-      }}
-    >
-      {children}
-    </Context.Provider>
-  );
+  const dynamicColor = preferences.dynamicColor;
+  const reducedMotion = reduced || preferences.reduceMotion;
+  const hideAmounts = preferences.hideAmounts;
+  const value = useMemo(() => {
+    const base = isDark ? dark : light;
+    return {
+      colors: dynamicColor && deviceColorSupported ? devicePalette(base, isDark) : base,
+      dark: isDark,
+      reducedMotion,
+      hideAmounts,
+    };
+  }, [isDark, dynamicColor, reducedMotion, hideAmounts]);
+  return <Context.Provider value={value}>{children}</Context.Provider>;
 }
 export const useTheme = () => useContext(Context);
 export const styles = StyleSheet.create({

@@ -162,26 +162,33 @@ export const useFinance = create<State>((set, get) => ({
         previous = active(data),
         candidate = f(previous),
         validated = validateWorkspace(candidate, previous);
-      const changedAnnotations = new Set(
-        [...(previous.ledger?.annotations ?? []), ...(validated.ledger?.annotations ?? [])]
-          .filter(
-            (a) =>
-              JSON.stringify(
-                previous.ledger?.annotations.find((z) => z.transactionId === a.transactionId)
-                  ?.splits ?? [],
-              ) !==
-              JSON.stringify(
-                validated.ledger?.annotations.find((z) => z.transactionId === a.transactionId)
-                  ?.splits ?? [],
-              ),
-          )
-          .map((a) => a.transactionId),
-      );
-      const affectedMonths = new Set(
-        validated.transactions
-          .filter((t) => changedAnnotations.has(t.id))
-          .map((t) => t.date.slice(0, 7)),
-      );
+      const changedAnnotations = new Set<string>();
+      if (validated.ledger !== previous.ledger) {
+        const prevAnn = new Map(
+          (previous.ledger?.annotations ?? []).map((a) => [a.transactionId, a.splits]),
+        );
+        const nextAnn = new Map(
+          (validated.ledger?.annotations ?? []).map((a) => [a.transactionId, a.splits]),
+        );
+        for (const txId of new Set([...prevAnn.keys(), ...nextAnn.keys()])) {
+          const beforeSplits = prevAnn.get(txId) ?? [];
+          const afterSplits = nextAnn.get(txId) ?? [];
+          if (
+            beforeSplits !== afterSplits &&
+            JSON.stringify(beforeSplits) !== JSON.stringify(afterSplits)
+          ) {
+            changedAnnotations.add(txId);
+          }
+        }
+      }
+      const affectedMonths =
+        changedAnnotations.size > 0
+          ? new Set(
+              validated.transactions
+                .filter((t) => changedAnnotations.has(t.id))
+                .map((t) => t.date.slice(0, 7)),
+            )
+          : new Set<string>();
       const next = affectedMonths.size
         ? { ...validated, coverage: validated.coverage.filter((c) => !affectedMonths.has(c.month)) }
         : validated;

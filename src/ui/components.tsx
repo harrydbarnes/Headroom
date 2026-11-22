@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useId,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -508,6 +509,31 @@ export function Money({
   );
 }
 
+/** Lightweight non-animated money display for dense FlatList rows. */
+export function StaticMoney({
+  value,
+  precise = false,
+  textStyle,
+}: {
+  value: number;
+  precise?: boolean;
+  textStyle?: StyleProp<TextStyle>;
+}) {
+  const { hideAmounts, colors: c } = useTheme();
+  const inlineStyle = useContext(AmountTextContext);
+  const style = textStyle ?? inlineStyle ?? s.body;
+  const content = amountContent(value, precise, hideAmounts);
+  return (
+    <Text
+      accessible
+      accessibilityLabel={content.label}
+      style={[style, hideAmounts ? { color: c.muted } : undefined]}
+    >
+      {content.text ?? content.mask}
+    </Text>
+  );
+}
+
 export function Line({ label, value }: { label: string; value: React.ReactNode }) {
   const { width, height, fontScale } = useWindowDimensions(),
     stacked = layoutPolicy(width, height, fontScale).stackValues;
@@ -699,21 +725,37 @@ export function Sheet({
     if (shown && !reducedMotion && !layout.centerSheet) settle();
     return () => slot.stop();
   }, [shown, reducedMotion, layout.centerSheet]);
-  const drag = PanResponder.create({
-    onMoveShouldSetPanResponderCapture: (_, g) =>
-      !layout.centerSheet && g.dy > motion.sheet.dragStart && Math.abs(g.dy) > Math.abs(g.dx),
-    onMoveShouldSetPanResponder: (_, g) =>
-      !layout.centerSheet && g.dy > motion.sheet.dragStart && Math.abs(g.dy) > Math.abs(g.dx),
-    onPanResponderGrant: () => {
-      slot.stop();
-      offset.stopAnimation();
-    },
-    onPanResponderMove: (_, g) => {
-      if (!reducedMotion) offset.setValue(Math.max(0, g.dy));
-    },
-    onPanResponderRelease: (_, g) => releaseSheetDrag(g.dy, settle, onClose),
-    onPanResponderTerminate: settle,
+  const dragState = useRef({
+    centerSheet: layout.centerSheet,
+    reducedMotion,
+    settle,
+    onClose,
   });
+  dragState.current = { centerSheet: layout.centerSheet, reducedMotion, settle, onClose };
+  const drag = useMemo(
+    () =>
+      PanResponder.create({
+        onMoveShouldSetPanResponderCapture: (_, g) =>
+          !dragState.current.centerSheet &&
+          g.dy > motion.sheet.dragStart &&
+          Math.abs(g.dy) > Math.abs(g.dx),
+        onMoveShouldSetPanResponder: (_, g) =>
+          !dragState.current.centerSheet &&
+          g.dy > motion.sheet.dragStart &&
+          Math.abs(g.dy) > Math.abs(g.dx),
+        onPanResponderGrant: () => {
+          slot.stop();
+          offset.stopAnimation();
+        },
+        onPanResponderMove: (_, g) => {
+          if (!dragState.current.reducedMotion) offset.setValue(Math.max(0, g.dy));
+        },
+        onPanResponderRelease: (_, g) =>
+          releaseSheetDrag(g.dy, dragState.current.settle, dragState.current.onClose),
+        onPanResponderTerminate: () => dragState.current.settle(),
+      }),
+    [slot, offset],
+  );
   return (
     <FormScope>
       <Modal

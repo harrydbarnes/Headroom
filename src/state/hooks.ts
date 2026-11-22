@@ -1,6 +1,7 @@
 import { active } from '../lib/workspace';
 import { useFinance } from './store';
 import { useShallow } from 'zustand/react/shallow';
+
 export function useWorkspace() {
   const store = useFinance(
     useShallow((s) => ({
@@ -25,3 +26,9 @@ export function useWorkspace() {
   );
   return { ...store, workspace: active(store.data), demo: store.data.demo };
 }
+
+/** Fine-grained selectors that avoid re-rendering on unrelated preference or inactive workspace edits. */
+export const useActiveWorkspace = () => useFinance((s) => active(s.data));
+export const usePlan = () => useFinance((s) => active(s.data).plan);
+export const usePreferences = () => useFinance((s) => s.data.preferences);
+export const useTransactions = () => useFinance((s) => active(s.data).transactions);

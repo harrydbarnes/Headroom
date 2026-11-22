@@ -109,11 +109,7 @@ export function HeadroomBar({ plan }: { plan: Plan }) {
             <View style={{ flex: 1, backgroundColor: c.error }} />
           ) : (
             segments.map((segment) => (
-              <BarSegment
-                key={`${segment.id}:${segment.share}:${segment.amount}`}
-                segment={segment}
-                hidden={hideAmounts}
-              />
+              <BarSegment key={segment.id} segment={segment} hidden={hideAmounts} />
             ))
           ))}
       </View>

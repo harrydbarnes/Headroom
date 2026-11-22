@@ -1,9 +1,8 @@
 import { TextButton } from '../ui/TextButton';
-import { counts } from '../strings/format';
+import { counts, formatCount } from '../strings/format';
 import { activityCopy } from '../strings/activity';
 import { formatDate, formatDateLong, formatMonth, formatRange } from '../lib/dates';
 import { movementLabel } from '../strings/glossary';
-import { counted, formatCount } from '../strings/format';
 import { toUserMessage } from '../strings/errors';
 import { BillTools } from '../ui/BillTools';
 import { categoryGroup } from '../lib/planning';
@@ -30,6 +29,7 @@ import {
   Money,
   Notice,
   Sheet,
+  StaticMoney,
   Toggle,
 } from '../ui/components';
 import { MonthChooser } from '../ui/MonthChooser';
@@ -419,7 +419,7 @@ export function Activity({
                     <Copy strong>
                       {t.amount < 0 ? activityCopy.moneyIn : activityCopy.moneyOut}
                     </Copy>
-                    <Money
+                    <StaticMoney
                       textStyle={[s.body, { color: c.text, fontWeight: '600' }]}
                       precise
                       value={Math.abs(t.amount)}
@@ -620,26 +620,30 @@ export function Activity({
         onClose={() => setCoverageOpen(false)}
         title={activityCopy.check + formatMonth(month)}
       >
-        {coverageOpen && <CoverageEditor key={month} month={month} />}
-        <Card title={activityCopy.transactionDateRanges}>
-          {[...new Set(w.transactions.map((t) => t.account))].map((a) => {
-            const tx = w.transactions
-              .filter((t) => t.account === a)
-              .sort((x, y) => x.date.localeCompare(y.date));
-            return (
-              <View key={a}>
-                <Copy strong>{a}</Copy>
-                <Copy small>
-                  {activityCopy.reviewCounts(
-                    formatRange(tx[0].date, tx[tx.length - 1].date),
-                    formatCount(tx.filter((t) => t.movement === 'review').length),
-                  )}
-                </Copy>
-              </View>
-            );
-          })}
-          <Copy small>{activityCopy.completenessHelp}</Copy>
-        </Card>
+        {coverageOpen && (
+          <>
+            <CoverageEditor key={month} month={month} />
+            <Card title={activityCopy.transactionDateRanges}>
+              {[...new Set(w.transactions.map((t) => t.account))].map((a) => {
+                const tx = w.transactions
+                  .filter((t) => t.account === a)
+                  .sort((x, y) => x.date.localeCompare(y.date));
+                return (
+                  <View key={a}>
+                    <Copy strong>{a}</Copy>
+                    <Copy small>
+                      {activityCopy.reviewCounts(
+                        formatRange(tx[0].date, tx[tx.length - 1].date),
+                        formatCount(tx.filter((t) => t.movement === 'review').length),
+                      )}
+                    </Copy>
+                  </View>
+                );
+              })}
+              <Copy small>{activityCopy.completenessHelp}</Copy>
+            </Card>
+          </>
+        )}
       </Sheet>
       <Sheet
         visible={open}
