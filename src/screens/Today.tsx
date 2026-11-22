@@ -26,6 +26,7 @@ import type { Plan } from '../lib/finance';
 import type { Workspace } from '../lib/workspace';
 import { SetupProgress } from '../ui/SetupProgress';
 import { DebtFields } from '../ui/DebtFields';
+import { PointInTimeCard } from '../ui/PointInTimeCard';
 import { styles as s, useTheme } from '../ui/theme';
 export function Today({
   navigate,
@@ -186,6 +187,7 @@ function TodayOverview({
     <Page>
       <ExampleGuide navigate={navigate} />
       <TodayHero plan={p} workspace={w} />
+      <PointInTimeCard navigate={navigate} />
       {needsAttention && (
         <TodayAttention
           backlog={backlog.length}

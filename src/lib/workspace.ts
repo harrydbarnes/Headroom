@@ -110,6 +110,11 @@ export type Preferences = {
   appLock: boolean;
   blockCapture: boolean;
   introSeen: boolean;
+  paydayDay?: number;
+  defaultActivityUnreviewed?: boolean;
+  wholePounds?: boolean;
+  autoLockGraceSeconds?: 0 | 60 | 300;
+  pensionsEnabled?: boolean;
 };
 export type AppData = {
   version: 2;
@@ -499,6 +504,38 @@ export function validateWorkspace(input: unknown, prior?: Workspace): Workspace 
       throw Error('Invalid planning rate.');
     plan[key] = p[key];
   }
+  if (p.allocationMode !== undefined) {
+    if (p.allocationMode !== 'guided' && p.allocationMode !== 'custom')
+      throw Error('Invalid planning assumptions');
+    plan.allocationMode = p.allocationMode;
+  }
+  if (p.customSplit !== undefined) {
+    const cs = object(p.customSplit);
+    const save = amount(cs.save),
+      invest = amount(cs.invest),
+      spend = amount(cs.spend);
+    if (
+      save < 0 ||
+      invest < 0 ||
+      spend < 0 ||
+      save > 100 ||
+      invest > 100 ||
+      spend > 100 ||
+      save + invest + spend !== 100
+    )
+      throw Error('Invalid planning assumptions');
+    plan.customSplit = { save, invest, spend };
+  }
+  if (p.debtAprThreshold !== undefined) {
+    if (
+      typeof p.debtAprThreshold !== 'number' ||
+      !Number.isFinite(p.debtAprThreshold) ||
+      p.debtAprThreshold < 0 ||
+      p.debtAprThreshold > 100
+    )
+      throw Error('Invalid planning rate.');
+    plan.debtAprThreshold = p.debtAprThreshold;
+  }
   if (p.annualTotal !== undefined) {
     plan.annualTotal = amount(p.annualTotal);
     if (plan.annualTotal < 0 || Math.round(plan.annualTotal / 12) !== plan.annualReserve)
@@ -860,8 +897,26 @@ export function migrateLegacy(saved: any, oldHouse?: any): AppData {
       'appLock',
       'blockCapture',
       'introSeen',
+      'defaultActivityUnreviewed',
+      'wholePounds',
+      'pensionsEnabled',
     ] as const)
       if (typeof p[k] === 'boolean') d.preferences[k] = p[k];
+    if (
+      typeof p.paydayDay === 'number' &&
+      Number.isInteger(p.paydayDay) &&
+      p.paydayDay >= 1 &&
+      p.paydayDay <= 31
+    ) {
+      d.preferences.paydayDay = p.paydayDay;
+    }
+    if (
+      p.autoLockGraceSeconds === 0 ||
+      p.autoLockGraceSeconds === 60 ||
+      p.autoLockGraceSeconds === 300
+    ) {
+      d.preferences.autoLockGraceSeconds = p.autoLockGraceSeconds;
+    }
     if (typeof p.introSeen !== 'boolean') d.preferences.introSeen = true;
     return d;
   }

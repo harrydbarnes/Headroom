@@ -20,6 +20,9 @@ export type Goal = {
   priority?: number;
   funding?: boolean;
 };
+export type AllocationMode = 'guided' | 'custom';
+export type CustomSplit = { save: number; invest: number; spend: number };
+export const defaultCustomSplit: CustomSplit = { save: 40, invest: 20, spend: 40 };
 export type Plan = {
   income: Pence;
   essentials: Pence;
@@ -39,6 +42,9 @@ export type Plan = {
   monthsReviewed: number;
   debts?: Debt[];
   goals?: Goal[];
+  allocationMode?: AllocationMode;
+  customSplit?: CustomSplit;
+  debtAprThreshold?: number;
 };
 export const emptyPlan: Plan = {
   income: 0,
@@ -118,8 +124,11 @@ export function assess(p: Plan, asOf = new Date()) {
     nonnegative(g.saved);
     if (!Number.isInteger(g.months) || g.months < 1) throw Error('Invalid goal deadline');
   });
+  const aprThreshold = p.debtAprThreshold ?? 8;
   const debt = debts.reduce((n, d) => n + d.balance, 0),
-    expensiveBalance = debts.filter((d) => d.apr >= 8).reduce((n, d) => n + d.balance, 0);
+    expensiveBalance = debts
+      .filter((d) => d.apr >= aprThreshold)
+      .reduce((n, d) => n + d.balance, 0);
   nonnegative(debt);
   const committed = p.essentials + p.flexible + p.annualReserve,
     surplus = p.income - committed;
@@ -155,7 +164,7 @@ export function assess(p: Plan, asOf = new Date()) {
   const debtAllocations = [...debts]
     .sort((a, b) => b.apr - a.apr || a.id.localeCompare(b.id))
     .map((d) => {
-      const extra = d.apr >= 8 ? Math.min(debtPool, d.balance) : 0;
+      const extra = d.apr >= aprThreshold ? Math.min(debtPool, d.balance) : 0;
       debtPool -= extra;
       return { ...d, extra };
     });
